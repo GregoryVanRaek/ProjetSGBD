@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "ra+CrLT2bFY=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\vanra\\Desktop\\SynologyDrive\\Bachelier informatique de gestion\\3ème année\\ProjetSGBD\\ProjetSGBD\\2_1 - Application console\\LocationVoiture\\LocationVoiture.bll\\LocationVoiture.bll.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\vanra\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\9.0.0\\microsoft.extensions.dependencyinjection.abstractions.9.0.0.nupkg.sha512",
+    "C:\\Users\\vanra\\.nuget\\packages\\microsoft.extensions.logging.abstractions\\8.0.2\\microsoft.extensions.logging.abstractions.8.0.2.nupkg.sha512",
+    "C:\\Users\\vanra\\.nuget\\packages\\npgsql\\9.0.1\\npgsql.9.0.1.nupkg.sha512"
+  ],
+  "logs": []
+}
