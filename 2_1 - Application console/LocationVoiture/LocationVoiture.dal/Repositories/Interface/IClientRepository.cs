@@ -1,6 +1,8 @@
-﻿namespace LocationVoiture.dal.Repositories;
+﻿using LocationVoiture.dal.Entities;
 
-public interface IClientRepository
+namespace LocationVoiture.dal.Repositories;
+
+public interface IClientRepository : IRepository<int, Client>
 {
     
 }

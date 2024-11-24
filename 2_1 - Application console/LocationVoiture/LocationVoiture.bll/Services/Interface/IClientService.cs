@@ -1,6 +1,8 @@
-﻿namespace LocationVoiture.bll.Services;
+﻿using LocationVoiture.dal.Entities;
 
-public class IClientService
+namespace LocationVoiture.bll.Services;
+
+public interface IClientService : IService<int, Client>
 {
     
 }

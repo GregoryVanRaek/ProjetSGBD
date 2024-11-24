@@ -1,6 +1,6 @@
 ﻿namespace LocationVoiture.Presentation;
 
-public class ClientPresentation
+public class ClientController
 {
     
 }

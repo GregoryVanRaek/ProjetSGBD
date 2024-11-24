@@ -1,5 +1,6 @@
 ﻿using LocationVoiture.dal.Entities;
 using Npgsql;
+using System;
 
 namespace LocationVoiture.dal.Repositories;
 

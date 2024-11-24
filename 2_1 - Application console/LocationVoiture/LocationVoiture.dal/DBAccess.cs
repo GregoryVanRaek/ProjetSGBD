@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using LocationVoiture.dal.CustomException;
 using Npgsql;
 
 namespace LocationVoiture.dal;
@@ -20,13 +21,14 @@ public class DBAccess
         }
         catch (Exception e)
         {
-            throw new Exception("DB connection impossible: " + e.Message);
+            throw new DBAccessException("DB connection impossible: ", e.Message);
         }
     }
 
     public void CloseConnection()
     {
         this._SqlConnection.Close();
+        
     }
     
 }

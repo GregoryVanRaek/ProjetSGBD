@@ -1,6 +1,6 @@
 ﻿namespace LocationVoiture.Presentation;
 
-public static class AccesConsole
+public static class ConsoleAccess
 {
     public static void CreateScreen(string message)
     {
@@ -10,7 +10,7 @@ public static class AccesConsole
 
     public static T ReadInput<T>(string message)
     {
-        Console.WriteLine(message);
+        Console.Write(message);
         
         string input = Console.ReadLine()!;
         
@@ -20,7 +20,7 @@ public static class AccesConsole
         }
         catch
         {
-            Console.WriteLine($"Entrée invalide. Veuillez entrer une valeur de type {typeof(T).Name}.");
+            Console.WriteLine($"Invalid entry. Please enter a value with the following type : {typeof(T).Name}.");
         }
 
         return default; //(renvoyer la valeur par défaut du type générique)

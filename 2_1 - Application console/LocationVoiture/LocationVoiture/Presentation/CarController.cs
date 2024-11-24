@@ -1,6 +1,6 @@
 ﻿namespace LocationVoiture.Presentation;
 
-public class Cars
+public class CarController
 {
     
 }

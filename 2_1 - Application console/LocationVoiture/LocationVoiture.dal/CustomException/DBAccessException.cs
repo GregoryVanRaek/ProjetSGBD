@@ -1,5 +1,4 @@
-﻿
-namespace LocationVoiture.dal.Exception;
+﻿namespace LocationVoiture.dal.CustomException;
 
 public class DBAccessException : Exception
 {

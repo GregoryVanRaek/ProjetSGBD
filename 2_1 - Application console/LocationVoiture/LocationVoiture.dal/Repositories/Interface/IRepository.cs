@@ -4,7 +4,7 @@ namespace LocationVoiture.dal.Repositories;
 
 public interface IRepository<Key,T>
 {
-    public List<Car> GetAll();
+    public List<T> GetAll();
     public T? GetOneById(Key key);
     public T Create(T entity);
     public T Update(T entity);
