@@ -1,45 +1,40 @@
 ﻿using LocationVoiture.bll.Services;
 using LocationVoiture.dal;
-using LocationVoiture.dal.Entities;
 using LocationVoiture.dal.Repositories;
 using LocationVoiture.Presentation;
 using Microsoft.Extensions.DependencyInjection;
 
 #region Configuration
 
-// Configuration
-
+// Injection de dépendances
 var services = new ServiceCollection();
 
-// Dependency injection
+    // Controllers
+    services.AddScoped<HomeController>();
+    services.AddScoped<ClientController>();
+    services.AddScoped<CarController>();
+    services.AddScoped<RentController>();
+
     // BLL
     services.AddScoped<ICarService, CarService>();
     services.AddScoped<IClientService, ClientService>();
+
     // DAL
     services.AddSingleton<DBAccess>();
     services.AddScoped<ICarRepository, CarRepository>();
-    services.AddScoped<IClientRepository, ClientRepository>();
+    services.AddTransient<IClientRepository, ClientRepository>();
 
-var serviceProvider = services.BuildServiceProvider();
+ServiceProvider serviceProvider = services.BuildServiceProvider();
 
 #endregion
 
 #region Main
 
-HomeController home = new HomeController();
-home.MainMenu();
+HomeController homeController = serviceProvider.GetRequiredService<HomeController>();
+homeController.MainMenu(serviceProvider);
 
 #endregion
 
-#region Test
-
-ICarService carService = serviceProvider.GetService<ICarService>();
-
-List<Car> cars = carService.GetAll();
-
-foreach (var car in cars)
-{
-    Console.WriteLine(car.ToString());
-}
+#region test
 
 #endregion

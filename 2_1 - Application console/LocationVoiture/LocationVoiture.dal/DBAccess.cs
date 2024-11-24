@@ -13,11 +13,8 @@ public class DBAccess
     {
         try
         {
-            if (this._SqlConnection == null || this._SqlConnection.State == ConnectionState.Closed)
-            {
-                this._SqlConnection = new NpgsqlConnection(_connectionString);
-                this._SqlConnection.Open();
-            }
+            this._SqlConnection = new NpgsqlConnection(_connectionString);
+            this._SqlConnection.Open();
         }
         catch (Exception e)
         {

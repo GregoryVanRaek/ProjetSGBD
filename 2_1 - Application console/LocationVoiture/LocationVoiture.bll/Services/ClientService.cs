@@ -14,12 +14,39 @@ public class ClientService : IClientService
     
     public List<Client> GetAll()
     {
-        throw new NotImplementedException();
+        try
+        {
+            return this._clientRepository.GetAll();
+        }
+        catch (Exception e)
+        {
+            throw new Exception("Client service error : " + e.Message);
+        }
+        
     }
 
-    public Client? GetById(int key)
+    public Client? GetById(int id)
     {
-        throw new NotImplementedException();
+        try
+        {
+            return this._clientRepository.GetOneById(id);
+        }
+        catch (Exception e)
+        {
+            throw new Exception("Client service error : " + e.Message);
+        }
+    }
+    
+    public Client? GetOneByName(string name)
+    {
+        try
+        {
+            return this._clientRepository.GetOneByName(name);
+        }
+        catch (Exception e)
+        {
+            throw new Exception("Client service error : " + e.Message);
+        }
     }
 
     public Client? Update(int key, Client value)

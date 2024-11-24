@@ -1,6 +1,7 @@
 ﻿using LocationVoiture.dal.Entities;
 using Npgsql;
 using System;
+using LocationVoiture.dal.CustomException;
 
 namespace LocationVoiture.dal.Repositories;
 
@@ -23,9 +24,9 @@ public class CarRepository : ICarRepository
             _connection.OpenConnection();
             command = new NpgsqlCommand(
                 @"SELECT c.id, c.license_plate, c.color, p.code AS parking_code, m.name AS model_name
-                  FROM car c 
-                  LEFT JOIN parking p ON c.parking_id = p.id
-                  LEFT JOIN model m ON c.model_id = m.id;",
+                  FROM CAR c 
+                  LEFT JOIN PARKING p ON c.parking_id = p.id
+                  LEFT JOIN MODEL m ON c.model_id = m.id;",
                 _connection._SqlConnection
             );
 
@@ -46,7 +47,7 @@ public class CarRepository : ICarRepository
         }
         catch (Exception e)
         {
-            throw new Exception("An error occurred while getting all cars: " + e.Message);
+            throw new DBAccessException("An error occurred while getting all cars: ", e.Message);
         }
         finally
         {

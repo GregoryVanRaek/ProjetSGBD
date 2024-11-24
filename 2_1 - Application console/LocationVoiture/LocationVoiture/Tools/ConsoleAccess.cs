@@ -2,12 +2,24 @@
 
 public static class ConsoleAccess
 {
-    public static void CreateScreen(string message)
+    public static void CreateScreen(string title)
     {
         Console.Clear();
-        Console.WriteLine(message);
+        
+        const int width = 50;
+        string border = new string('*', width);
+        
+        int padding = width - 2 - title.Length; 
+        int paddingLeft = padding / 2;
+        int paddingRight = padding - paddingLeft;
+        
+        string titleLine = $"*{new string(' ', paddingLeft)}{title}{new string(' ', paddingRight)}*";
+        
+        Console.WriteLine(border);
+        Console.WriteLine(titleLine);
+        Console.WriteLine(border);
     }
-
+    
     public static T ReadInput<T>(string message)
     {
         Console.Write(message);
@@ -32,5 +44,4 @@ public static class ConsoleAccess
         Console.ReadKey();
         Console.WriteLine("\n");
     }
-    
 }
