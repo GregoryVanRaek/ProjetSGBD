@@ -29,17 +29,12 @@ public class CarService : ICarService
         throw new NotImplementedException();
     }
 
-    public Car? Update(int key, Car value)
+    public Car? Update( Car value)
     {
         throw new NotImplementedException();
     }
-
-    public Car? Patch(int key, Car value)
-    {
-        throw new NotImplementedException();
-    }
-
-    public bool Delete(int key)
+    
+    public bool Delete(Car value)
     {
         throw new NotImplementedException();
     }

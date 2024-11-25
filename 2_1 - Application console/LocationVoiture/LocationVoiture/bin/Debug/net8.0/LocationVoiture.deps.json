@@ -463,7 +463,10 @@
           "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.0"
         },
         "runtime": {
-          "LocationVoiture.bll.dll": {}
+          "LocationVoiture.bll.dll": {
+            "assemblyVersion": "1.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       },
       "LocationVoiture.dal/1.0.0": {
@@ -472,7 +475,10 @@
           "Npgsql": "9.0.1"
         },
         "runtime": {
-          "LocationVoiture.dal.dll": {}
+          "LocationVoiture.dal.dll": {
+            "assemblyVersion": "1.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       }
     }

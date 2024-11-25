@@ -1,6 +1,7 @@
 ﻿using LocationVoiture.bll.Services;
 using LocationVoiture.dal;
 using LocationVoiture.dal.Repositories;
+using LocationVoiture.dal.Repositories.Interface;
 using LocationVoiture.Presentation;
 using Microsoft.Extensions.DependencyInjection;
 
