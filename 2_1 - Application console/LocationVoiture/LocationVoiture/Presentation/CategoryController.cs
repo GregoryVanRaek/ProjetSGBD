@@ -59,14 +59,15 @@ public class CategoryController
     private void CreateCategory()
     {
         Category category;
-        string name;
+        string name = "";
         decimal dailyRate;
+        
         ConsoleAccess.CreateScreen("New Category");
         
         try
         {
-            name = ConsoleAccess.ReadInput<string>("Category's name : ");
-            dailyRate = ConsoleAccess.ReadInput<decimal>("Daily rate : ");
+            name = ValueControl.CheckString(name, "name");
+            dailyRate = ValueControl.CheckPositiveDecimal("Daily rate : ");
             
             category = new Category
             {
@@ -94,14 +95,81 @@ public class CategoryController
         }
     } 
 
-    private void UpdateCategory()
+    private Category? UpdateCategory()
     {
-        throw new NotImplementedException();
+        ConsoleAccess.CreateScreen("Update category");
+
+        try
+        {
+            int id = ValueControl.CheckPositiveInt("Enter category's id : ");
+        
+            Category? category = _categoryService.GetById(id);
+
+            if (category is not null)
+            {
+                DisplayHeader();
+                DisplayCategory(category);
+
+                category.Name = ValueControl.CheckString(category.Name, "Category's name : ");
+
+                category.DailyRate = ValueControl.CheckPositiveDecimal("Daily rate : ");
+
+                DisplayCategory(category);
+                return this._categoryService.Update(category);
+            }
+            else
+            {
+                Console.WriteLine("Category not found");
+                return null;
+            }
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return null;
+        }
+        
     }
 
-    private void DeleteCategory()
+    private bool DeleteCategory()
     {
-        throw new NotImplementedException();
+        int id;
+        
+        ConsoleAccess.CreateScreen("Delete category");
+
+        id = ValueControl.CheckPositiveInt("Enter category's id : ");
+
+        try
+        {
+            Category? category = _categoryService.GetById(id);
+
+            if (category is not null)
+            {
+                DisplayHeader();
+                DisplayCategory(category);
+                Console.Write("Are you sure you want to delete this category? (y/n) : ");
+                string choice = Console.ReadLine().ToString().ToLower();
+                switch (choice)
+                {
+                    case "y" : _categoryService.Delete(category);
+                        Console.WriteLine("Category deleted");
+                        ConsoleAccess.Wait();
+                        return true;
+                    case "n": break;
+                    default: Console.WriteLine("Invalid choice");
+                        break;
+                }
+            }
+            else
+                Console.WriteLine("Category not found");
+            
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
+
+        return false;
     }
     
     #endregion

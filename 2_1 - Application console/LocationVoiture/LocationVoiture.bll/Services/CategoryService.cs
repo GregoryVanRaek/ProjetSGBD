@@ -38,12 +38,26 @@ public class CategoryService : ICategoryService
 
     public Category? Update(Category value)
     {
-        throw new NotImplementedException();
+        try
+        {
+            return this._categoryRepository.Update(value);
+        }
+        catch (Exception e)
+        {
+            throw new Exception("Category service error : " + e.Message);
+        }
     }
 
     public bool Delete(Category value)
     {
-        throw new NotImplementedException();
+        try
+        {
+            return this._categoryRepository.Delete(value);
+        }
+        catch (Exception e)
+        {
+            throw new Exception("Category service error : " + e.Message);
+        }
     }
 
     public Category? Create(Category value)

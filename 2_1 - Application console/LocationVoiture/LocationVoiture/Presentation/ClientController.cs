@@ -145,8 +145,8 @@ public class ClientController
         
         try
         {
-            lastname = CheckString(lastname, "Lastname");
-            firstname = CheckString(firstname, "Firstname");
+            lastname = ValueControl.CheckString(lastname, "Lastname");
+            firstname = ValueControl.CheckString(firstname, "Firstname");
             
             do
             {
@@ -156,11 +156,11 @@ public class ClientController
                     Console.WriteLine("Please enter a valid email address");
             } while (!emailSuccess);
             
-            street = CheckString(street, "Street");
-            postalCode = CheckString(postalCode, "Postal Code : ");
-            city = CheckString(city, "City : ");
-            country = CheckString(country, "Country : ");
-            drivingLicense = CheckString(drivingLicense, "Driving license : ");
+            street = ValueControl.CheckString(street, "Street");
+            postalCode = ValueControl.CheckString(postalCode, "Postal Code : ");
+            city = ValueControl.CheckString(city, "City : ");
+            country = ValueControl.CheckString(country, "Country : ");
+            drivingLicense = ValueControl.CheckString(drivingLicense, "Driving license : ");
             
             while (!DateTime.TryParse(ConsoleAccess.ReadInput<string>("Birthdate : "), out birthdate))
                 Console.WriteLine("Invalid date format. Please try again.");
@@ -223,8 +223,8 @@ public class ClientController
                 DisplayHeader();
                 DisplayClient(client);
                 
-                client.Lastname = CheckString(client.Lastname, "Lastname");
-                client.Firstname = CheckString(client.Firstname, "Firstname");
+                client.Lastname = ValueControl.CheckString(client.Lastname, "Lastname");
+                client.Firstname = ValueControl.CheckString(client.Firstname, "Firstname");
             
                 do
                 {
@@ -234,11 +234,11 @@ public class ClientController
                         Console.WriteLine("Please enter a valid email address");
                 } while (!emailSuccess);
             
-                client.Address.Street = CheckString(client.Address.Street, "Street");
-                client.Address.PostalCode = CheckString(client.Address.PostalCode, "Postal Code : ");
-                client.Address.City = CheckString(client.Address.City, "City : ");
-                client.Address.Country = CheckString(client.Address.Country, "Country : ");
-                client.DrivingLicense = CheckString(client.DrivingLicense, "Driving license : ");
+                client.Address.Street = ValueControl.CheckString(client.Address.Street, "Street");
+                client.Address.PostalCode = ValueControl.CheckString(client.Address.PostalCode, "Postal Code : ");
+                client.Address.City = ValueControl.CheckString(client.Address.City, "City : ");
+                client.Address.Country = ValueControl.CheckString(client.Address.Country, "Country : ");
+                client.DrivingLicense = ValueControl.CheckString(client.DrivingLicense, "Driving license : ");
                 
                 
                 while (!DateTime.TryParse(ConsoleAccess.ReadInput<string>("Birthdate : "), out birthdate))
@@ -352,19 +352,6 @@ public class ClientController
         foreach (var client in clients)
             DisplayClient(client);
     }
-
-    private string CheckString(string value, string fieldName)
-    {
-        do
-        {
-            value = ConsoleAccess.ReadInput<string>($"{fieldName} : ");
-            if(string.IsNullOrEmpty(value.Trim()))
-                Console.WriteLine($"{fieldName} is required");
-        } while (string.IsNullOrEmpty(value.Trim()));
-
-        return value.ToLower();
-    }
-    
     #endregion
     
 }

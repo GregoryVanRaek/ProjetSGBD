@@ -24,7 +24,7 @@ public class CategoryRepository : ICategoryRepository
             _connection.OpenConnection();
 
             command = new NpgsqlCommand(@"SELECT id, name, daily_rate
-                                        FROM category", _connection._SqlConnection);
+                                        FROM category ORDER BY id", _connection._SqlConnection);
 
             var reader = command.ExecuteReader();
 
@@ -124,11 +124,68 @@ public class CategoryRepository : ICategoryRepository
 
     public Category? Update(Category entity)
     {
-        throw new NotImplementedException();
+        NpgsqlCommand command;
+
+        try
+        {
+            if (GetOneById(entity.Id) is not null)
+            {
+                _connection.OpenConnection();
+
+                command = new NpgsqlCommand(@"UPDATE CATEGORY SET name = @name, daily_rate = @daily_rate WHERE id = @id"
+                    , _connection._SqlConnection);
+
+                command.Parameters.AddWithValue("@id", entity.Id);
+                command.Parameters.AddWithValue("@name", entity.Name);
+                command.Parameters.AddWithValue("@daily_rate", entity.DailyRate);
+
+                
+                int insert = command.ExecuteNonQuery();
+
+                return insert == 1 ? GetOneById(entity.Id) : null;
+            }
+            else
+                throw new Exception("category not found");
+        }
+        catch (Exception e)
+        {
+            throw new DBAccessException("Error while updating category", e.ToString());
+        }
+        finally
+        {
+            _connection.CloseConnection();
+        }
     }
 
     public bool Delete(Category entity)
     {
-        throw new NotImplementedException();
+        NpgsqlCommand command;
+
+        try
+        {
+            _connection.OpenConnection();
+            
+            command = new NpgsqlCommand(@"DELETE FROM CATEGORY WHERE id = @id"
+                , _connection._SqlConnection);
+            
+            command.Parameters.AddWithValue("@id", entity.Id);
+            
+            if(GetOneById(entity.Id) is not null)
+            {
+                int insert = command.ExecuteNonQuery();
+
+                return insert != 0;
+            }
+            else
+                throw new Exception("Category not found");
+        }
+        catch (Exception e)
+        {
+            throw new DBAccessException("Error while deleting category", e.ToString());
+        }
+        finally
+        {
+            _connection.CloseConnection();
+        }
     }
 }
