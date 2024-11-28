@@ -83,7 +83,7 @@ public class ClientRepository : IClientRepository
     
             command.Parameters.AddWithValue("@id", givenId);
             
-            var reader = command.ExecuteReader();
+            NpgsqlDataReader reader = command.ExecuteReader();
             
             if (reader.Read())
             {

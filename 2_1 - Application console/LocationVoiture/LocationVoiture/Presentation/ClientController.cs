@@ -13,13 +13,14 @@ public class ClientController
     {
         _clientService = clientService;
     }
+    
     public void ClientMenu()
     {
         int choice = 0;
         
         while (choice != 6)
         {
-            DefaultDisplay();
+            DisplayOptions();
             choice = ConsoleAccess.ReadInput<int>("Enter your choice : ");
             switch (choice)
             {
@@ -308,7 +309,7 @@ public class ClientController
     #endregion
     
     #region private methods
-    private void DefaultDisplay()
+    private void DisplayOptions()
     {
         ConsoleAccess.CreateScreen("Client menu");
         Console.WriteLine("1. All clients");
@@ -318,7 +319,7 @@ public class ClientController
         Console.WriteLine("5. Delete client");
         Console.WriteLine("6. Back to main menu");
     }
-
+    
     private void DisplayHeader()
     {
         Console.WriteLine("ID".PadRight(5) + 
