@@ -6,10 +6,12 @@ namespace LocationVoiture.Presentation;
 public class CarController
 {
     private readonly CategoryController _categoryController;
+    private readonly ModelController _modelController;
 
-    public CarController(CategoryController categoryController)
+    public CarController(CategoryController categoryController, ModelController modelController)
     {
         this._categoryController = categoryController;
+        this._modelController = modelController;
     }
 
     public void CarMenu()
@@ -23,6 +25,8 @@ public class CarController
             switch (choice)
             {
                 case 1 : this._categoryController.DisplayMenu();
+                    break;
+                case 2 : this._modelController.DisplayMenu();
                     break;
                 case 6 : Console.WriteLine("back to menu");
                     break;
@@ -40,6 +44,7 @@ public class CarController
     {
         ConsoleAccess.CreateScreen("Car management menu");
         Console.WriteLine("1. Car Category");
+        Console.WriteLine("2. Car Model");
         Console.WriteLine("9. Back to main menu");
     }
     
