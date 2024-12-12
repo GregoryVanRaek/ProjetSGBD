@@ -1,28 +1,25 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\studentdot0414\\Documents\\ProjetSGBD\\2_1 - Application console\\LocationVoiture\\LocationVoiture.dal\\LocationVoiture.dal.csproj": {}
+    "C:\\Users\\vanra\\Desktop\\SynologyDrive\\Bachelier informatique de gestion\\3ème année\\ProjetSGBD\\ProjetSGBD\\2_1 - Application console\\LocationVoiture\\LocationVoiture.dal\\LocationVoiture.dal.csproj": {}
   },
   "projects": {
-    "C:\\Users\\studentdot0414\\Documents\\ProjetSGBD\\2_1 - Application console\\LocationVoiture\\LocationVoiture.dal\\LocationVoiture.dal.csproj": {
+    "C:\\Users\\vanra\\Desktop\\SynologyDrive\\Bachelier informatique de gestion\\3ème année\\ProjetSGBD\\ProjetSGBD\\2_1 - Application console\\LocationVoiture\\LocationVoiture.dal\\LocationVoiture.dal.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\studentdot0414\\Documents\\ProjetSGBD\\2_1 - Application console\\LocationVoiture\\LocationVoiture.dal\\LocationVoiture.dal.csproj",
+        "projectUniqueName": "C:\\Users\\vanra\\Desktop\\SynologyDrive\\Bachelier informatique de gestion\\3ème année\\ProjetSGBD\\ProjetSGBD\\2_1 - Application console\\LocationVoiture\\LocationVoiture.dal\\LocationVoiture.dal.csproj",
         "projectName": "LocationVoiture.dal",
-        "projectPath": "C:\\Users\\studentdot0414\\Documents\\ProjetSGBD\\2_1 - Application console\\LocationVoiture\\LocationVoiture.dal\\LocationVoiture.dal.csproj",
-        "packagesPath": "C:\\Users\\studentdot0414\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\studentdot0414\\Documents\\ProjetSGBD\\2_1 - Application console\\LocationVoiture\\LocationVoiture.dal\\obj\\",
+        "projectPath": "C:\\Users\\vanra\\Desktop\\SynologyDrive\\Bachelier informatique de gestion\\3ème année\\ProjetSGBD\\ProjetSGBD\\2_1 - Application console\\LocationVoiture\\LocationVoiture.dal\\LocationVoiture.dal.csproj",
+        "packagesPath": "C:\\Users\\vanra\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\vanra\\Desktop\\SynologyDrive\\Bachelier informatique de gestion\\3ème année\\ProjetSGBD\\ProjetSGBD\\2_1 - Application console\\LocationVoiture\\LocationVoiture.dal\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\studentdot0414\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "C:\\Users\\vanra\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -71,7 +68,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.400/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.307/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
