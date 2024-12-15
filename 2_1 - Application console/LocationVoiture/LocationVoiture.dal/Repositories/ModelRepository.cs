@@ -24,10 +24,9 @@ public class ModelRepository : IModelRepository
         {
             _connection.OpenConnection();
             command = new NpgsqlCommand(
-                @"SELECT m.ID, m.NAME, m.BRAND, m.SEAT_NUMBER, CATEGORY.ID
-                          FROM MODEL m
-                          LEFT JOIN CATEGORY
-                          ON m.CATEGORYID = CATEGORY.ID",
+                @"SELECT m.ID, m.NAME, m.BRAND, m.SEAT_NUMBER, CATEGORY_ID FROM MODEL m 
+                         LEFT JOIN CATEGORY 
+                         ON m.CATEGORY_ID = CATEGORY.ID",
                 _connection._SqlConnection
             );
 
@@ -39,7 +38,7 @@ public class ModelRepository : IModelRepository
                 {
                     Id = (int)reader["id"],
                     Name = (string)reader["name"],
-                    Brand = (string)reader["seat_number"],
+                    Brand = (string)reader["brand"],
                     SeatNumber = (int)reader["seat_number"],
                     CategoryId = (int)reader["category_id"]
                 };
@@ -68,10 +67,8 @@ public class ModelRepository : IModelRepository
         {
             _connection.OpenConnection();
 
-            command = new NpgsqlCommand(@"SELECT m.ID, m.NAME, m.BRAND, m.SEAT_NUMBER, CATEGORY.ID
-                          FROM MODEL m
-                          LEFT JOIN CATEGORY
-                          ON m.CATEGORYID = CATEGORY.ID
+            command = new NpgsqlCommand(@"SELECT m.ID, m.NAME, m.BRAND, m.SEAT_NUMBER, m.CATEGORY_ID
+                          FROM MODEL m LEFT JOIN CATEGORY ON m.CATEGORY_ID = CATEGORY.ID
                           WHERE m.ID = @id"
                 , _connection._SqlConnection);
 
@@ -85,7 +82,7 @@ public class ModelRepository : IModelRepository
                 {
                     Id = (int)reader["id"],
                     Name = (string)reader["name"],
-                    Brand = (string)reader["seat_number"],
+                    Brand = (string)reader["brand"],
                     SeatNumber = (int)reader["seat_number"],
                     CategoryId = (int)reader["category_id"]
                 };

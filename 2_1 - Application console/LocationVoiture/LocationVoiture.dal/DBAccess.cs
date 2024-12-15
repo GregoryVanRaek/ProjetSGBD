@@ -7,7 +7,7 @@ namespace LocationVoiture.dal;
 public class DBAccess
 {
     public NpgsqlConnection _SqlConnection;
-    private string _connectionString = "Server=Localhost;Port=5432;Database=test;UserID=ralphi;Password=P@ssword;";
+    private string _connectionString = "Server=Localhost;Port=5432;Database=test;UserID=postgres;Password=P@ssword;";
 
     public void OpenConnection()
     {

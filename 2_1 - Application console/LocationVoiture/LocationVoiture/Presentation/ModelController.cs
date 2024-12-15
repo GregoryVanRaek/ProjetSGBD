@@ -6,10 +6,12 @@ namespace LocationVoiture.Presentation;
 public class ModelController
 {
     private readonly IModelService _modelService;
-
-    public ModelController(IModelService modelService)
+    private readonly ICategoryService _categoryService;
+    
+    public ModelController(IModelService modelService, ICategoryService categoryService)
     {
         this._modelService = modelService;
+        this._categoryService = categoryService;
     }
     
     public void DisplayMenu()
@@ -69,7 +71,7 @@ public class ModelController
             name = ValueControl.CheckString(name, "name");
             brand = ValueControl.CheckString(brand, "brand");
             seatNumber = ValueControl.CheckPositiveInt("Seat number : ");
-            categoryId = ValueControl.CheckPositiveInt("Category : ");
+            categoryId = this.CheckCategoryId();
             
             model = new Model
             {
@@ -117,7 +119,7 @@ public class ModelController
                 model.Name = ValueControl.CheckString(model.Name, "Model's name : ");
                 model.Brand = ValueControl.CheckString(model.Brand, "Model's brand : ");
                 model.SeatNumber = ValueControl.CheckPositiveInt("Seat number : ");
-                model.CategoryId = ValueControl.CheckPositiveInt("Category id : ");
+                model.CategoryId = this.CheckCategoryId();
 
                 DisplayModel(model);
                 return this._modelService.Update(model);
@@ -213,6 +215,20 @@ public class ModelController
     {
         foreach(Model model in models)
             DisplayModel(model);
+    }
+
+    private int CheckCategoryId()
+    {
+        int nbCategory = this._categoryService.GetAll().Count;
+        int value = 0;
+        do
+        {
+            value = ValueControl.CheckPositiveInt("Category : ");
+            if (value > nbCategory)
+                Console.WriteLine($"Category id must be between 1 and {nbCategory}");
+        } while (value > nbCategory);
+
+        return value;
     }
     
     #endregion
