@@ -14,7 +14,7 @@ public class HomeController
     public void MainMenu(IServiceProvider serviceProvider)
     {
         int choice = 0;
-
+        
         while (choice != 4)
         {
             DefaultDisplay();
@@ -24,15 +24,15 @@ public class HomeController
                 switch (choice)
                 {
                     case 1: 
-                        // Résolution via DI
-                        var currentMenu = _serviceProvider.GetRequiredService<ClientController>();
-                        currentMenu.ClientMenu();
+                        ClientController client = _serviceProvider.GetRequiredService<ClientController>();
+                        client.ClientMenu();
                         break;
                     case 2: 
                         Console.WriteLine("Choice 2");
                         break;
                     case 3: 
-                        Console.WriteLine("Choice 3");
+                        CarController car = _serviceProvider.GetRequiredService<CarController>();
+                        car.CarMenu();
                         break;
                     case 4: 
                         Console.WriteLine("Exiting...");

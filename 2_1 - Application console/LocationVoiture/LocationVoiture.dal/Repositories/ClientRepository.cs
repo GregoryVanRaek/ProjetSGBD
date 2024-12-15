@@ -29,7 +29,8 @@ public class ClientRepository : IClientRepository
                                         (address).city AS city,
                                         (address).country AS country,
                                         driving_license, birth_date 
-                                        FROM client", _connection._SqlConnection);
+                                        FROM client ORDER BY last_name"
+                                        , _connection._SqlConnection);
 
             var reader = command.ExecuteReader();
             
@@ -83,7 +84,7 @@ public class ClientRepository : IClientRepository
     
             command.Parameters.AddWithValue("@id", givenId);
             
-            var reader = command.ExecuteReader();
+            NpgsqlDataReader reader = command.ExecuteReader();
             
             if (reader.Read())
             {

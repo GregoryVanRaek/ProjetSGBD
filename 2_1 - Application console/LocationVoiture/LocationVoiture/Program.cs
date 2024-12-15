@@ -15,15 +15,21 @@ var services = new ServiceCollection();
     services.AddScoped<ClientController>();
     services.AddScoped<CarController>();
     services.AddScoped<RentController>();
+    services.AddScoped<CategoryController>();
+    services.AddScoped<ModelController>();
 
     // BLL
     services.AddScoped<ICarService, CarService>();
     services.AddScoped<IClientService, ClientService>();
+    services.AddScoped<ICategoryService, CategoryService>();
+    services.AddScoped<IModelService, ModelService>();
 
     // DAL
     services.AddSingleton<DBAccess>();
     services.AddScoped<ICarRepository, CarRepository>();
-    services.AddTransient<IClientRepository, ClientRepository>();
+    services.AddScoped<IClientRepository, ClientRepository>();
+    services.AddScoped<ICategoryRepository, CategoryRepository>();
+    services.AddScoped<IModelRepository, ModelRepository>();
 
 ServiceProvider serviceProvider = services.BuildServiceProvider();
 
