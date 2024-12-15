@@ -2,11 +2,13 @@
 
 public class Car
 {   
-    public required int Id { get; set; }
+    public int Id { get; set; }
     public required string LicensePlate { get; set; }
     public required string Color { get; set; }
-    public required string ParkingCode { get; set; }
-    public required string ModelName { get; set; }
+    public int? ParkingId { get; set; }
+    public string? ParkingCode { get; set; }
+    public int? ModelId { get; set; }
+    public string? ModelName { get; set; }
 
     public override string ToString()
     {

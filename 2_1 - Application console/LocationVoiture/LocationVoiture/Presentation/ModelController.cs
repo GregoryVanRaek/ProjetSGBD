@@ -192,7 +192,7 @@ public class ModelController
         Console.WriteLine("5. Back to main menu");
     }
     
-    private void DisplayHeader()
+    public void DisplayHeader()
     {
         Console.WriteLine("ID".PadRight(5) +
                           "Name".PadRight(15) +
@@ -202,7 +202,7 @@ public class ModelController
         Console.WriteLine(new string('-', 50));
     }
         
-    private void DisplayModel(Model model)
+    public void DisplayModel(Model model)
     {
         Console.WriteLine(model.Id.ToString().PadRight(5) +
                           model.Name.PadRight(15) +
@@ -211,7 +211,7 @@ public class ModelController
                           model.CategoryId.ToString().PadRight(5));
     }
 
-    private void DisplayModel(List<Model> models)
+    public void DisplayModel(List<Model> models)
     {
         foreach(Model model in models)
             DisplayModel(model);

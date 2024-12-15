@@ -24,9 +24,16 @@ public class CarService : ICarService
         }
     }
 
-    public Car? GetById(int key)
+    public Car? GetById(int id)
     {
-        throw new NotImplementedException();
+        try
+        {
+            return this._carRepository.GetOneById(id);
+        }
+        catch (Exception e)
+        {
+            throw new Exception("Error in car service : " + e.Message);
+        }
     }
 
     public Car? Update( Car value)
@@ -36,12 +43,50 @@ public class CarService : ICarService
     
     public bool Delete(Car value)
     {
-        throw new NotImplementedException();
+        try
+        {
+            return this._carRepository.Delete(value);
+        }
+        catch (Exception e)
+        {
+            throw new Exception("Error in car service : " + e.Message);
+        }
     }
 
     public Car? Create(Car value)
     {
-        throw new NotImplementedException();
+        try
+        {
+            return this._carRepository.Create(value);
+        }
+        catch (Exception e)
+        {
+            throw new Exception("Error in car service : " + e.Message);
+        }
+    }
+
+    public List<Parking> GetAllParking(bool onlyAvailable)
+    {
+        try
+        {
+            return this._carRepository.GetAllParkingCode(onlyAvailable);
+        }
+        catch (Exception e)
+        {
+            throw new Exception("Error in car service : " + e.Message);
+        }
+    }
+    
+    public Parking GetParkingCode(int parking_code)
+    {
+        try
+        {
+            return this._carRepository.GetParkingCode(parking_code);
+        }
+        catch (Exception e)
+        {
+            throw new Exception("Error in car service : " + e.Message);
+        }
     }
     
 }
