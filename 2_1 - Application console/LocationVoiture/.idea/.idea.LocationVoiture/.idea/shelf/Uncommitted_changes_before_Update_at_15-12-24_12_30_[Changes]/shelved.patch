@@ -1,0 +1,1927 @@
+Index: LocationVoiture.dal/DBAccess.cs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>using System.Data;\r\nusing LocationVoiture.dal.CustomException;\r\nusing Npgsql;\r\n\r\nnamespace LocationVoiture.dal;\r\n\r\npublic class DBAccess\r\n{\r\n    public NpgsqlConnection _SqlConnection;\r\n    private string _connectionString = \"Server=Localhost;Port=5432;Database=postgres;UserID=postgres;Password=P@ssword;\";\r\n\r\n    public void OpenConnection()\r\n    {\r\n        try\r\n        {\r\n            this._SqlConnection = new NpgsqlConnection(_connectionString);\r\n            this._SqlConnection.Open();\r\n        }\r\n        catch (Exception e)\r\n        {\r\n            throw new DBAccessException(\"DB connection impossible: \", e.Message);\r\n        }\r\n    }\r\n\r\n    public void CloseConnection()\r\n    {\r\n        this._SqlConnection.Close();\r\n        \r\n    }\r\n    \r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/LocationVoiture.dal/DBAccess.cs b/LocationVoiture.dal/DBAccess.cs
+--- a/LocationVoiture.dal/DBAccess.cs	(revision 4859fa6620fc225aac49ad8738176148531ae75f)
++++ b/LocationVoiture.dal/DBAccess.cs	(date 1734021337800)
+@@ -7,7 +7,7 @@
+ public class DBAccess
+ {
+     public NpgsqlConnection _SqlConnection;
+-    private string _connectionString = "Server=Localhost;Port=5432;Database=postgres;UserID=postgres;Password=P@ssword;";
++    private string _connectionString = "Server=Localhost;Port=5432;Database=test;UserID=ralphi;Password=P@ssword;";
+ 
+     public void OpenConnection()
+     {
+Index: LocationVoiture/Program.cs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>using LocationVoiture.bll.Services;\r\nusing LocationVoiture.dal;\r\nusing LocationVoiture.dal.Repositories;\r\nusing LocationVoiture.dal.Repositories.Interface;\r\nusing LocationVoiture.Presentation;\r\nusing Microsoft.Extensions.DependencyInjection;\r\n\r\n#region Configuration\r\n\r\n// Injection de dépendances\r\nvar services = new ServiceCollection();\r\n\r\n    // Controllers\r\n    services.AddScoped<HomeController>();\r\n    services.AddScoped<ClientController>();\r\n    services.AddScoped<CarController>();\r\n    services.AddScoped<RentController>();\r\n\r\n    // BLL\r\n    services.AddScoped<ICarService, CarService>();\r\n    services.AddScoped<IClientService, ClientService>();\r\n\r\n    // DAL\r\n    services.AddSingleton<DBAccess>();\r\n    services.AddScoped<ICarRepository, CarRepository>();\r\n    services.AddTransient<IClientRepository, ClientRepository>();\r\n\r\nServiceProvider serviceProvider = services.BuildServiceProvider();\r\n\r\n#endregion\r\n\r\n#region Main\r\n\r\nHomeController homeController = serviceProvider.GetRequiredService<HomeController>();\r\nhomeController.MainMenu(serviceProvider);\r\n\r\n#endregion\r\n\r\n#region test\r\n\r\n#endregion\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/LocationVoiture/Program.cs b/LocationVoiture/Program.cs
+--- a/LocationVoiture/Program.cs	(revision 4859fa6620fc225aac49ad8738176148531ae75f)
++++ b/LocationVoiture/Program.cs	(date 1734021337819)
+@@ -15,15 +15,21 @@
+     services.AddScoped<ClientController>();
+     services.AddScoped<CarController>();
+     services.AddScoped<RentController>();
++    services.AddScoped<CategoryController>();
++    services.AddScoped<ModelController>();
+ 
+     // BLL
+     services.AddScoped<ICarService, CarService>();
+     services.AddScoped<IClientService, ClientService>();
++    services.AddScoped<ICategoryService, CategoryService>();
++    services.AddScoped<IModelService, ModelService>();
+ 
+     // DAL
+     services.AddSingleton<DBAccess>();
+     services.AddScoped<ICarRepository, CarRepository>();
+-    services.AddTransient<IClientRepository, ClientRepository>();
++    services.AddScoped<IClientRepository, ClientRepository>();
++    services.AddScoped<ICategoryRepository, CategoryRepository>();
++    services.AddScoped<IModelRepository, ModelRepository>();
+ 
+ ServiceProvider serviceProvider = services.BuildServiceProvider();
+ 
+Index: LocationVoiture.dal/Repositories/ClientRepository.cs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>using LocationVoiture.dal.CustomException;\r\nusing LocationVoiture.dal.Entities;\r\nusing LocationVoiture.dal.Repositories.Interface;\r\nusing Npgsql;\r\n\r\nnamespace LocationVoiture.dal.Repositories;\r\n\r\npublic class ClientRepository : IClientRepository\r\n{\r\n    private readonly DBAccess _connection;\r\n\r\n    public ClientRepository(DBAccess connection)\r\n    {\r\n        _connection = connection; \r\n    }\r\n    \r\n    public List<Client> GetAll()\r\n    {\r\n        List<Client> clients = new List<Client>();\r\n        NpgsqlCommand command;\r\n        \r\n        try\r\n        {\r\n            _connection.OpenConnection();\r\n            \r\n            command = new NpgsqlCommand(@\"SELECT id, last_name, first_name, email, \r\n                                        (address).street AS street,\r\n                                        (address).postal_code AS postal_code,\r\n                                        (address).city AS city,\r\n                                        (address).country AS country,\r\n                                        driving_license, birth_date \r\n                                        FROM client\", _connection._SqlConnection);\r\n\r\n            var reader = command.ExecuteReader();\r\n            \r\n            while (reader.Read())\r\n            {\r\n                clients.Add(new Client\r\n                {\r\n                    Id = (int)reader[\"id\"],\r\n                    Firstname = (string)reader[\"first_name\"],\r\n                    Lastname = (string)reader[\"last_name\"],\r\n                    Email = (string)reader[\"email\"],\r\n                    Address = new Address\r\n                    {\r\n                        Street = (string)reader[\"street\"],\r\n                        PostalCode = (string)reader[\"postal_code\"],\r\n                        City = (string)reader[\"city\"],\r\n                        Country = (string)reader[\"country\"],\r\n                    },\r\n                    DrivingLicense = (string)reader[\"driving_license\"],\r\n                    BirthDate = (DateTime)reader[\"birth_date\"],\r\n                });\r\n            }\r\n            _connection.CloseConnection();\r\n        }\r\n        catch (Exception e)\r\n        {\r\n            throw new DBAccessException(\"Error while retrieving clients\", e.ToString());\r\n        }\r\n\r\n        return clients;\r\n    }\r\n\r\n    public Client? GetOneById(int givenId)\r\n    {\r\n        Client client = null;\r\n        NpgsqlCommand command;\r\n        \r\n        try\r\n        {\r\n            _connection.OpenConnection();\r\n            \r\n            command = new NpgsqlCommand(@\"SELECT id, last_name, first_name, email, \r\n                                        (address).street AS street,\r\n                                        (address).postal_code AS postal_code,\r\n                                        (address).city AS city,\r\n                                        (address).country AS country,\r\n                                        driving_license, birth_date \r\n                                        FROM client\r\n                                        WHERE id = @id\"\r\n                                        , _connection._SqlConnection);\r\n    \r\n            command.Parameters.AddWithValue(\"@id\", givenId);\r\n            \r\n            var reader = command.ExecuteReader();\r\n            \r\n            if (reader.Read())\r\n            {\r\n                client = new Client\r\n                {\r\n                    Id = (int)reader[\"id\"],\r\n                    Firstname = (string)reader[\"first_name\"],\r\n                    Lastname = (string)reader[\"last_name\"],\r\n                    Email = (string)reader[\"email\"],\r\n                    Address = new Address\r\n                    {\r\n                        Street = (string)reader[\"street\"],\r\n                        PostalCode = (string)reader[\"postal_code\"],\r\n                        City = (string)reader[\"city\"],\r\n                        Country = (string)reader[\"country\"],\r\n                    },\r\n                    DrivingLicense = (string)reader[\"driving_license\"],\r\n                    BirthDate = (DateTime)reader[\"birth_date\"],\r\n                };\r\n            }\r\n            _connection.CloseConnection();\r\n        }\r\n        catch (Exception e)\r\n        {\r\n            throw new DBAccessException(\"Error while retrieving clients\", e.ToString());\r\n        }\r\n\r\n        return client;\r\n    }\r\n    \r\n    public Client? GetOneByName(string givenName)\r\n    {\r\n        Client? client = null;\r\n        NpgsqlCommand command;\r\n        \r\n        try\r\n        {\r\n            _connection.OpenConnection();\r\n            \r\n            command = new NpgsqlCommand(@\"SELECT id, last_name, first_name, email, \r\n                                        (address).street AS street,\r\n                                        (address).postal_code AS postal_code,\r\n                                        (address).city AS city,\r\n                                        (address).country AS country,\r\n                                        driving_license, birth_date \r\n                                        FROM client\r\n                                        WHERE last_name = @name\"\r\n                , _connection._SqlConnection);\r\n    \r\n            command.Parameters.AddWithValue(\"@name\", givenName);\r\n            \r\n            var reader = command.ExecuteReader();\r\n            \r\n            if (reader.Read())\r\n            {\r\n                client = new Client\r\n                {\r\n                    Id = (int)reader[\"id\"],\r\n                    Firstname = (string)reader[\"first_name\"],\r\n                    Lastname = (string)reader[\"last_name\"],\r\n                    Email = (string)reader[\"email\"],\r\n                    Address = new Address\r\n                    {\r\n                        Street = (string)reader[\"street\"],\r\n                        PostalCode = (string)reader[\"postal_code\"],\r\n                        City = (string)reader[\"city\"],\r\n                        Country = (string)reader[\"country\"],\r\n                    },\r\n                    DrivingLicense = (string)reader[\"driving_license\"],\r\n                    BirthDate = (DateTime)reader[\"birth_date\"],\r\n                };\r\n            }\r\n            _connection.CloseConnection();\r\n        }\r\n        catch (Exception e)\r\n        {\r\n            throw new DBAccessException(\"Error while retrieving clients\", e.ToString());\r\n        }\r\n\r\n        return client;\r\n    }\r\n\r\n    public Client? GetOneByEmail(string email)\r\n    {\r\n        Client? client = null;\r\n        NpgsqlCommand command;\r\n        \r\n        try\r\n        {\r\n            _connection.OpenConnection();\r\n            \r\n            command = new NpgsqlCommand(@\"SELECT id, last_name, first_name, email, \r\n                                        (address).street AS street,\r\n                                        (address).postal_code AS postal_code,\r\n                                        (address).city AS city,\r\n                                        (address).country AS country,\r\n                                        driving_license, birth_date \r\n                                        FROM client\r\n                                        WHERE email = @email\"\r\n                , _connection._SqlConnection);\r\n    \r\n            command.Parameters.AddWithValue(\"@email\", email);\r\n            \r\n            var reader = command.ExecuteReader();\r\n            \r\n            if (reader.Read())\r\n            {\r\n                client = new Client\r\n                {\r\n                    Id = (int)reader[\"id\"],\r\n                    Firstname = (string)reader[\"first_name\"],\r\n                    Lastname = (string)reader[\"last_name\"],\r\n                    Email = (string)reader[\"email\"],\r\n                    Address = new Address\r\n                    {\r\n                        Street = (string)reader[\"street\"],\r\n                        PostalCode = (string)reader[\"postal_code\"],\r\n                        City = (string)reader[\"city\"],\r\n                        Country = (string)reader[\"country\"],\r\n                    },\r\n                    DrivingLicense = (string)reader[\"driving_license\"],\r\n                    BirthDate = (DateTime)reader[\"birth_date\"],\r\n                };\r\n            }\r\n            _connection.CloseConnection();\r\n        }\r\n        catch (Exception e)\r\n        {\r\n            throw new DBAccessException(\"Error while retrieving clients\", e.ToString());\r\n        }\r\n\r\n        return client;\r\n    }\r\n\r\n    public Client? Create(Client entity)\r\n    {\r\n        NpgsqlCommand command;\r\n        int insert = 0;\r\n        \r\n        try\r\n        {\r\n            _connection.OpenConnection();\r\n            \r\n            command = new NpgsqlCommand(@\"INSERT INTO CLIENT(last_name, first_name, email, address, driving_license, birth_date)\r\n                                                 VALUES(@last_name, @first_name, @email, ROW(@street, @postal_code, @city, @country), @driving_license, @birth_date)\"\r\n                                                 , _connection._SqlConnection);\r\n    \r\n            command.Parameters.AddWithValue(\"@last_name\", entity.Lastname);\r\n            command.Parameters.AddWithValue(\"@first_name\", entity.Firstname);\r\n            command.Parameters.AddWithValue(\"@email\", entity.Email);\r\n            command.Parameters.AddWithValue(\"@street\", entity.Address.Street);\r\n            command.Parameters.AddWithValue(\"@postal_code\", entity.Address.PostalCode);\r\n            command.Parameters.AddWithValue(\"@city\", entity.Address.City);\r\n            command.Parameters.AddWithValue(\"@country\", entity.Address.Country);\r\n            command.Parameters.AddWithValue(\"@driving_license\", entity.DrivingLicense);\r\n            command.Parameters.AddWithValue(\"@birth_date\", entity.BirthDate);\r\n            \r\n            insert = command.ExecuteNonQuery();\r\n            \r\n            _connection.CloseConnection();\r\n        }\r\n        catch (Exception e)\r\n        {\r\n            throw new DBAccessException(\"Error while inserting clients\", e.ToString());\r\n        }\r\n\r\n        return insert == 1 ? GetOneByEmail(entity.Email) : null;\r\n    }\r\n\r\n    public Client? Update(Client entity)\r\n    {\r\n        NpgsqlCommand command;\r\n\r\n        try\r\n        {\r\n            if (GetOneById(entity.Id) is not null)\r\n            {\r\n                _connection.OpenConnection();\r\n\r\n                command = new NpgsqlCommand(@\"UPDATE CLIENT\r\n                                                    SET last_name = @last_name, first_name = @first_name , \r\n                                                        email = @email, address = ROW(@street, @postal_code, @city, @country)\r\n                                                      , driving_license = @driving_license, birth_date = @birth_date\r\n                                                    WHERE id = @id\"\r\n                    , _connection._SqlConnection);\r\n\r\n                command.Parameters.AddWithValue(\"@id\", entity.Id);\r\n                command.Parameters.AddWithValue(\"@last_name\", entity.Lastname);\r\n                command.Parameters.AddWithValue(\"@first_name\", entity.Firstname);\r\n                command.Parameters.AddWithValue(\"@email\", entity.Email);\r\n                command.Parameters.AddWithValue(\"@street\", entity.Address.Street);\r\n                command.Parameters.AddWithValue(\"@postal_code\", entity.Address.PostalCode);\r\n                command.Parameters.AddWithValue(\"@city\", entity.Address.City);\r\n                command.Parameters.AddWithValue(\"@country\", entity.Address.Country);\r\n                command.Parameters.AddWithValue(\"@driving_license\", entity.DrivingLicense);\r\n                command.Parameters.AddWithValue(\"@birth_date\", entity.BirthDate);\r\n\r\n                int insert = command.ExecuteNonQuery();\r\n\r\n                return insert == 1 ? GetOneById(entity.Id) : null;\r\n            }\r\n            else\r\n            {\r\n                throw new Exception(\"Client not found\");\r\n            }\r\n        }\r\n        catch (Exception e)\r\n        {\r\n            throw new DBAccessException(\"Error while updating clients\", e.ToString());\r\n        }\r\n        finally\r\n        {\r\n            _connection.CloseConnection();\r\n        }\r\n    }\r\n\r\n    public bool Delete(Client entity)\r\n    {\r\n        NpgsqlCommand command;\r\n\r\n        try\r\n        {\r\n            _connection.OpenConnection();\r\n            \r\n            command = new NpgsqlCommand(@\"DELETE FROM CLIENT WHERE id = @id\"\r\n                                                 , _connection._SqlConnection);\r\n            \r\n            command.Parameters.AddWithValue(\"@id\", entity.Id);\r\n            \r\n            if(GetOneById(entity.Id) is not null)\r\n            {\r\n                int insert = command.ExecuteNonQuery();\r\n\r\n                return insert != 0;\r\n            }\r\n            else\r\n                throw new Exception(\"Client not found\");\r\n        }\r\n        catch (Exception e)\r\n        {\r\n            throw new DBAccessException(\"Error while deleting clients\", e.ToString());\r\n        }\r\n        finally\r\n        {\r\n            _connection.CloseConnection();\r\n        }\r\n        \r\n    }\r\n\r\n\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/LocationVoiture.dal/Repositories/ClientRepository.cs b/LocationVoiture.dal/Repositories/ClientRepository.cs
+--- a/LocationVoiture.dal/Repositories/ClientRepository.cs	(revision 4859fa6620fc225aac49ad8738176148531ae75f)
++++ b/LocationVoiture.dal/Repositories/ClientRepository.cs	(date 1734021337803)
+@@ -29,7 +29,8 @@
+                                         (address).city AS city,
+                                         (address).country AS country,
+                                         driving_license, birth_date 
+-                                        FROM client", _connection._SqlConnection);
++                                        FROM client ORDER BY last_name"
++                                        , _connection._SqlConnection);
+ 
+             var reader = command.ExecuteReader();
+             
+@@ -83,7 +84,7 @@
+     
+             command.Parameters.AddWithValue("@id", givenId);
+             
+-            var reader = command.ExecuteReader();
++            NpgsqlDataReader reader = command.ExecuteReader();
+             
+             if (reader.Read())
+             {
+Index: LocationVoiture/obj/Debug/net8.0/LocationVoiture.AssemblyInfo.cs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>//------------------------------------------------------------------------------\r\n// <auto-generated>\r\n//     This code was generated by a tool.\r\n//\r\n//     Changes to this file may cause incorrect behavior and will be lost if\r\n//     the code is regenerated.\r\n// </auto-generated>\r\n//------------------------------------------------------------------------------\r\n\r\nusing System;\r\nusing System.Reflection;\r\n\r\n[assembly: System.Reflection.AssemblyCompanyAttribute(\"LocationVoiture\")]\r\n[assembly: System.Reflection.AssemblyConfigurationAttribute(\"Debug\")]\r\n[assembly: System.Reflection.AssemblyFileVersionAttribute(\"1.0.0.0\")]\r\n[assembly: System.Reflection.AssemblyInformationalVersionAttribute(\"1.0.0+fcbc609e542c5039754178f51d48f91e9664bf82\")]\r\n[assembly: System.Reflection.AssemblyProductAttribute(\"LocationVoiture\")]\r\n[assembly: System.Reflection.AssemblyTitleAttribute(\"LocationVoiture\")]\r\n[assembly: System.Reflection.AssemblyVersionAttribute(\"1.0.0.0\")]\r\n\r\n// Généré par la classe MSBuild WriteCodeFragment.\r\n\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/LocationVoiture/obj/Debug/net8.0/LocationVoiture.AssemblyInfo.cs b/LocationVoiture/obj/Debug/net8.0/LocationVoiture.AssemblyInfo.cs
+--- a/LocationVoiture/obj/Debug/net8.0/LocationVoiture.AssemblyInfo.cs	(revision 4859fa6620fc225aac49ad8738176148531ae75f)
++++ b/LocationVoiture/obj/Debug/net8.0/LocationVoiture.AssemblyInfo.cs	(date 1734262182686)
+@@ -13,7 +13,7 @@
+ [assembly: System.Reflection.AssemblyCompanyAttribute("LocationVoiture")]
+ [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
+ [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
+-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+fcbc609e542c5039754178f51d48f91e9664bf82")]
++[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+12587fd174bf08dd92f816872eadbcabdd4d725c")]
+ [assembly: System.Reflection.AssemblyProductAttribute("LocationVoiture")]
+ [assembly: System.Reflection.AssemblyTitleAttribute("LocationVoiture")]
+ [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
+Index: LocationVoiture.dal/obj/Debug/net8.0/LocationVoiture.dal.AssemblyInfo.cs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>//------------------------------------------------------------------------------\r\n// <auto-generated>\r\n//     This code was generated by a tool.\r\n//\r\n//     Changes to this file may cause incorrect behavior and will be lost if\r\n//     the code is regenerated.\r\n// </auto-generated>\r\n//------------------------------------------------------------------------------\r\n\r\nusing System;\r\nusing System.Reflection;\r\n\r\n[assembly: System.Reflection.AssemblyCompanyAttribute(\"LocationVoiture.dal\")]\r\n[assembly: System.Reflection.AssemblyConfigurationAttribute(\"Debug\")]\r\n[assembly: System.Reflection.AssemblyFileVersionAttribute(\"1.0.0.0\")]\r\n[assembly: System.Reflection.AssemblyInformationalVersionAttribute(\"1.0.0+fcbc609e542c5039754178f51d48f91e9664bf82\")]\r\n[assembly: System.Reflection.AssemblyProductAttribute(\"LocationVoiture.dal\")]\r\n[assembly: System.Reflection.AssemblyTitleAttribute(\"LocationVoiture.dal\")]\r\n[assembly: System.Reflection.AssemblyVersionAttribute(\"1.0.0.0\")]\r\n\r\n// Généré par la classe MSBuild WriteCodeFragment.\r\n\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/LocationVoiture.dal/obj/Debug/net8.0/LocationVoiture.dal.AssemblyInfo.cs b/LocationVoiture.dal/obj/Debug/net8.0/LocationVoiture.dal.AssemblyInfo.cs
+--- a/LocationVoiture.dal/obj/Debug/net8.0/LocationVoiture.dal.AssemblyInfo.cs	(revision 4859fa6620fc225aac49ad8738176148531ae75f)
++++ b/LocationVoiture.dal/obj/Debug/net8.0/LocationVoiture.dal.AssemblyInfo.cs	(date 1734262188500)
+@@ -13,7 +13,7 @@
+ [assembly: System.Reflection.AssemblyCompanyAttribute("LocationVoiture.dal")]
+ [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
+ [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
+-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+fcbc609e542c5039754178f51d48f91e9664bf82")]
++[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+12587fd174bf08dd92f816872eadbcabdd4d725c")]
+ [assembly: System.Reflection.AssemblyProductAttribute("LocationVoiture.dal")]
+ [assembly: System.Reflection.AssemblyTitleAttribute("LocationVoiture.dal")]
+ [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
+Index: LocationVoiture.bll/obj/rider.project.model.nuget.info
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>17340209952187771
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/LocationVoiture.bll/obj/rider.project.model.nuget.info b/LocationVoiture.bll/obj/rider.project.model.nuget.info
+--- a/LocationVoiture.bll/obj/rider.project.model.nuget.info	(revision 4859fa6620fc225aac49ad8738176148531ae75f)
++++ b/LocationVoiture.bll/obj/rider.project.model.nuget.info	(date 1734261423248)
+@@ -1,1 +1,1 @@
+-17340209952187771
+\ No newline at end of file
++17340209992850016
+\ No newline at end of file
+Index: LocationVoiture.bll/obj/Debug/net8.0/LocationVoiture.bll.sourcelink.json
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>{\"documents\":{\"C:\\\\Users\\\\studentdot0414\\\\Documents\\\\ProjetSGBD\\\\*\":\"https://raw.githubusercontent.com/GregoryVanRaek/ProjetSGBD/a9f0b2866b1a2ba4f3cbcddfcd325518f8f70294/*\"}}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/LocationVoiture.bll/obj/Debug/net8.0/LocationVoiture.bll.sourcelink.json b/LocationVoiture.bll/obj/Debug/net8.0/LocationVoiture.bll.sourcelink.json
+--- a/LocationVoiture.bll/obj/Debug/net8.0/LocationVoiture.bll.sourcelink.json	(revision 4859fa6620fc225aac49ad8738176148531ae75f)
++++ b/LocationVoiture.bll/obj/Debug/net8.0/LocationVoiture.bll.sourcelink.json	(date 1734021337797)
+@@ -1,1 +1,1 @@
+-{"documents":{"C:\\Users\\studentdot0414\\Documents\\ProjetSGBD\\*":"https://raw.githubusercontent.com/GregoryVanRaek/ProjetSGBD/a9f0b2866b1a2ba4f3cbcddfcd325518f8f70294/*"}}
+\ No newline at end of file
++{"documents":{"C:\\Users\\studentdot0414\\Documents\\ProjetSGBD\\*":"https://raw.githubusercontent.com/GregoryVanRaek/ProjetSGBD/12587fd174bf08dd92f816872eadbcabdd4d725c/*"}}
+\ No newline at end of file
+Index: LocationVoiture.dal/obj/Debug/net8.0/LocationVoiture.dal.sourcelink.json
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>{\"documents\":{\"C:\\\\Users\\\\studentdot0414\\\\Documents\\\\ProjetSGBD\\\\*\":\"https://raw.githubusercontent.com/GregoryVanRaek/ProjetSGBD/a9f0b2866b1a2ba4f3cbcddfcd325518f8f70294/*\"}}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/LocationVoiture.dal/obj/Debug/net8.0/LocationVoiture.dal.sourcelink.json b/LocationVoiture.dal/obj/Debug/net8.0/LocationVoiture.dal.sourcelink.json
+--- a/LocationVoiture.dal/obj/Debug/net8.0/LocationVoiture.dal.sourcelink.json	(revision 4859fa6620fc225aac49ad8738176148531ae75f)
++++ b/LocationVoiture.dal/obj/Debug/net8.0/LocationVoiture.dal.sourcelink.json	(date 1734021337811)
+@@ -1,1 +1,1 @@
+-{"documents":{"C:\\Users\\studentdot0414\\Documents\\ProjetSGBD\\*":"https://raw.githubusercontent.com/GregoryVanRaek/ProjetSGBD/a9f0b2866b1a2ba4f3cbcddfcd325518f8f70294/*"}}
+\ No newline at end of file
++{"documents":{"C:\\Users\\studentdot0414\\Documents\\ProjetSGBD\\*":"https://raw.githubusercontent.com/GregoryVanRaek/ProjetSGBD/12587fd174bf08dd92f816872eadbcabdd4d725c/*"}}
+\ No newline at end of file
+Index: LocationVoiture/obj/Debug/net8.0/LocationVoiture.sourcelink.json
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>{\"documents\":{\"C:\\\\Users\\\\studentdot0414\\\\Documents\\\\ProjetSGBD\\\\*\":\"https://raw.githubusercontent.com/GregoryVanRaek/ProjetSGBD/a9f0b2866b1a2ba4f3cbcddfcd325518f8f70294/*\"}}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/LocationVoiture/obj/Debug/net8.0/LocationVoiture.sourcelink.json b/LocationVoiture/obj/Debug/net8.0/LocationVoiture.sourcelink.json
+--- a/LocationVoiture/obj/Debug/net8.0/LocationVoiture.sourcelink.json	(revision 4859fa6620fc225aac49ad8738176148531ae75f)
++++ b/LocationVoiture/obj/Debug/net8.0/LocationVoiture.sourcelink.json	(date 1734021337831)
+@@ -1,1 +1,1 @@
+-{"documents":{"C:\\Users\\studentdot0414\\Documents\\ProjetSGBD\\*":"https://raw.githubusercontent.com/GregoryVanRaek/ProjetSGBD/a9f0b2866b1a2ba4f3cbcddfcd325518f8f70294/*"}}
+\ No newline at end of file
++{"documents":{"C:\\Users\\studentdot0414\\Documents\\ProjetSGBD\\*":"https://raw.githubusercontent.com/GregoryVanRaek/ProjetSGBD/12587fd174bf08dd92f816872eadbcabdd4d725c/*"}}
+\ No newline at end of file
+Index: .idea/.idea.LocationVoiture/.idea/dataSources.local.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"dataSourceStorageLocal\" created-in=\"RD-242.23726.100\">\r\n    <data-source name=\"test@localhost\" uuid=\"fe9d3d7f-10d5-40ba-9d28-0748a4ae4225\">\r\n      <database-info product=\"PostgreSQL\" version=\"17.2\" jdbc-version=\"4.2\" driver-name=\"PostgreSQL JDBC Driver\" driver-version=\"42.7.3\" dbms=\"POSTGRES\" exact-version=\"17.2\" exact-driver-version=\"42.7\">\r\n        <identifier-quote-string>&quot;</identifier-quote-string>\r\n      </database-info>\r\n      <case-sensitivity plain-identifiers=\"lower\" quoted-identifiers=\"exact\" />\r\n      <secret-storage>master_key</secret-storage>\r\n      <user-name>postgres</user-name>\r\n      <schema-mapping>\r\n        <introspection-scope>\r\n          <node negative=\"1\">\r\n            <node kind=\"database\" negative=\"1\" />\r\n            <node kind=\"database\" qname=\"@\">\r\n              <node kind=\"schema\" qname=\"@\" />\r\n            </node>\r\n            <node kind=\"database\" qname=\"postgres\">\r\n              <node kind=\"schema\" negative=\"1\" />\r\n            </node>\r\n            <node kind=\"database\" qname=\"test\">\r\n              <node kind=\"schema\" qname=\"public\" />\r\n            </node>\r\n          </node>\r\n        </introspection-scope>\r\n      </schema-mapping>\r\n    </data-source>\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/.idea.LocationVoiture/.idea/dataSources.local.xml b/.idea/.idea.LocationVoiture/.idea/dataSources.local.xml
+--- a/.idea/.idea.LocationVoiture/.idea/dataSources.local.xml	(revision 4859fa6620fc225aac49ad8738176148531ae75f)
++++ b/.idea/.idea.LocationVoiture/.idea/dataSources.local.xml	(date 1734021463616)
+@@ -1,6 +1,6 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <project version="4">
+-  <component name="dataSourceStorageLocal" created-in="RD-242.23726.100">
++  <component name="dataSourceStorageLocal" created-in="RD-242.22855.90">
+     <data-source name="test@localhost" uuid="fe9d3d7f-10d5-40ba-9d28-0748a4ae4225">
+       <database-info product="PostgreSQL" version="17.2" jdbc-version="4.2" driver-name="PostgreSQL JDBC Driver" driver-version="42.7.3" dbms="POSTGRES" exact-version="17.2" exact-driver-version="42.7">
+         <identifier-quote-string>&quot;</identifier-quote-string>
+Index: .vs/LocationVoiture/v17/DocumentLayout.json
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.vs/LocationVoiture/v17/DocumentLayout.json b/.vs/LocationVoiture/v17/DocumentLayout.json
+new file mode 100644
+--- /dev/null	(date 1734021337782)
++++ b/.vs/LocationVoiture/v17/DocumentLayout.json	(date 1734021337782)
+@@ -0,0 +1,12 @@
++{
++  "Version": 1,
++  "WorkspaceRootPath": "C:\\Users\\studentdot0414\\Documents\\ProjetSGBD\\2_1 - Application console\\LocationVoiture\\",
++  "Documents": [],
++  "DocumentGroupContainers": [
++    {
++      "Orientation": 0,
++      "VerticalTabListWidth": 256,
++      "DocumentGroups": []
++    }
++  ]
++}
+\ No newline at end of file
+Index: LocationVoiture/Presentation/HomeController.cs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>using Microsoft.Extensions.DependencyInjection;\r\n\r\nnamespace LocationVoiture.Presentation;\r\n\r\npublic class HomeController\r\n{\r\n    private readonly IServiceProvider _serviceProvider;\r\n    \r\n    public HomeController(IServiceProvider serviceProvider)\r\n    {\r\n        _serviceProvider = serviceProvider;\r\n    }\r\n    \r\n    public void MainMenu(IServiceProvider serviceProvider)\r\n    {\r\n        int choice = 0;\r\n\r\n        while (choice != 4)\r\n        {\r\n            DefaultDisplay();\r\n            choice = ConsoleAccess.ReadInput<int>(\"Your choice : \");\r\n            try\r\n            {\r\n                switch (choice)\r\n                {\r\n                    case 1: \r\n                        // Résolution via DI\r\n                        var currentMenu = _serviceProvider.GetRequiredService<ClientController>();\r\n                        currentMenu.ClientMenu();\r\n                        break;\r\n                    case 2: \r\n                        Console.WriteLine(\"Choice 2\");\r\n                        break;\r\n                    case 3: \r\n                        Console.WriteLine(\"Choice 3\");\r\n                        break;\r\n                    case 4: \r\n                        Console.WriteLine(\"Exiting...\");\r\n                        Environment.Exit(0);\r\n                        break;\r\n                    default: \r\n                        Console.WriteLine(\"This option doesn't exist\");\r\n                        ConsoleAccess.Wait();\r\n                        break;\r\n                }\r\n            }\r\n            catch (Exception e)\r\n            {\r\n                Console.WriteLine($\"An error occurred: {e.Message}\");\r\n            }\r\n        }\r\n    }\r\n\r\n    public void DefaultDisplay()\r\n    {\r\n        ConsoleAccess.CreateScreen(\"Welcome to your rental management system\");\r\n        \r\n        Console.WriteLine(\"1. Client\");\r\n        Console.WriteLine(\"2. Rentals\");\r\n        Console.WriteLine(\"3. Car management\");\r\n        Console.WriteLine(\"4. Exit\");\r\n    }\r\n    \r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/LocationVoiture/Presentation/HomeController.cs b/LocationVoiture/Presentation/HomeController.cs
+--- a/LocationVoiture/Presentation/HomeController.cs	(revision 4859fa6620fc225aac49ad8738176148531ae75f)
++++ b/LocationVoiture/Presentation/HomeController.cs	(date 1734021337818)
+@@ -14,7 +14,7 @@
+     public void MainMenu(IServiceProvider serviceProvider)
+     {
+         int choice = 0;
+-
++        
+         while (choice != 4)
+         {
+             DefaultDisplay();
+@@ -24,15 +24,15 @@
+                 switch (choice)
+                 {
+                     case 1: 
+-                        // Résolution via DI
+-                        var currentMenu = _serviceProvider.GetRequiredService<ClientController>();
+-                        currentMenu.ClientMenu();
++                        ClientController client = _serviceProvider.GetRequiredService<ClientController>();
++                        client.ClientMenu();
+                         break;
+                     case 2: 
+                         Console.WriteLine("Choice 2");
+                         break;
+                     case 3: 
+-                        Console.WriteLine("Choice 3");
++                        CarController car = _serviceProvider.GetRequiredService<CarController>();
++                        car.CarMenu();
+                         break;
+                     case 4: 
+                         Console.WriteLine("Exiting...");
+Index: LocationVoiture/Tools/ValueControl.cs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/LocationVoiture/Tools/ValueControl.cs b/LocationVoiture/Tools/ValueControl.cs
+new file mode 100644
+--- /dev/null	(date 1734021337820)
++++ b/LocationVoiture/Tools/ValueControl.cs	(date 1734021337820)
+@@ -0,0 +1,43 @@
++namespace LocationVoiture.Presentation;
++
++public static class ValueControl
++{
++    public static string CheckString(string value, string fieldName)
++    {
++        do
++        {
++            value = ConsoleAccess.ReadInput<string>($"{fieldName} ");
++            if(string.IsNullOrEmpty(value.Trim()))
++                Console.WriteLine($"{fieldName} is required");
++        } while (string.IsNullOrEmpty(value.Trim()));
++
++        return value.Trim().ToLower();
++    }
++
++    public static int CheckPositiveInt(string message)
++    {
++        int value = 0;
++        do
++        {
++            value = ConsoleAccess.ReadInput<int>($"{message}");
++            if(value <= 0)
++                Console.WriteLine("The value must be positive");
++        } while (value <= 0);
++
++        return value;
++    }
++    
++    public static decimal CheckPositiveDecimal(string message)
++    {
++        decimal value = 0;
++        do
++        {
++            value = ConsoleAccess.ReadInput<decimal>($"{message}");
++            if(value <= 0)
++                Console.WriteLine("The value must be positive");
++        } while (value <= 0);
++
++        return value;
++    }
++    
++}
+\ No newline at end of file
+Index: .idea/.idea.LocationVoiture/.idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"AutoGeneratedRunConfigurationManager\">\r\n    <projectFile>LocationVoiture/LocationVoiture.csproj</projectFile>\r\n  </component>\r\n  <component name=\"AutoImportSettings\">\r\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\r\n  </component>\r\n  <component name=\"ChangeListManager\">\r\n    <list default=\"true\" id=\"c7eebc29-c104-4a95-9dd4-e5445400d08e\" name=\"Changes\" comment=\"init\">\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/.idea.LocationVoiture/.idea/dataSources.local.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/.idea.LocationVoiture/.idea/dataSources.local.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/.idea.LocationVoiture/.idea/dataSources/fe9d3d7f-10d5-40ba-9d28-0748a4ae4225.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/.idea.LocationVoiture/.idea/dataSources/fe9d3d7f-10d5-40ba-9d28-0748a4ae4225.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/.idea.LocationVoiture/.idea/indexLayout.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/.idea.LocationVoiture/.idea/indexLayout.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/.idea.LocationVoiture/.idea/projectSettingsUpdater.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/.idea.LocationVoiture/.idea/projectSettingsUpdater.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/.idea.LocationVoiture/.idea/sqldialects.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/.idea.LocationVoiture/.idea/sqldialects.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/.idea.LocationVoiture/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/.idea.LocationVoiture/.idea/workspace.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture.bll/Services/CarService.cs\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture.bll/Services/CarService.cs\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture.bll/Services/ClientService.cs\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture.bll/Services/ClientService.cs\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture.bll/Services/Interface/IService.cs\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture.bll/Services/Interface/IService.cs\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture.bll/bin/Debug/net8.0/LocationVoiture.bll.deps.json\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture.bll/bin/Debug/net8.0/LocationVoiture.bll.deps.json\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture.bll/bin/Debug/net8.0/LocationVoiture.bll.dll\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture.bll/bin/Debug/net8.0/LocationVoiture.bll.dll\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture.bll/bin/Debug/net8.0/LocationVoiture.bll.pdb\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture.bll/bin/Debug/net8.0/LocationVoiture.bll.pdb\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture.bll/bin/Debug/net8.0/LocationVoiture.dal.dll\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture.bll/bin/Debug/net8.0/LocationVoiture.dal.dll\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture.bll/bin/Debug/net8.0/LocationVoiture.dal.pdb\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture.bll/bin/Debug/net8.0/LocationVoiture.dal.pdb\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture.bll/obj/Debug/net8.0/LocationVoiture.bll.AssemblyInfo.cs\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture.bll/obj/Debug/net8.0/LocationVoiture.bll.AssemblyInfo.cs\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture.bll/obj/Debug/net8.0/LocationVoiture.bll.AssemblyInfoInputs.cache\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture.bll/obj/Debug/net8.0/LocationVoiture.bll.AssemblyInfoInputs.cache\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture.bll/obj/Debug/net8.0/LocationVoiture.bll.GeneratedMSBuildEditorConfig.editorconfig\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture.bll/obj/Debug/net8.0/LocationVoiture.bll.GeneratedMSBuildEditorConfig.editorconfig\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture.bll/obj/Debug/net8.0/LocationVoiture.bll.assets.cache\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture.bll/obj/Debug/net8.0/LocationVoiture.bll.assets.cache\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture.bll/obj/Debug/net8.0/LocationVoiture.bll.csproj.AssemblyReference.cache\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture.bll/obj/Debug/net8.0/LocationVoiture.bll.csproj.AssemblyReference.cache\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture.bll/obj/Debug/net8.0/LocationVoiture.bll.csproj.CoreCompileInputs.cache\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture.bll/obj/Debug/net8.0/LocationVoiture.bll.csproj.CoreCompileInputs.cache\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture.bll/obj/Debug/net8.0/LocationVoiture.bll.csproj.FileListAbsolute.txt\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture.bll/obj/Debug/net8.0/LocationVoiture.bll.csproj.FileListAbsolute.txt\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture.bll/obj/Debug/net8.0/LocationVoiture.bll.dll\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture.bll/obj/Debug/net8.0/LocationVoiture.bll.dll\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture.bll/obj/Debug/net8.0/LocationVoiture.bll.pdb\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture.bll/obj/Debug/net8.0/LocationVoiture.bll.pdb\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture.bll/obj/Debug/net8.0/ref/LocationVoiture.bll.dll\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture.bll/obj/Debug/net8.0/ref/LocationVoiture.bll.dll\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture.bll/obj/Debug/net8.0/refint/LocationVoiture.bll.dll\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture.bll/obj/Debug/net8.0/refint/LocationVoiture.bll.dll\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture.bll/obj/LocationVoiture.bll.csproj.nuget.dgspec.json\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture.bll/obj/LocationVoiture.bll.csproj.nuget.dgspec.json\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture.bll/obj/LocationVoiture.bll.csproj.nuget.g.props\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture.bll/obj/LocationVoiture.bll.csproj.nuget.g.props\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture.bll/obj/project.assets.json\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture.bll/obj/project.assets.json\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture.bll/obj/project.nuget.cache\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture.bll/obj/project.nuget.cache\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture.bll/obj/project.packagespec.json\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture.bll/obj/project.packagespec.json\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture.bll/obj/rider.project.model.nuget.info\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture.bll/obj/rider.project.model.nuget.info\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture.bll/obj/rider.project.restore.info\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture.bll/obj/rider.project.restore.info\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture.dal/DBAccess.cs\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture.dal/DBAccess.cs\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture.dal/Entities/Client.cs\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture.dal/Entities/Client.cs\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture.dal/Repositories/ClientRepository.cs\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture.dal/Repositories/ClientRepository.cs\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture.dal/Repositories/Interface/IClientRepository.cs\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture.dal/Repositories/Interface/IClientRepository.cs\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture.dal/Repositories/Interface/IRepository.cs\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture.dal/Repositories/Interface/IRepository.cs\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture.dal/bin/Debug/net8.0/LocationVoiture.dal.dll\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture.dal/bin/Debug/net8.0/LocationVoiture.dal.dll\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture.dal/bin/Debug/net8.0/LocationVoiture.dal.pdb\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture.dal/bin/Debug/net8.0/LocationVoiture.dal.pdb\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture.dal/obj/Debug/net8.0/LocationVoiture.dal.AssemblyInfo.cs\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture.dal/obj/Debug/net8.0/LocationVoiture.dal.AssemblyInfo.cs\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture.dal/obj/Debug/net8.0/LocationVoiture.dal.AssemblyInfoInputs.cache\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture.dal/obj/Debug/net8.0/LocationVoiture.dal.AssemblyInfoInputs.cache\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture.dal/obj/Debug/net8.0/LocationVoiture.dal.GeneratedMSBuildEditorConfig.editorconfig\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture.dal/obj/Debug/net8.0/LocationVoiture.dal.GeneratedMSBuildEditorConfig.editorconfig\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture.dal/obj/Debug/net8.0/LocationVoiture.dal.assets.cache\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture.dal/obj/Debug/net8.0/LocationVoiture.dal.assets.cache\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture.dal/obj/Debug/net8.0/LocationVoiture.dal.csproj.AssemblyReference.cache\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture.dal/obj/Debug/net8.0/LocationVoiture.dal.csproj.AssemblyReference.cache\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture.dal/obj/Debug/net8.0/LocationVoiture.dal.csproj.CoreCompileInputs.cache\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture.dal/obj/Debug/net8.0/LocationVoiture.dal.csproj.CoreCompileInputs.cache\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture.dal/obj/Debug/net8.0/LocationVoiture.dal.csproj.FileListAbsolute.txt\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture.dal/obj/Debug/net8.0/LocationVoiture.dal.csproj.FileListAbsolute.txt\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture.dal/obj/Debug/net8.0/LocationVoiture.dal.dll\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture.dal/obj/Debug/net8.0/LocationVoiture.dal.dll\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture.dal/obj/Debug/net8.0/LocationVoiture.dal.sourcelink.json\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture.dal/obj/Debug/net8.0/LocationVoiture.dal.sourcelink.json\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture.dal/obj/Debug/net8.0/refint/LocationVoiture.dal.dll\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture.dal/obj/Debug/net8.0/refint/LocationVoiture.dal.dll\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture.dal/obj/LocationVoiture.dal.csproj.nuget.dgspec.json\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture.dal/obj/LocationVoiture.dal.csproj.nuget.dgspec.json\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture.dal/obj/LocationVoiture.dal.csproj.nuget.g.props\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture.dal/obj/LocationVoiture.dal.csproj.nuget.g.props\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture.dal/obj/project.assets.json\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture.dal/obj/project.assets.json\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture.dal/obj/project.nuget.cache\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture.dal/obj/project.nuget.cache\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture.dal/obj/project.packagespec.json\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture.dal/obj/project.packagespec.json\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture.dal/obj/rider.project.model.nuget.info\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture.dal/obj/rider.project.model.nuget.info\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture.dal/obj/rider.project.restore.info\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture.dal/obj/rider.project.restore.info\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture/Presentation/ClientController.cs\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture/Presentation/ClientController.cs\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture/Program.cs\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture/Program.cs\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture/bin/Debug/net8.0/LocationVoiture.bll.dll\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture/bin/Debug/net8.0/LocationVoiture.bll.dll\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture/bin/Debug/net8.0/LocationVoiture.bll.pdb\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture/bin/Debug/net8.0/LocationVoiture.bll.pdb\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture/bin/Debug/net8.0/LocationVoiture.dal.dll\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture/bin/Debug/net8.0/LocationVoiture.dal.dll\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture/bin/Debug/net8.0/LocationVoiture.dal.pdb\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture/bin/Debug/net8.0/LocationVoiture.dal.pdb\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture/bin/Debug/net8.0/LocationVoiture.deps.json\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture/bin/Debug/net8.0/LocationVoiture.deps.json\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture/bin/Debug/net8.0/LocationVoiture.dll\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture/bin/Debug/net8.0/LocationVoiture.dll\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture/bin/Debug/net8.0/LocationVoiture.exe\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture/bin/Debug/net8.0/LocationVoiture.exe\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture/bin/Debug/net8.0/LocationVoiture.pdb\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture/bin/Debug/net8.0/LocationVoiture.pdb\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture/obj/Debug/net8.0/LocationVoiture.AssemblyInfo.cs\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture/obj/Debug/net8.0/LocationVoiture.AssemblyInfo.cs\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture/obj/Debug/net8.0/LocationVoiture.GeneratedMSBuildEditorConfig.editorconfig\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture/obj/Debug/net8.0/LocationVoiture.GeneratedMSBuildEditorConfig.editorconfig\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture/obj/Debug/net8.0/LocationVoiture.assets.cache\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture/obj/Debug/net8.0/LocationVoiture.assets.cache\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture/obj/Debug/net8.0/LocationVoiture.csproj.AssemblyReference.cache\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture/obj/Debug/net8.0/LocationVoiture.csproj.AssemblyReference.cache\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture/obj/Debug/net8.0/LocationVoiture.csproj.CoreCompileInputs.cache\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture/obj/Debug/net8.0/LocationVoiture.csproj.CoreCompileInputs.cache\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture/obj/Debug/net8.0/LocationVoiture.csproj.FileListAbsolute.txt\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture/obj/Debug/net8.0/LocationVoiture.csproj.FileListAbsolute.txt\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture/obj/Debug/net8.0/LocationVoiture.dll\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture/obj/Debug/net8.0/LocationVoiture.dll\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture/obj/Debug/net8.0/LocationVoiture.genruntimeconfig.cache\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture/obj/Debug/net8.0/LocationVoiture.genruntimeconfig.cache\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture/obj/Debug/net8.0/LocationVoiture.pdb\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture/obj/Debug/net8.0/LocationVoiture.pdb\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture/obj/Debug/net8.0/LocationVoiture.sourcelink.json\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture/obj/Debug/net8.0/LocationVoiture.sourcelink.json\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture/obj/Debug/net8.0/apphost.exe\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture/obj/Debug/net8.0/apphost.exe\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture/obj/Debug/net8.0/ref/LocationVoiture.dll\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture/obj/Debug/net8.0/ref/LocationVoiture.dll\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture/obj/Debug/net8.0/refint/LocationVoiture.dll\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture/obj/Debug/net8.0/refint/LocationVoiture.dll\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture/obj/LocationVoiture.csproj.nuget.dgspec.json\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture/obj/LocationVoiture.csproj.nuget.dgspec.json\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture/obj/LocationVoiture.csproj.nuget.g.props\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture/obj/LocationVoiture.csproj.nuget.g.props\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture/obj/project.assets.json\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture/obj/project.assets.json\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture/obj/project.nuget.cache\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture/obj/project.nuget.cache\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture/obj/project.packagespec.json\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture/obj/project.packagespec.json\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture/obj/rider.project.model.nuget.info\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture/obj/rider.project.model.nuget.info\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LocationVoiture/obj/rider.project.restore.info\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LocationVoiture/obj/rider.project.restore.info\" afterDir=\"false\" />\r\n    </list>\r\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\r\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\r\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\r\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\r\n  </component>\r\n  <component name=\"DpaMonitoringSettings\">\r\n    <option name=\"autoShow\" value=\"false\" />\r\n  </component>\r\n  <component name=\"Git.Settings\">\r\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$/../..\" />\r\n  </component>\r\n  <component name=\"HighlightingSettingsPerFile\">\r\n    <setting file=\"file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/bd1d5c50194fea68ff3559c160230b0ab50f5acf4ce3061bffd6d62958e2182/ExceptionDispatchInfo.cs\" root0=\"FORCE_HIGHLIGHTING\" />\r\n  </component>\r\n  <component name=\"MetaFilesCheckinStateConfiguration\" checkMetaFiles=\"true\" />\r\n  <component name=\"ProjectColorInfo\">{\r\n  &quot;customColor&quot;: &quot;&quot;,\r\n  &quot;associatedIndex&quot;: 3\r\n}</component>\r\n  <component name=\"ProjectId\" id=\"2pAULNsN5mDX2544OJpMxE4rF77\" />\r\n  <component name=\"ProjectLevelVcsManager\">\r\n    <ConfirmationsSetting value=\"2\" id=\"Add\" />\r\n  </component>\r\n  <component name=\"ProjectViewState\">\r\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\r\n    <option name=\"showLibraryContents\" value=\"true\" />\r\n  </component>\r\n  <component name=\"PropertiesComponent\">{\r\n  &quot;keyToString&quot;: {\r\n    &quot;.NET Project.LocationVoiture.executor&quot;: &quot;Run&quot;,\r\n    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,\r\n    &quot;XThreadsFramesViewSplitterKey&quot;: &quot;0.46689305&quot;,\r\n    &quot;git-widget-placeholder&quot;: &quot;main&quot;,\r\n    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,\r\n    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,\r\n    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,\r\n    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,\r\n    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,\r\n    &quot;settings.editor.selected.configurable&quot;: &quot;editor.preferences.smartKeys_rider&quot;,\r\n    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;\r\n  },\r\n  &quot;keyToStringList&quot;: {\r\n    &quot;DatabaseDriversLRU&quot;: [\r\n      &quot;postgresql&quot;\r\n    ]\r\n  }\r\n}</component>\r\n  <component name=\"RunManager\">\r\n    <configuration name=\"LocationVoiture\" type=\"DotNetProject\" factoryName=\".NET Project\">\r\n      <option name=\"EXE_PATH\" value=\"\" />\r\n      <option name=\"PROGRAM_PARAMETERS\" value=\"\" />\r\n      <option name=\"WORKING_DIRECTORY\" value=\"\" />\r\n      <option name=\"PASS_PARENT_ENVS\" value=\"1\" />\r\n      <option name=\"USE_EXTERNAL_CONSOLE\" value=\"0\" />\r\n      <option name=\"USE_MONO\" value=\"0\" />\r\n      <option name=\"RUNTIME_ARGUMENTS\" value=\"\" />\r\n      <option name=\"PROJECT_PATH\" value=\"$PROJECT_DIR$/LocationVoiture/LocationVoiture.csproj\" />\r\n      <option name=\"PROJECT_EXE_PATH_TRACKING\" value=\"1\" />\r\n      <option name=\"PROJECT_ARGUMENTS_TRACKING\" value=\"1\" />\r\n      <option name=\"PROJECT_WORKING_DIRECTORY_TRACKING\" value=\"1\" />\r\n      <option name=\"PROJECT_KIND\" value=\"DotNetCore\" />\r\n      <option name=\"PROJECT_TFM\" value=\"\" />\r\n      <method v=\"2\">\r\n        <option name=\"Build\" />\r\n      </method>\r\n    </configuration>\r\n  </component>\r\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\r\n  <component name=\"TaskManager\">\r\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\r\n      <changelist id=\"c7eebc29-c104-4a95-9dd4-e5445400d08e\" name=\"Changes\" comment=\"\" />\r\n      <created>1732208317027</created>\r\n      <option name=\"number\" value=\"Default\" />\r\n      <option name=\"presentableId\" value=\"Default\" />\r\n      <updated>1732208317027</updated>\r\n      <workItem from=\"1732208319183\" duration=\"7277000\" />\r\n      <workItem from=\"1732215656006\" duration=\"1098000\" />\r\n      <workItem from=\"1732355169022\" duration=\"25038000\" />\r\n      <workItem from=\"1732529044428\" duration=\"16789000\" />\r\n    </task>\r\n    <task id=\"LOCAL-00001\" summary=\"add entities\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1732446386217</created>\r\n      <option name=\"number\" value=\"00001\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00001\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1732446386217</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00002\" summary=\"init\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1732446448269</created>\r\n      <option name=\"number\" value=\"00002\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00002\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1732446448269</updated>\r\n    </task>\r\n    <option name=\"localTasksCounter\" value=\"3\" />\r\n    <servers />\r\n  </component>\r\n  <component name=\"TypeScriptGeneratedFilesManager\">\r\n    <option name=\"version\" value=\"3\" />\r\n  </component>\r\n  <component name=\"UnityCheckinConfiguration\" checkUnsavedScenes=\"true\" />\r\n  <component name=\"UnityProjectConfiguration\" hasMinimizedUI=\"false\" />\r\n  <component name=\"VcsManagerConfiguration\">\r\n    <option name=\"CLEAR_INITIAL_COMMIT_MESSAGE\" value=\"true\" />\r\n    <MESSAGE value=\"initial commit\" />\r\n    <MESSAGE value=\"add entities\" />\r\n    <MESSAGE value=\"init\" />\r\n    <option name=\"LAST_COMMIT_MESSAGE\" value=\"init\" />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/.idea.LocationVoiture/.idea/workspace.xml b/.idea/.idea.LocationVoiture/.idea/workspace.xml
+--- a/.idea/.idea.LocationVoiture/.idea/workspace.xml	(revision 4859fa6620fc225aac49ad8738176148531ae75f)
++++ b/.idea/.idea.LocationVoiture/.idea/workspace.xml	(date 1734262215449)
+@@ -7,93 +7,78 @@
+     <option name="autoReloadType" value="SELECTIVE" />
+   </component>
+   <component name="ChangeListManager">
+-    <list default="true" id="c7eebc29-c104-4a95-9dd4-e5445400d08e" name="Changes" comment="init">
++    <list default="true" id="c7eebc29-c104-4a95-9dd4-e5445400d08e" name="Changes" comment="">
++      <change afterPath="$PROJECT_DIR$/.vs/LocationVoiture/v17/.suo" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/.vs/LocationVoiture/v17/DocumentLayout.json" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/.vs/ProjectEvaluation/locationvoiture.metadata.v9.bin" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/.vs/ProjectEvaluation/locationvoiture.projects.v9.bin" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/.vs/ProjectEvaluation/locationvoiture.strings.v9.bin" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/LocationVoiture.bll/Services/CategoryService.cs" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/LocationVoiture.bll/Services/Interface/ICategoryService.cs" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/LocationVoiture.bll/Services/Interface/IModelService.cs" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/LocationVoiture.bll/Services/ModelService.cs" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/LocationVoiture.dal/Repositories/CategoryRepository.cs" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/LocationVoiture.dal/Repositories/Interface/ICategoryRepository.cs" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/LocationVoiture.dal/Repositories/Interface/IModelRepository.cs" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/LocationVoiture.dal/Repositories/ModelRepository.cs" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/LocationVoiture/Presentation/CategoryController.cs" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/LocationVoiture/Presentation/ModelController.cs" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/LocationVoiture/Tools/ValueControl.cs" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/.idea/.idea.LocationVoiture/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.LocationVoiture/.idea/dataSources.local.xml" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/.idea/.idea.LocationVoiture/.idea/dataSources/fe9d3d7f-10d5-40ba-9d28-0748a4ae4225.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.LocationVoiture/.idea/dataSources/fe9d3d7f-10d5-40ba-9d28-0748a4ae4225.xml" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/.idea/.idea.LocationVoiture/.idea/indexLayout.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.LocationVoiture/.idea/indexLayout.xml" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/.idea/.idea.LocationVoiture/.idea/projectSettingsUpdater.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.LocationVoiture/.idea/projectSettingsUpdater.xml" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/.idea/.idea.LocationVoiture/.idea/sqldialects.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.LocationVoiture/.idea/sqldialects.xml" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/.idea/.idea.LocationVoiture/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.LocationVoiture/.idea/workspace.xml" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/LocationVoiture.bll/Services/CarService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.bll/Services/CarService.cs" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/LocationVoiture.bll/Services/ClientService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.bll/Services/ClientService.cs" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/LocationVoiture.bll/Services/Interface/IService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.bll/Services/Interface/IService.cs" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/LocationVoiture.bll/bin/Debug/net8.0/LocationVoiture.bll.deps.json" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.bll/bin/Debug/net8.0/LocationVoiture.bll.deps.json" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/LocationVoiture.bll/bin/Debug/net8.0/LocationVoiture.bll.dll" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.bll/bin/Debug/net8.0/LocationVoiture.bll.dll" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/LocationVoiture.bll/bin/Debug/net8.0/LocationVoiture.bll.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.bll/bin/Debug/net8.0/LocationVoiture.bll.pdb" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/LocationVoiture.bll/bin/Debug/net8.0/LocationVoiture.dal.dll" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.bll/bin/Debug/net8.0/LocationVoiture.dal.dll" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/LocationVoiture.bll/bin/Debug/net8.0/LocationVoiture.dal.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.bll/bin/Debug/net8.0/LocationVoiture.dal.pdb" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/LocationVoiture.bll/obj/Debug/net8.0/LocationVoiture.bll.AssemblyInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.bll/obj/Debug/net8.0/LocationVoiture.bll.AssemblyInfo.cs" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/LocationVoiture.bll/obj/Debug/net8.0/LocationVoiture.bll.AssemblyInfoInputs.cache" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.bll/obj/Debug/net8.0/LocationVoiture.bll.AssemblyInfoInputs.cache" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/LocationVoiture.bll/obj/Debug/net8.0/LocationVoiture.bll.GeneratedMSBuildEditorConfig.editorconfig" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.bll/obj/Debug/net8.0/LocationVoiture.bll.GeneratedMSBuildEditorConfig.editorconfig" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/LocationVoiture.bll/obj/Debug/net8.0/LocationVoiture.bll.assets.cache" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.bll/obj/Debug/net8.0/LocationVoiture.bll.assets.cache" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/LocationVoiture.bll/obj/Debug/net8.0/LocationVoiture.bll.csproj.AssemblyReference.cache" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.bll/obj/Debug/net8.0/LocationVoiture.bll.csproj.AssemblyReference.cache" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/LocationVoiture.bll/obj/Debug/net8.0/LocationVoiture.bll.csproj.CoreCompileInputs.cache" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.bll/obj/Debug/net8.0/LocationVoiture.bll.csproj.CoreCompileInputs.cache" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/LocationVoiture.bll/obj/Debug/net8.0/LocationVoiture.bll.csproj.FileListAbsolute.txt" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.bll/obj/Debug/net8.0/LocationVoiture.bll.csproj.FileListAbsolute.txt" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/LocationVoiture.bll/obj/Debug/net8.0/LocationVoiture.bll.dll" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.bll/obj/Debug/net8.0/LocationVoiture.bll.dll" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/LocationVoiture.bll/obj/Debug/net8.0/LocationVoiture.bll.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.bll/obj/Debug/net8.0/LocationVoiture.bll.pdb" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/LocationVoiture.bll/obj/Debug/net8.0/LocationVoiture.bll.sourcelink.json" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.bll/obj/Debug/net8.0/LocationVoiture.bll.sourcelink.json" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/LocationVoiture.bll/obj/Debug/net8.0/ref/LocationVoiture.bll.dll" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.bll/obj/Debug/net8.0/ref/LocationVoiture.bll.dll" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/LocationVoiture.bll/obj/Debug/net8.0/refint/LocationVoiture.bll.dll" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.bll/obj/Debug/net8.0/refint/LocationVoiture.bll.dll" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/LocationVoiture.bll/obj/LocationVoiture.bll.csproj.nuget.dgspec.json" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.bll/obj/LocationVoiture.bll.csproj.nuget.dgspec.json" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/LocationVoiture.bll/obj/LocationVoiture.bll.csproj.nuget.g.props" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.bll/obj/LocationVoiture.bll.csproj.nuget.g.props" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/LocationVoiture.bll/obj/project.assets.json" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.bll/obj/project.assets.json" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/LocationVoiture.bll/obj/project.nuget.cache" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.bll/obj/project.nuget.cache" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/LocationVoiture.bll/obj/project.packagespec.json" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.bll/obj/project.packagespec.json" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/LocationVoiture.bll/obj/rider.project.model.nuget.info" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.bll/obj/rider.project.model.nuget.info" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/LocationVoiture.bll/obj/rider.project.restore.info" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.bll/obj/rider.project.restore.info" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/LocationVoiture.dal/DBAccess.cs" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.dal/DBAccess.cs" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/LocationVoiture.dal/Entities/Client.cs" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.dal/Entities/Client.cs" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/LocationVoiture.dal/Entities/Category.cs" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.dal/Entities/Category.cs" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/LocationVoiture.dal/Entities/Model.cs" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.dal/Entities/Model.cs" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/LocationVoiture.dal/Repositories/ClientRepository.cs" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.dal/Repositories/ClientRepository.cs" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/LocationVoiture.dal/Repositories/Interface/IClientRepository.cs" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.dal/Repositories/Interface/IClientRepository.cs" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/LocationVoiture.dal/Repositories/Interface/IRepository.cs" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.dal/Repositories/Interface/IRepository.cs" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/LocationVoiture.dal/bin/Debug/net8.0/LocationVoiture.dal.dll" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.dal/bin/Debug/net8.0/LocationVoiture.dal.dll" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/LocationVoiture.dal/bin/Debug/net8.0/LocationVoiture.dal.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.dal/bin/Debug/net8.0/LocationVoiture.dal.pdb" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/LocationVoiture.dal/obj/Debug/net8.0/LocationVoiture.dal.AssemblyInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.dal/obj/Debug/net8.0/LocationVoiture.dal.AssemblyInfo.cs" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/LocationVoiture.dal/obj/Debug/net8.0/LocationVoiture.dal.AssemblyInfoInputs.cache" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.dal/obj/Debug/net8.0/LocationVoiture.dal.AssemblyInfoInputs.cache" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/LocationVoiture.dal/obj/Debug/net8.0/LocationVoiture.dal.GeneratedMSBuildEditorConfig.editorconfig" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.dal/obj/Debug/net8.0/LocationVoiture.dal.GeneratedMSBuildEditorConfig.editorconfig" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/LocationVoiture.dal/obj/Debug/net8.0/LocationVoiture.dal.assets.cache" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.dal/obj/Debug/net8.0/LocationVoiture.dal.assets.cache" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/LocationVoiture.dal/obj/Debug/net8.0/LocationVoiture.dal.csproj.AssemblyReference.cache" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.dal/obj/Debug/net8.0/LocationVoiture.dal.csproj.AssemblyReference.cache" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/LocationVoiture.dal/obj/Debug/net8.0/LocationVoiture.dal.csproj.CoreCompileInputs.cache" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.dal/obj/Debug/net8.0/LocationVoiture.dal.csproj.CoreCompileInputs.cache" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/LocationVoiture.dal/obj/Debug/net8.0/LocationVoiture.dal.csproj.FileListAbsolute.txt" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.dal/obj/Debug/net8.0/LocationVoiture.dal.csproj.FileListAbsolute.txt" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/LocationVoiture.dal/obj/Debug/net8.0/LocationVoiture.dal.dll" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.dal/obj/Debug/net8.0/LocationVoiture.dal.dll" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/LocationVoiture.dal/obj/Debug/net8.0/LocationVoiture.dal.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.dal/obj/Debug/net8.0/LocationVoiture.dal.pdb" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/LocationVoiture.dal/obj/Debug/net8.0/LocationVoiture.dal.sourcelink.json" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.dal/obj/Debug/net8.0/LocationVoiture.dal.sourcelink.json" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/LocationVoiture.dal/obj/Debug/net8.0/ref/LocationVoiture.dal.dll" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.dal/obj/Debug/net8.0/ref/LocationVoiture.dal.dll" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/LocationVoiture.dal/obj/Debug/net8.0/refint/LocationVoiture.dal.dll" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.dal/obj/Debug/net8.0/refint/LocationVoiture.dal.dll" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/LocationVoiture.dal/obj/LocationVoiture.dal.csproj.nuget.dgspec.json" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.dal/obj/LocationVoiture.dal.csproj.nuget.dgspec.json" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/LocationVoiture.dal/obj/LocationVoiture.dal.csproj.nuget.g.props" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.dal/obj/LocationVoiture.dal.csproj.nuget.g.props" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/LocationVoiture.dal/obj/project.assets.json" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.dal/obj/project.assets.json" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/LocationVoiture.dal/obj/project.nuget.cache" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.dal/obj/project.nuget.cache" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/LocationVoiture.dal/obj/project.packagespec.json" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.dal/obj/project.packagespec.json" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/LocationVoiture.dal/obj/rider.project.model.nuget.info" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.dal/obj/rider.project.model.nuget.info" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/LocationVoiture.dal/obj/rider.project.restore.info" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.dal/obj/rider.project.restore.info" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/LocationVoiture.sln.DotSettings.user" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.sln.DotSettings.user" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/LocationVoiture/Presentation/CarController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture/Presentation/CarController.cs" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/LocationVoiture/Presentation/ClientController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture/Presentation/ClientController.cs" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/LocationVoiture/Presentation/HomeController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture/Presentation/HomeController.cs" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/LocationVoiture/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture/Program.cs" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/LocationVoiture/bin/Debug/net8.0/LocationVoiture.bll.dll" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture/bin/Debug/net8.0/LocationVoiture.bll.dll" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/LocationVoiture/bin/Debug/net8.0/LocationVoiture.bll.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture/bin/Debug/net8.0/LocationVoiture.bll.pdb" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/LocationVoiture/bin/Debug/net8.0/LocationVoiture.dal.dll" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture/bin/Debug/net8.0/LocationVoiture.dal.dll" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/LocationVoiture/bin/Debug/net8.0/LocationVoiture.dal.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture/bin/Debug/net8.0/LocationVoiture.dal.pdb" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/LocationVoiture/bin/Debug/net8.0/LocationVoiture.deps.json" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture/bin/Debug/net8.0/LocationVoiture.deps.json" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/LocationVoiture/bin/Debug/net8.0/LocationVoiture.dll" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture/bin/Debug/net8.0/LocationVoiture.dll" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/LocationVoiture/bin/Debug/net8.0/LocationVoiture.exe" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture/bin/Debug/net8.0/LocationVoiture.exe" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/LocationVoiture/bin/Debug/net8.0/LocationVoiture.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture/bin/Debug/net8.0/LocationVoiture.pdb" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/LocationVoiture/obj/Debug/net8.0/LocationVoiture.AssemblyInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture/obj/Debug/net8.0/LocationVoiture.AssemblyInfo.cs" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/LocationVoiture/obj/Debug/net8.0/LocationVoiture.GeneratedMSBuildEditorConfig.editorconfig" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture/obj/Debug/net8.0/LocationVoiture.GeneratedMSBuildEditorConfig.editorconfig" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/LocationVoiture/obj/Debug/net8.0/LocationVoiture.assets.cache" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture/obj/Debug/net8.0/LocationVoiture.assets.cache" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/LocationVoiture/obj/Debug/net8.0/LocationVoiture.AssemblyInfoInputs.cache" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture/obj/Debug/net8.0/LocationVoiture.AssemblyInfoInputs.cache" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/LocationVoiture/obj/Debug/net8.0/LocationVoiture.csproj.AssemblyReference.cache" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture/obj/Debug/net8.0/LocationVoiture.csproj.AssemblyReference.cache" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/LocationVoiture/obj/Debug/net8.0/LocationVoiture.csproj.CoreCompileInputs.cache" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture/obj/Debug/net8.0/LocationVoiture.csproj.CoreCompileInputs.cache" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/LocationVoiture/obj/Debug/net8.0/LocationVoiture.csproj.FileListAbsolute.txt" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture/obj/Debug/net8.0/LocationVoiture.csproj.FileListAbsolute.txt" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/LocationVoiture/obj/Debug/net8.0/LocationVoiture.dll" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture/obj/Debug/net8.0/LocationVoiture.dll" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/LocationVoiture/obj/Debug/net8.0/LocationVoiture.genruntimeconfig.cache" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture/obj/Debug/net8.0/LocationVoiture.genruntimeconfig.cache" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/LocationVoiture/obj/Debug/net8.0/LocationVoiture.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture/obj/Debug/net8.0/LocationVoiture.pdb" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/LocationVoiture/obj/Debug/net8.0/LocationVoiture.sourcelink.json" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture/obj/Debug/net8.0/LocationVoiture.sourcelink.json" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/LocationVoiture/obj/Debug/net8.0/apphost.exe" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture/obj/Debug/net8.0/apphost.exe" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/LocationVoiture/obj/Debug/net8.0/ref/LocationVoiture.dll" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture/obj/Debug/net8.0/ref/LocationVoiture.dll" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/LocationVoiture/obj/Debug/net8.0/refint/LocationVoiture.dll" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture/obj/Debug/net8.0/refint/LocationVoiture.dll" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/LocationVoiture/obj/LocationVoiture.csproj.nuget.dgspec.json" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture/obj/LocationVoiture.csproj.nuget.dgspec.json" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/LocationVoiture/obj/LocationVoiture.csproj.nuget.g.props" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture/obj/LocationVoiture.csproj.nuget.g.props" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/LocationVoiture/obj/project.assets.json" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture/obj/project.assets.json" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/LocationVoiture/obj/project.nuget.cache" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture/obj/project.nuget.cache" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/LocationVoiture/obj/project.packagespec.json" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture/obj/project.packagespec.json" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/LocationVoiture/obj/rider.project.model.nuget.info" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture/obj/rider.project.model.nuget.info" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/LocationVoiture/obj/rider.project.restore.info" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture/obj/rider.project.restore.info" afterDir="false" />
+     </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+@@ -107,7 +92,8 @@
+     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
+   </component>
+   <component name="HighlightingSettingsPerFile">
+-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/bd1d5c50194fea68ff3559c160230b0ab50f5acf4ce3061bffd6d62958e2182/ExceptionDispatchInfo.cs" root0="FORCE_HIGHLIGHTING" />
++    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/aef21ab35a6576cdcb99a56e6a8c84076d069f09ad1be52cfedaf49ee667855/Int32.cs" root0="SKIP_HIGHLIGHTING" />
++    <setting file="file://$PROJECT_DIR$/LocationVoiture/Program.cs" root0="FORCE_HIGHLIGHTING" />
+   </component>
+   <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
+   <component name="ProjectColorInfo">{
+@@ -127,7 +113,8 @@
+     &quot;.NET Project.LocationVoiture.executor&quot;: &quot;Run&quot;,
+     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+     &quot;XThreadsFramesViewSplitterKey&quot;: &quot;0.46689305&quot;,
+-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
++    &quot;git-widget-placeholder&quot;: &quot;Merging main&quot;,
++    &quot;last_opened_file_path&quot;: &quot;C:/Users/studentdot0414/Documents/ProjetSGBD/2_1 - Application console/LocationVoiture/LocationVoiture.sln&quot;,
+     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+@@ -155,7 +142,7 @@
+       <option name="PROJECT_EXE_PATH_TRACKING" value="1" />
+       <option name="PROJECT_ARGUMENTS_TRACKING" value="1" />
+       <option name="PROJECT_WORKING_DIRECTORY_TRACKING" value="1" />
+-      <option name="PROJECT_KIND" value="DotNetCore" />
++      <option name="PROJECT_KIND" value="Unloaded" />
+       <option name="PROJECT_TFM" value="" />
+       <method v="2">
+         <option name="Build" />
+@@ -173,7 +160,17 @@
+       <workItem from="1732208319183" duration="7277000" />
+       <workItem from="1732215656006" duration="1098000" />
+       <workItem from="1732355169022" duration="25038000" />
+-      <workItem from="1732529044428" duration="16789000" />
++      <workItem from="1732529044428" duration="17254000" />
++      <workItem from="1732711011605" duration="473000" />
++      <workItem from="1732712012625" duration="208000" />
++      <workItem from="1732712276385" duration="26000" />
++      <workItem from="1732712325358" duration="319000" />
++      <workItem from="1732712677297" duration="260000" />
++      <workItem from="1732713055228" duration="674000" />
++      <workItem from="1732713765168" duration="661000" />
++      <workItem from="1732782164757" duration="16718000" />
++      <workItem from="1734260181795" duration="363000" />
++      <workItem from="1734261420235" duration="788000" />
+     </task>
+     <task id="LOCAL-00001" summary="add entities">
+       <option name="closed" value="true" />
+Index: LocationVoiture/Presentation/CarController.cs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>namespace LocationVoiture.Presentation;\r\n\r\npublic class CarController\r\n{\r\n    \r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/LocationVoiture/Presentation/CarController.cs b/LocationVoiture/Presentation/CarController.cs
+--- a/LocationVoiture/Presentation/CarController.cs	(revision 4859fa6620fc225aac49ad8738176148531ae75f)
++++ b/LocationVoiture/Presentation/CarController.cs	(date 1734021337816)
+@@ -1,6 +1,53 @@
++using LocationVoiture.bll.Services;
++using LocationVoiture.dal.Entities;
++
+ namespace LocationVoiture.Presentation;
+ 
+ public class CarController
+ {
++    private readonly CategoryController _categoryController;
++    private readonly ModelController _modelController;
++
++    public CarController(CategoryController categoryController, ModelController modelController)
++    {
++        this._categoryController = categoryController;
++        this._modelController = modelController;
++    }
++
++    public void CarMenu()
++    {
++        int choice = 0;
++        
++        while (choice != 9)
++        {
++            DisplayMainOptions();
++            choice = ConsoleAccess.ReadInput<int>("Enter your choice : ");
++            switch (choice)
++            {
++                case 1 : this._categoryController.DisplayMenu();
++                    break;
++                case 2 : this._modelController.DisplayMenu();
++                    break;
++                case 6 : Console.WriteLine("back to menu");
++                    break;
++                default : Console.WriteLine("Invalid choice");
++                    break;
++            }
++        }
++    }
++    
++    
++
++    #region Private methods
++    
++    private void DisplayMainOptions()
++    {
++        ConsoleAccess.CreateScreen("Car management menu");
++        Console.WriteLine("1. Car Category");
++        Console.WriteLine("2. Car Model");
++        Console.WriteLine("9. Back to main menu");
++    }
++    
++    #endregion
+     
+ }
+\ No newline at end of file
+Index: .idea/.idea.LocationVoiture/.idea/indexLayout.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"UserContentModel\">\r\n    <attachedFolders>\r\n      <Path>../../../ProjetSGBD</Path>\r\n    </attachedFolders>\r\n    <explicitIncludes />\r\n    <explicitExcludes />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/.idea.LocationVoiture/.idea/indexLayout.xml b/.idea/.idea.LocationVoiture/.idea/indexLayout.xml
+--- a/.idea/.idea.LocationVoiture/.idea/indexLayout.xml	(revision 4859fa6620fc225aac49ad8738176148531ae75f)
++++ b/.idea/.idea.LocationVoiture/.idea/indexLayout.xml	(date 1734021337779)
+@@ -1,9 +1,7 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <project version="4">
+   <component name="UserContentModel">
+-    <attachedFolders>
+-      <Path>../../../ProjetSGBD</Path>
+-    </attachedFolders>
++    <attachedFolders />
+     <explicitIncludes />
+     <explicitExcludes />
+   </component>
+Index: LocationVoiture.bll/Services/ModelService.cs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/LocationVoiture.bll/Services/ModelService.cs b/LocationVoiture.bll/Services/ModelService.cs
+new file mode 100644
+--- /dev/null	(date 1734021337787)
++++ b/LocationVoiture.bll/Services/ModelService.cs	(date 1734021337787)
+@@ -0,0 +1,74 @@
++using LocationVoiture.dal.Entities;
++using LocationVoiture.dal.Repositories.Interface;
++
++namespace LocationVoiture.bll.Services;
++
++public class ModelService :IModelService
++{
++    private readonly IModelRepository _modelRepository;
++
++    public ModelService(IModelRepository modelRepository)
++    {
++        this._modelRepository = modelRepository;
++    }
++    
++    public List<Model> GetAll()
++    {
++        try
++        {
++            return this._modelRepository.GetAll();
++        }
++        catch (Exception e)
++        {
++            throw new Exception("Model service error : " + e.Message);
++        }
++    }
++
++    public Model? GetById(int id)
++    {
++        try
++        {
++            return this._modelRepository.GetOneById(id);
++        }
++        catch (Exception e)
++        {
++            throw new Exception("Model service error : " + e.Message);
++        }
++    }
++
++    public Model? Update(Model value)
++    {
++        try
++        {
++            return this._modelRepository.Update(value);
++        }
++        catch (Exception e)
++        {
++            throw new Exception("Model service error : " + e.Message);
++        }
++    }
++
++    public bool Delete(Model value)
++    {
++        try
++        {
++            return this._modelRepository.Delete(value);
++        }
++        catch (Exception e)
++        {
++            throw new Exception("Model service error : " + e.Message);
++        }
++    }
++
++    public Model? Create(Model value)
++    {
++        try
++        {
++            return this._modelRepository.Create(value);
++        }
++        catch (Exception e)
++        {
++            throw new Exception("Model service error : " + e.Message);
++        }
++    }
++}
+\ No newline at end of file
+Index: LocationVoiture.bll/Services/CategoryService.cs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/LocationVoiture.bll/Services/CategoryService.cs b/LocationVoiture.bll/Services/CategoryService.cs
+new file mode 100644
+--- /dev/null	(date 1734021337785)
++++ b/LocationVoiture.bll/Services/CategoryService.cs	(date 1734021337785)
+@@ -0,0 +1,74 @@
++using LocationVoiture.dal.Entities;
++using LocationVoiture.dal.Repositories.Interface;
++
++namespace LocationVoiture.bll.Services;
++
++public class CategoryService : ICategoryService
++{
++    private readonly ICategoryRepository _categoryRepository;
++
++    public CategoryService(ICategoryRepository categoryRepository)
++    {
++        this._categoryRepository = categoryRepository;
++    }
++    
++    public List<Category> GetAll()
++    {
++        try
++        {
++            return this._categoryRepository.GetAll();
++        }
++        catch (Exception e)
++        {
++            throw new Exception("Category service error : " + e.Message);
++        }
++    }
++
++    public Category? GetById(int id)
++    {
++        try
++        {
++            return this._categoryRepository.GetOneById(id);
++        }
++        catch (Exception e)
++        {
++            throw new Exception("Category service error : " + e.Message);
++        }
++    }
++
++    public Category? Update(Category value)
++    {
++        try
++        {
++            return this._categoryRepository.Update(value);
++        }
++        catch (Exception e)
++        {
++            throw new Exception("Category service error : " + e.Message);
++        }
++    }
++
++    public bool Delete(Category value)
++    {
++        try
++        {
++            return this._categoryRepository.Delete(value);
++        }
++        catch (Exception e)
++        {
++            throw new Exception("Category service error : " + e.Message);
++        }
++    }
++
++    public Category? Create(Category value)
++    {
++        try
++        {
++            return this._categoryRepository.Create(value);
++        }
++        catch (Exception e)
++        {
++            throw new Exception("Category service error : " + e.Message);
++        }
++    }
++}
+\ No newline at end of file
+Index: LocationVoiture/Presentation/ClientController.cs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>using System.Text.RegularExpressions;\r\nusing LocationVoiture.bll.Services;\r\nusing LocationVoiture.dal.CustomException;\r\nusing LocationVoiture.dal.Entities;\r\n\r\nnamespace LocationVoiture.Presentation;\r\n\r\npublic class ClientController\r\n{\r\n    private readonly IClientService _clientService;\r\n    \r\n    public ClientController(IClientService clientService)\r\n    {\r\n        _clientService = clientService;\r\n    }\r\n    public void ClientMenu()\r\n    {\r\n        int choice = 0;\r\n        \r\n        while (choice != 6)\r\n        {\r\n            DefaultDisplay();\r\n            choice = ConsoleAccess.ReadInput<int>(\"Enter your choice : \");\r\n            switch (choice)\r\n            {\r\n                case 1 : GetAllClient();\r\n                    break;\r\n                case 2 : GetOneClient();\r\n                    break;\r\n                case 3 : UpdateClient();\r\n                    break;\r\n                case 4 : CreateClient();\r\n                    break;\r\n                case 5 : DeleteClient();\r\n                    break;\r\n                case 6 : Console.WriteLine(\"back to menu\");\r\n                    break;\r\n                default : Console.WriteLine(\"Invalid choice\");\r\n                    break;\r\n            }\r\n        }\r\n    }\r\n    \r\n    #region Crud\r\n    \r\n    private void GetAllClient()\r\n    {\r\n        ConsoleAccess.CreateScreen(\"All client\");\r\n        DisplayHeader();\r\n        try\r\n        { \r\n            List<Client> clients = _clientService.GetAll();\r\n            DisplayClient(clients);\r\n            ConsoleAccess.Wait();\r\n        }\r\n        catch (Exception e)\r\n        {\r\n            Console.WriteLine(e.Message);\r\n        }\r\n    }\r\n\r\n    private void GetOneById(int id)\r\n    {\r\n        try\r\n        { \r\n            Client? client = _clientService.GetById(id);\r\n\r\n            if (client is not null)\r\n            {\r\n                ConsoleAccess.CreateScreen($\"Client {client.Id}\");\r\n                DisplayHeader();\r\n                DisplayClient(client);\r\n            }\r\n            else\r\n            {\r\n                Console.WriteLine(\"Client not found\");\r\n            }\r\n            \r\n            ConsoleAccess.Wait();\r\n        }\r\n        catch (Exception e)\r\n        {\r\n            Console.WriteLine(e.Message);\r\n        }\r\n    }\r\n    \r\n    private void GetOneByName(string name)\r\n    {\r\n        try\r\n        { \r\n            Client? client = _clientService.GetOneByName(name);\r\n\r\n            if (client is not null)\r\n            {\r\n                ConsoleAccess.CreateScreen($\"Client {client.Id}\");\r\n                DisplayHeader();\r\n                DisplayClient(client);\r\n            }\r\n            else\r\n            {\r\n                Console.WriteLine(\"Client not found\");\r\n            }\r\n            \r\n            ConsoleAccess.Wait();\r\n        }\r\n        catch (Exception e)\r\n        {\r\n            Console.WriteLine(e.Message);\r\n        }\r\n    }\r\n\r\n    private void GetOneClient()\r\n    {\r\n        ConsoleAccess.CreateScreen(\"Client research\");\r\n        try\r\n        {\r\n            int researchType = ConsoleAccess.ReadInput<int>(\"Would you like to search by id (1) or by name (2) ? \");\r\n\r\n            switch (researchType)\r\n            {\r\n                case 1 : GetOneById(ConsoleAccess.ReadInput<int>(\"Enter client's id : \"));\r\n                    break;\r\n                case 2 : GetOneByName(ConsoleAccess.ReadInput<string>(\"Enter client's name : \"));\r\n                    break;\r\n                default: Console.WriteLine(\"Invalid choice\");\r\n                    ConsoleAccess.Wait();\r\n                    break;\r\n            }\r\n        }\r\n        catch (Exception e)\r\n        {\r\n            Console.WriteLine(\"Invalid choice\" + e.Message);\r\n        }\r\n    }\r\n\r\n    private Client? CreateClient()\r\n    {\r\n        Client? newClient;\r\n        string lastname = \"\", firstname = \"\", email = \"\", street = \"\", postalCode = \"\", city = \"\", country = \"\", drivingLicense = \"\";\r\n        DateTime birthdate = new DateTime();\r\n        bool emailSuccess ;\r\n        \r\n        ConsoleAccess.CreateScreen(\"Create new client\");\r\n        \r\n        try\r\n        {\r\n            lastname = CheckString(lastname, \"Lastname\");\r\n            firstname = CheckString(firstname, \"Firstname\");\r\n            \r\n            do\r\n            {\r\n                email = ConsoleAccess.ReadInput<string>(\"Email : \");\r\n                emailSuccess = new Regex(\"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\\\.[a-zA-Z]{2,}$\").Match(email).Success;\r\n                if(!emailSuccess)\r\n                    Console.WriteLine(\"Please enter a valid email address\");\r\n            } while (!emailSuccess);\r\n            \r\n            street = CheckString(street, \"Street\");\r\n            postalCode = CheckString(postalCode, \"Postal Code : \");\r\n            city = CheckString(city, \"City : \");\r\n            country = CheckString(country, \"Country : \");\r\n            drivingLicense = CheckString(drivingLicense, \"Driving license : \");\r\n            \r\n            while (!DateTime.TryParse(ConsoleAccess.ReadInput<string>(\"Birthdate : \"), out birthdate))\r\n                Console.WriteLine(\"Invalid date format. Please try again.\");\r\n            \r\n            newClient = new Client\r\n            {\r\n                Lastname = lastname,\r\n                Firstname = firstname,\r\n                Email = email,\r\n                Address = new Address\r\n                {\r\n                    Street = street,\r\n                    PostalCode = postalCode,\r\n                    City = city,\r\n                    Country = country\r\n                },\r\n                DrivingLicense = drivingLicense,\r\n                BirthDate = birthdate\r\n            };\r\n\r\n            Client? c = this._clientService.Create(newClient);\r\n\r\n            if (c is not null)\r\n            {\r\n                Console.WriteLine(\"Client created successfully\");\r\n                DisplayHeader();\r\n                DisplayClient(c);\r\n            }\r\n            else\r\n                Console.WriteLine(\"An error occured during the creation of the client\");\r\n            \r\n            ConsoleAccess.Wait();\r\n        }\r\n        catch (Exception e)\r\n        {\r\n            Console.WriteLine(e.Message);\r\n            ConsoleAccess.Wait();\r\n        }\r\n        return null;\r\n    }\r\n\r\n    private Client? UpdateClient()\r\n    {\r\n        int id;\r\n        bool emailSuccess;\r\n        DateTime birthdate;\r\n        ConsoleAccess.CreateScreen(\"Update client\");\r\n\r\n        try\r\n        {\r\n            do\r\n            {\r\n                id = ConsoleAccess.ReadInput<int>(\"Enter client's id : \");\r\n            } while (id <= 0);\r\n        \r\n            Client? client = _clientService.GetById(id);\r\n\r\n            if (client is not null)\r\n            {\r\n                DisplayHeader();\r\n                DisplayClient(client);\r\n                \r\n                client.Lastname = CheckString(client.Lastname, \"Lastname\");\r\n                client.Firstname = CheckString(client.Firstname, \"Firstname\");\r\n            \r\n                do\r\n                {\r\n                    client.Email = ConsoleAccess.ReadInput<string>(\"Email : \");\r\n                    emailSuccess = new Regex(\"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\\\.[a-zA-Z]{2,}$\").Match(client.Email).Success;\r\n                    if(!emailSuccess)\r\n                        Console.WriteLine(\"Please enter a valid email address\");\r\n                } while (!emailSuccess);\r\n            \r\n                client.Address.Street = CheckString(client.Address.Street, \"Street\");\r\n                client.Address.PostalCode = CheckString(client.Address.PostalCode, \"Postal Code : \");\r\n                client.Address.City = CheckString(client.Address.City, \"City : \");\r\n                client.Address.Country = CheckString(client.Address.Country, \"Country : \");\r\n                client.DrivingLicense = CheckString(client.DrivingLicense, \"Driving license : \");\r\n                \r\n                \r\n                while (!DateTime.TryParse(ConsoleAccess.ReadInput<string>(\"Birthdate : \"), out birthdate))\r\n                    Console.WriteLine(\"Invalid date format. Please try again.\");\r\n            \r\n                client.BirthDate = birthdate;\r\n                \r\n                DisplayClient(client);\r\n                return this._clientService.Update(client);\r\n            }\r\n            else\r\n            {\r\n                Console.WriteLine(\"Client not found\");\r\n                return null;\r\n            }\r\n        }\r\n        catch (Exception e)\r\n        {\r\n            Console.WriteLine(e);\r\n            return null;\r\n        }\r\n    }\r\n\r\n    private bool DeleteClient()\r\n    {\r\n        int id;\r\n        \r\n        ConsoleAccess.CreateScreen(\"Delete client\");\r\n        \r\n        do\r\n        {\r\n            id = ConsoleAccess.ReadInput<int>(\"Enter client's id : \");\r\n        } while (id <= 0);\r\n\r\n        try\r\n        {\r\n            Client? client = _clientService.GetById(id);\r\n\r\n            if (client is not null)\r\n            {\r\n                DisplayHeader();\r\n                DisplayClient(client);\r\n                Console.Write(\"Are you sure you want to delete this client? (y/n)\");\r\n                string choice = Console.ReadLine().ToString().ToLower();\r\n                switch (choice)\r\n                {\r\n                    case \"y\" : _clientService.Delete(client);\r\n                        Console.WriteLine(\"Client deleted\");\r\n                        ConsoleAccess.Wait();\r\n                        return true;\r\n                    case \"n\": break;\r\n                    default: Console.WriteLine(\"Invalid choice\");\r\n                        break;\r\n                }\r\n            }\r\n            else\r\n                Console.WriteLine(\"Client not found\");\r\n            \r\n        }\r\n        catch (Exception e)\r\n        {\r\n            Console.WriteLine(e);\r\n        }\r\n\r\n        return false;\r\n    }\r\n    \r\n    #endregion\r\n    \r\n    #region private methods\r\n    private void DefaultDisplay()\r\n    {\r\n        ConsoleAccess.CreateScreen(\"Client menu\");\r\n        Console.WriteLine(\"1. All clients\");\r\n        Console.WriteLine(\"2. Research one client\");\r\n        Console.WriteLine(\"3. Update client\");\r\n        Console.WriteLine(\"4. Add new client\");\r\n        Console.WriteLine(\"5. Delete client\");\r\n        Console.WriteLine(\"6. Back to main menu\");\r\n    }\r\n\r\n    private void DisplayHeader()\r\n    {\r\n        Console.WriteLine(\"ID\".PadRight(5) + \r\n                          \"Last Name\".PadRight(15) + \r\n                          \"First Name\".PadRight(15) + \r\n                          \"Email\".PadRight(30) + \r\n                          \"Street\".PadRight(20) + \r\n                          \"PostalCode\".PadRight(12) + \r\n                          \"City\".PadRight(15) + \r\n                          \"Country\".PadRight(15) + \r\n                          \"License\");\r\n        Console.WriteLine(new string('-', 130));\r\n    }\r\n    \r\n    private void DisplayClient(Client client)\r\n    {\r\n        Console.WriteLine(client.Id.ToString().PadRight(5) +\r\n                          client.Lastname.PadRight(15) +\r\n                          client.Firstname.PadRight(15) +\r\n                          client.Email.PadRight(30) +\r\n                          client.Address.Street.PadRight(20) +\r\n                          client.Address.PostalCode.PadRight(12) +\r\n                          client.Address.City.PadRight(15) +\r\n                          client.Address.Country.PadRight(15) +\r\n                          client.DrivingLicense);\r\n    }\r\n\r\n    private void DisplayClient(List<Client> clients)\r\n    {\r\n        foreach (var client in clients)\r\n            DisplayClient(client);\r\n    }\r\n\r\n    private string CheckString(string value, string fieldName)\r\n    {\r\n        do\r\n        {\r\n            value = ConsoleAccess.ReadInput<string>($\"{fieldName} : \");\r\n            if(string.IsNullOrEmpty(value.Trim()))\r\n                Console.WriteLine($\"{fieldName} is required\");\r\n        } while (string.IsNullOrEmpty(value.Trim()));\r\n\r\n        return value.ToLower();\r\n    }\r\n    \r\n    #endregion\r\n    \r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/LocationVoiture/Presentation/ClientController.cs b/LocationVoiture/Presentation/ClientController.cs
+--- a/LocationVoiture/Presentation/ClientController.cs	(revision 4859fa6620fc225aac49ad8738176148531ae75f)
++++ b/LocationVoiture/Presentation/ClientController.cs	(date 1734021337817)
+@@ -13,13 +13,14 @@
+     {
+         _clientService = clientService;
+     }
++    
+     public void ClientMenu()
+     {
+         int choice = 0;
+         
+         while (choice != 6)
+         {
+-            DefaultDisplay();
++            DisplayOptions();
+             choice = ConsoleAccess.ReadInput<int>("Enter your choice : ");
+             switch (choice)
+             {
+@@ -144,8 +145,8 @@
+         
+         try
+         {
+-            lastname = CheckString(lastname, "Lastname");
+-            firstname = CheckString(firstname, "Firstname");
++            lastname = ValueControl.CheckString(lastname, "Lastname");
++            firstname = ValueControl.CheckString(firstname, "Firstname");
+             
+             do
+             {
+@@ -155,11 +156,11 @@
+                     Console.WriteLine("Please enter a valid email address");
+             } while (!emailSuccess);
+             
+-            street = CheckString(street, "Street");
+-            postalCode = CheckString(postalCode, "Postal Code : ");
+-            city = CheckString(city, "City : ");
+-            country = CheckString(country, "Country : ");
+-            drivingLicense = CheckString(drivingLicense, "Driving license : ");
++            street = ValueControl.CheckString(street, "Street");
++            postalCode = ValueControl.CheckString(postalCode, "Postal Code : ");
++            city = ValueControl.CheckString(city, "City : ");
++            country = ValueControl.CheckString(country, "Country : ");
++            drivingLicense = ValueControl.CheckString(drivingLicense, "Driving license : ");
+             
+             while (!DateTime.TryParse(ConsoleAccess.ReadInput<string>("Birthdate : "), out birthdate))
+                 Console.WriteLine("Invalid date format. Please try again.");
+@@ -222,8 +223,8 @@
+                 DisplayHeader();
+                 DisplayClient(client);
+                 
+-                client.Lastname = CheckString(client.Lastname, "Lastname");
+-                client.Firstname = CheckString(client.Firstname, "Firstname");
++                client.Lastname = ValueControl.CheckString(client.Lastname, "Lastname");
++                client.Firstname = ValueControl.CheckString(client.Firstname, "Firstname");
+             
+                 do
+                 {
+@@ -233,11 +234,11 @@
+                         Console.WriteLine("Please enter a valid email address");
+                 } while (!emailSuccess);
+             
+-                client.Address.Street = CheckString(client.Address.Street, "Street");
+-                client.Address.PostalCode = CheckString(client.Address.PostalCode, "Postal Code : ");
+-                client.Address.City = CheckString(client.Address.City, "City : ");
+-                client.Address.Country = CheckString(client.Address.Country, "Country : ");
+-                client.DrivingLicense = CheckString(client.DrivingLicense, "Driving license : ");
++                client.Address.Street = ValueControl.CheckString(client.Address.Street, "Street");
++                client.Address.PostalCode = ValueControl.CheckString(client.Address.PostalCode, "Postal Code : ");
++                client.Address.City = ValueControl.CheckString(client.Address.City, "City : ");
++                client.Address.Country = ValueControl.CheckString(client.Address.Country, "Country : ");
++                client.DrivingLicense = ValueControl.CheckString(client.DrivingLicense, "Driving license : ");
+                 
+                 
+                 while (!DateTime.TryParse(ConsoleAccess.ReadInput<string>("Birthdate : "), out birthdate))
+@@ -308,7 +309,7 @@
+     #endregion
+     
+     #region private methods
+-    private void DefaultDisplay()
++    private void DisplayOptions()
+     {
+         ConsoleAccess.CreateScreen("Client menu");
+         Console.WriteLine("1. All clients");
+@@ -318,7 +319,7 @@
+         Console.WriteLine("5. Delete client");
+         Console.WriteLine("6. Back to main menu");
+     }
+-
++    
+     private void DisplayHeader()
+     {
+         Console.WriteLine("ID".PadRight(5) + 
+@@ -351,19 +352,6 @@
+         foreach (var client in clients)
+             DisplayClient(client);
+     }
+-
+-    private string CheckString(string value, string fieldName)
+-    {
+-        do
+-        {
+-            value = ConsoleAccess.ReadInput<string>($"{fieldName} : ");
+-            if(string.IsNullOrEmpty(value.Trim()))
+-                Console.WriteLine($"{fieldName} is required");
+-        } while (string.IsNullOrEmpty(value.Trim()));
+-
+-        return value.ToLower();
+-    }
+-    
+     #endregion
+     
+ }
+\ No newline at end of file
+Index: LocationVoiture.bll/obj/Debug/net8.0/LocationVoiture.bll.AssemblyInfo.cs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>//------------------------------------------------------------------------------\r\n// <auto-generated>\r\n//     This code was generated by a tool.\r\n//\r\n//     Changes to this file may cause incorrect behavior and will be lost if\r\n//     the code is regenerated.\r\n// </auto-generated>\r\n//------------------------------------------------------------------------------\r\n\r\nusing System;\r\nusing System.Reflection;\r\n\r\n[assembly: System.Reflection.AssemblyCompanyAttribute(\"LocationVoiture.bll\")]\r\n[assembly: System.Reflection.AssemblyConfigurationAttribute(\"Debug\")]\r\n[assembly: System.Reflection.AssemblyFileVersionAttribute(\"1.0.0.0\")]\r\n[assembly: System.Reflection.AssemblyInformationalVersionAttribute(\"1.0.0+fcbc609e542c5039754178f51d48f91e9664bf82\")]\r\n[assembly: System.Reflection.AssemblyProductAttribute(\"LocationVoiture.bll\")]\r\n[assembly: System.Reflection.AssemblyTitleAttribute(\"LocationVoiture.bll\")]\r\n[assembly: System.Reflection.AssemblyVersionAttribute(\"1.0.0.0\")]\r\n\r\n// Généré par la classe MSBuild WriteCodeFragment.\r\n\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/LocationVoiture.bll/obj/Debug/net8.0/LocationVoiture.bll.AssemblyInfo.cs b/LocationVoiture.bll/obj/Debug/net8.0/LocationVoiture.bll.AssemblyInfo.cs
+--- a/LocationVoiture.bll/obj/Debug/net8.0/LocationVoiture.bll.AssemblyInfo.cs	(revision 4859fa6620fc225aac49ad8738176148531ae75f)
++++ b/LocationVoiture.bll/obj/Debug/net8.0/LocationVoiture.bll.AssemblyInfo.cs	(date 1734262186503)
+@@ -13,7 +13,7 @@
+ [assembly: System.Reflection.AssemblyCompanyAttribute("LocationVoiture.bll")]
+ [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
+ [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
+-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+fcbc609e542c5039754178f51d48f91e9664bf82")]
++[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+12587fd174bf08dd92f816872eadbcabdd4d725c")]
+ [assembly: System.Reflection.AssemblyProductAttribute("LocationVoiture.bll")]
+ [assembly: System.Reflection.AssemblyTitleAttribute("LocationVoiture.bll")]
+ [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
+Index: LocationVoiture.bll/Services/Interface/IModelService.cs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/LocationVoiture.bll/Services/Interface/IModelService.cs b/LocationVoiture.bll/Services/Interface/IModelService.cs
+new file mode 100644
+--- /dev/null	(date 1734021337787)
++++ b/LocationVoiture.bll/Services/Interface/IModelService.cs	(date 1734021337787)
+@@ -0,0 +1,9 @@
++using LocationVoiture.dal.Entities;
++using LocationVoiture.dal.Repositories;
++
++namespace LocationVoiture.bll.Services;
++
++public interface IModelService : IService<int, Model>
++{
++    
++}
+\ No newline at end of file
+Index: LocationVoiture.bll/Services/Interface/ICategoryService.cs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/LocationVoiture.bll/Services/Interface/ICategoryService.cs b/LocationVoiture.bll/Services/Interface/ICategoryService.cs
+new file mode 100644
+--- /dev/null	(date 1734021337786)
++++ b/LocationVoiture.bll/Services/Interface/ICategoryService.cs	(date 1734021337786)
+@@ -0,0 +1,8 @@
++using LocationVoiture.dal.Entities;
++
++namespace LocationVoiture.bll.Services;
++
++public interface ICategoryService : IService<int, Category>
++{
++    
++}
+\ No newline at end of file
+Index: LocationVoiture.dal/Repositories/CategoryRepository.cs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/LocationVoiture.dal/Repositories/CategoryRepository.cs b/LocationVoiture.dal/Repositories/CategoryRepository.cs
+new file mode 100644
+--- /dev/null	(date 1734021337802)
++++ b/LocationVoiture.dal/Repositories/CategoryRepository.cs	(date 1734021337802)
+@@ -0,0 +1,191 @@
++using LocationVoiture.dal.CustomException;
++using LocationVoiture.dal.Entities;
++using LocationVoiture.dal.Repositories.Interface;
++using Npgsql;
++
++namespace LocationVoiture.dal.Repositories;
++
++public class CategoryRepository : ICategoryRepository
++{
++    private readonly DBAccess _connection;
++    
++    public CategoryRepository(DBAccess connection)
++    {
++        _connection = connection; 
++    }
++    
++    public List<Category> GetAll()
++    {
++        List<Category> categories = new List<Category>();
++        NpgsqlCommand command;
++
++        try
++        {
++            _connection.OpenConnection();
++
++            command = new NpgsqlCommand(@"SELECT id, name, daily_rate
++                                        FROM category ORDER BY id", _connection._SqlConnection);
++
++            var reader = command.ExecuteReader();
++
++            while (reader.Read())
++            {
++                categories.Add(new Category
++                {
++                    Id = (int)reader["id"],
++                    Name = (string)reader["name"],
++                    DailyRate = (decimal)reader["daily_rate"]
++                });
++            }
++        }
++        catch (Exception e)
++        {
++            throw new DBAccessException("Error while retrieving category", e.ToString());
++        }
++        finally
++        {
++            _connection.CloseConnection();
++        }
++
++        return categories;
++    }
++
++    public Category? GetOneById(int id)
++    {
++        Category? category = null;
++        NpgsqlCommand command;
++
++        try
++        {
++            _connection.OpenConnection();
++
++            command = new NpgsqlCommand(@"SELECT id, name, daily_rate FROM CATEGORY WHERE id = @id"
++                , _connection._SqlConnection);
++
++            command.Parameters.AddWithValue("@id", id);
++
++            NpgsqlDataReader reader = command.ExecuteReader();
++
++            if (reader.Read())
++            {
++                category = new Category
++                {
++                    Id = (int)reader["id"],
++                    Name = (string)reader["name"],
++                    DailyRate = (decimal)reader["daily_rate"]
++                };
++            }
++        }
++        catch (Exception e)
++        {
++            throw new DBAccessException("Error while trying to get category", e.ToString());
++        }
++        finally
++        {
++            _connection.CloseConnection();
++        }
++
++        return category;
++    }
++
++    public Category? Create(Category entity)
++    {
++        int insert = 0;
++        NpgsqlCommand command;
++        
++        try
++        {
++            _connection.OpenConnection();
++
++            command = new NpgsqlCommand(
++                @"INSERT INTO CATEGORY(name, daily_rate) VALUES(@name, @daily_rate) RETURNING id"
++                , _connection._SqlConnection);
++
++            command.Parameters.AddWithValue("@name", entity.Name);
++            command.Parameters.AddWithValue("@daily_rate", entity.DailyRate);
++            
++            var result = command.ExecuteScalar();
++            if (result == null || result == DBNull.Value)
++                throw new Exception("Failed to insert the category.");
++            
++            insert = Convert.ToInt32(result);
++        }
++        catch (Exception e)
++        {
++            throw new DBAccessException("Error while inserting category", e.ToString());
++        }
++        finally
++        {
++            _connection.CloseConnection();
++        }
++
++        return insert != 0 ? GetOneById(insert) : null;
++    }
++
++    public Category? Update(Category entity)
++    {
++        NpgsqlCommand command;
++
++        try
++        {
++            if (GetOneById(entity.Id) is not null)
++            {
++                _connection.OpenConnection();
++
++                command = new NpgsqlCommand(@"UPDATE CATEGORY SET name = @name, daily_rate = @daily_rate WHERE id = @id"
++                    , _connection._SqlConnection);
++
++                command.Parameters.AddWithValue("@id", entity.Id);
++                command.Parameters.AddWithValue("@name", entity.Name);
++                command.Parameters.AddWithValue("@daily_rate", entity.DailyRate);
++
++                
++                int insert = command.ExecuteNonQuery();
++
++                return insert == 1 ? GetOneById(entity.Id) : null;
++            }
++            else
++                throw new Exception("category not found");
++        }
++        catch (Exception e)
++        {
++            throw new DBAccessException("Error while updating category", e.ToString());
++        }
++        finally
++        {
++            _connection.CloseConnection();
++        }
++    }
++
++    public bool Delete(Category entity)
++    {
++        NpgsqlCommand command;
++
++        try
++        {
++            _connection.OpenConnection();
++            
++            command = new NpgsqlCommand(@"DELETE FROM CATEGORY WHERE id = @id"
++                , _connection._SqlConnection);
++            
++            command.Parameters.AddWithValue("@id", entity.Id);
++            
++            if(GetOneById(entity.Id) is not null)
++            {
++                int insert = command.ExecuteNonQuery();
++
++                return insert != 0;
++            }
++            else
++                throw new Exception("Category not found");
++        }
++        catch (Exception e)
++        {
++            throw new DBAccessException("Error while deleting category", e.ToString());
++        }
++        finally
++        {
++            _connection.CloseConnection();
++        }
++    }
++}
+\ No newline at end of file
+Index: LocationVoiture.dal/Repositories/ModelRepository.cs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/LocationVoiture.dal/Repositories/ModelRepository.cs b/LocationVoiture.dal/Repositories/ModelRepository.cs
+new file mode 100644
+--- /dev/null	(date 1734021337804)
++++ b/LocationVoiture.dal/Repositories/ModelRepository.cs	(date 1734021337804)
+@@ -0,0 +1,210 @@
++using LocationVoiture.dal.CustomException;
++using LocationVoiture.dal.Entities;
++using LocationVoiture.dal.Repositories.Interface;
++using Npgsql;
++using Exception = System.Exception;
++
++namespace LocationVoiture.dal.Repositories;
++
++public class ModelRepository : IModelRepository
++{
++    private readonly DBAccess _connection;
++
++    public ModelRepository()
++    {
++        _connection = new DBAccess();
++    }
++    
++    public List<Model> GetAll()
++    {
++        List<Model> models = new List<Model>();
++        NpgsqlCommand command = null;
++
++        try
++        {
++            _connection.OpenConnection();
++            command = new NpgsqlCommand(
++                @"SELECT m.ID, m.NAME, m.BRAND, m.SEAT_NUMBER, CATEGORY.ID
++                          FROM MODEL m
++                          LEFT JOIN CATEGORY
++                          ON m.CATEGORYID = CATEGORY.ID",
++                _connection._SqlConnection
++            );
++
++            NpgsqlDataReader reader = command.ExecuteReader();
++
++            while (reader.Read())
++            {
++                Model m = new Model
++                {
++                    Id = (int)reader["id"],
++                    Name = (string)reader["name"],
++                    Brand = (string)reader["seat_number"],
++                    SeatNumber = (int)reader["seat_number"],
++                    CategoryId = (int)reader["category_id"]
++                };
++                models.Add(m);
++            }
++        }
++        catch (Exception e)
++        {
++            throw new DBAccessException("An error occurred while getting all models: ", e.Message);
++        }
++        finally
++        {
++            command?.Dispose();
++            _connection?.CloseConnection();
++        }
++
++        return models;
++    }
++
++    public Model? GetOneById(int id)
++    {
++        Model? model = null;
++        NpgsqlCommand command;
++
++        try
++        {
++            _connection.OpenConnection();
++
++            command = new NpgsqlCommand(@"SELECT m.ID, m.NAME, m.BRAND, m.SEAT_NUMBER, CATEGORY.ID
++                          FROM MODEL m
++                          LEFT JOIN CATEGORY
++                          ON m.CATEGORYID = CATEGORY.ID
++                          WHERE m.ID = @id"
++                , _connection._SqlConnection);
++
++            command.Parameters.AddWithValue("@id", id);
++
++            NpgsqlDataReader reader = command.ExecuteReader();
++
++            if (reader.Read())
++            {
++                model = new Model
++                {
++                    Id = (int)reader["id"],
++                    Name = (string)reader["name"],
++                    Brand = (string)reader["seat_number"],
++                    SeatNumber = (int)reader["seat_number"],
++                    CategoryId = (int)reader["category_id"]
++                };
++            }
++        }
++        catch (Exception e)
++        {
++            throw new DBAccessException("Error while trying to get model", e.ToString());
++        }
++        finally
++        {
++            _connection.CloseConnection();
++        }
++
++        return model;
++    }
++
++    public Model? Create(Model entity)
++    {
++        int insert = 0;
++        NpgsqlCommand command;
++        
++        try
++        {
++            _connection.OpenConnection();
++
++            command = new NpgsqlCommand(
++                @"INSERT INTO MODEL(NAME, BRAND, SEAT_NUMBER, CATEGORY_ID) VALUES(@name, @brand, @seatNumber, @categoryId) RETURNING id"
++                , _connection._SqlConnection);
++
++            command.Parameters.AddWithValue("@name", entity.Name);
++            command.Parameters.AddWithValue("@brand", entity.Brand);
++            command.Parameters.AddWithValue("@seatNumber", entity.SeatNumber);
++            command.Parameters.AddWithValue("@categoryId", entity.CategoryId);
++            
++            var result = command.ExecuteScalar();
++            if (result == null || result == DBNull.Value)
++                throw new Exception("Failed to insert the model.");
++            
++            insert = Convert.ToInt32(result);
++        }
++        catch (Exception e)
++        {
++            throw new DBAccessException("Error while inserting model", e.ToString());
++        }
++        finally
++        {
++            _connection.CloseConnection();
++        }
++
++        return insert != 0 ? GetOneById(insert) : null;
++    }
++
++    public Model? Update(Model entity)
++    {
++        NpgsqlCommand command;
++
++        try
++        {
++            if (GetOneById(entity.Id) is not null)
++            {
++                _connection.OpenConnection();
++
++                command = new NpgsqlCommand(@"UPDATE MODEL SET name = @name, BRAND = @brand, SEAT_NUMBER = @seatNumber, CATEGORY_ID = @categoryId 
++             WHERE id = @id"
++                    , _connection._SqlConnection);
++
++                command.Parameters.AddWithValue("@id", entity.Id);
++                command.Parameters.AddWithValue("@name", entity.Name);
++                command.Parameters.AddWithValue("@brand", entity.Brand);
++                command.Parameters.AddWithValue("@seatNumber", entity.SeatNumber);
++                command.Parameters.AddWithValue("@categoryId", entity.CategoryId);
++                
++                int insert = command.ExecuteNonQuery();
++
++                return insert == 1 ? GetOneById(entity.Id) : null;
++            }
++            else
++                throw new Exception("model not found");
++        }
++        catch (Exception e)
++        {
++            throw new DBAccessException("Error while updating model", e.ToString());
++        }
++        finally
++        {
++            _connection.CloseConnection();
++        }
++    }
++
++    public bool Delete(Model entity)
++    {
++        NpgsqlCommand command;
++
++        try
++        {
++            _connection.OpenConnection();
++            
++            command = new NpgsqlCommand(@"DELETE FROM MODEL WHERE id = @id"
++                , _connection._SqlConnection);
++            
++            command.Parameters.AddWithValue("@id", entity.Id);
++            
++            if(GetOneById(entity.Id) is not null)
++            {
++                int insert = command.ExecuteNonQuery();
++
++                return insert != 0;
++            }
++            else
++                throw new Exception("Model not found");
++        }
++        catch (Exception e)
++        {
++            throw new DBAccessException("Error while deleting model", e.ToString());
++        }
++        finally
++        {
++            _connection.CloseConnection();
++        }
++    }
++}
+\ No newline at end of file
+Index: LocationVoiture.dal/Repositories/Interface/ICategoryRepository.cs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/LocationVoiture.dal/Repositories/Interface/ICategoryRepository.cs b/LocationVoiture.dal/Repositories/Interface/ICategoryRepository.cs
+new file mode 100644
+--- /dev/null	(date 1734021337804)
++++ b/LocationVoiture.dal/Repositories/Interface/ICategoryRepository.cs	(date 1734021337804)
+@@ -0,0 +1,7 @@
++using LocationVoiture.dal.Entities;
++
++namespace LocationVoiture.dal.Repositories.Interface;
++
++public interface ICategoryRepository : IRepository<int, Category>
++{
++}
+\ No newline at end of file
+Index: LocationVoiture.dal/Repositories/Interface/IModelRepository.cs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/LocationVoiture.dal/Repositories/Interface/IModelRepository.cs b/LocationVoiture.dal/Repositories/Interface/IModelRepository.cs
+new file mode 100644
+--- /dev/null	(date 1734021337804)
++++ b/LocationVoiture.dal/Repositories/Interface/IModelRepository.cs	(date 1734021337804)
+@@ -0,0 +1,7 @@
++using LocationVoiture.dal.Entities;
++
++namespace LocationVoiture.dal.Repositories.Interface;
++
++public interface IModelRepository :IRepository<int, Model>
++{
++}
+\ No newline at end of file
+Index: LocationVoiture.dal/Entities/Model.cs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>namespace LocationVoiture.dal.Entities;\r\n\r\npublic class Model\r\n{\r\n    public required int Id { get; set; }\r\n    public required string Name { get; set; }\r\n    public required string Brand { get; set; }\r\n    public required int SeatNumber { get; set; }\r\n    public required int CategoryId { get; set; }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/LocationVoiture.dal/Entities/Model.cs b/LocationVoiture.dal/Entities/Model.cs
+--- a/LocationVoiture.dal/Entities/Model.cs	(revision 4859fa6620fc225aac49ad8738176148531ae75f)
++++ b/LocationVoiture.dal/Entities/Model.cs	(date 1734021337802)
+@@ -2,7 +2,7 @@
+ 
+ public class Model
+ {
+-    public required int Id { get; set; }
++    public int Id { get; set; }
+     public required string Name { get; set; }
+     public required string Brand { get; set; }
+     public required int SeatNumber { get; set; }
+Index: LocationVoiture.dal/Entities/Category.cs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>namespace LocationVoiture.dal.Entities;\r\n\r\npublic class Category\r\n{\r\n    public required int Id { get; set; }\r\n    public required string Name { get; set; }\r\n    public required decimal DailyRate { get; set; }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/LocationVoiture.dal/Entities/Category.cs b/LocationVoiture.dal/Entities/Category.cs
+--- a/LocationVoiture.dal/Entities/Category.cs	(revision 4859fa6620fc225aac49ad8738176148531ae75f)
++++ b/LocationVoiture.dal/Entities/Category.cs	(date 1734021337801)
+@@ -2,7 +2,7 @@
+ 
+ public class Category
+ {
+-    public required int Id { get; set; }
++    public int Id { get; set; }
+     public required string Name { get; set; }
+     public required decimal DailyRate { get; set; }
+ }
+\ No newline at end of file
+Index: LocationVoiture/Presentation/CategoryController.cs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/LocationVoiture/Presentation/CategoryController.cs b/LocationVoiture/Presentation/CategoryController.cs
+new file mode 100644
+--- /dev/null	(date 1734021337816)
++++ b/LocationVoiture/Presentation/CategoryController.cs	(date 1734021337816)
+@@ -0,0 +1,212 @@
++using LocationVoiture.bll.Services;
++using LocationVoiture.dal.Entities;
++
++namespace LocationVoiture.Presentation;
++
++public class CategoryController
++{
++    private readonly ICategoryService _categoryService;
++
++    public CategoryController(ICategoryService categoryService)
++    {
++        this._categoryService = categoryService;
++    }
++
++    public void DisplayMenu()
++    {
++        int choice = 0;
++        
++        while (choice != 5)
++        {
++            DisplayOptions();
++            choice = ConsoleAccess.ReadInput<int>("Enter your choice : ");
++            switch (choice)
++            {
++                case 1 : GetAllCategory();
++                    break;
++                case 2 : CreateCategory();
++                    break;
++                case 3 : UpdateCategory();
++                    break;
++                case 4 : DeleteCategory();
++                    break;
++                case 5 : Console.WriteLine("back to menu");
++                    break;
++                default : Console.WriteLine("Invalid choice");
++                    break;
++            }
++        }
++    }
++    
++    #region Crud
++
++    private void GetAllCategory()
++    {
++        ConsoleAccess.CreateScreen("All Category");
++        DisplayHeader();
++        try
++        { 
++            List<Category> categories = _categoryService.GetAll();
++            DisplayCategory(categories);
++            ConsoleAccess.Wait();
++        }
++        catch (Exception e)
++        {
++            Console.WriteLine(e.Message);
++        }
++    }
++
++    private void CreateCategory()
++    {
++        Category category;
++        string name = "";
++        decimal dailyRate;
++        
++        ConsoleAccess.CreateScreen("New Category");
++        
++        try
++        {
++            name = ValueControl.CheckString(name, "name");
++            dailyRate = ValueControl.CheckPositiveDecimal("Daily rate : ");
++            
++            category = new Category
++            {
++                Name = name,
++                DailyRate = dailyRate
++            };
++            
++            Category? createdCategory = _categoryService.Create(category);
++
++            if (createdCategory is not null)
++            {
++                Console.WriteLine("Category created successfully");
++                DisplayHeader();
++                DisplayCategory(createdCategory);
++            }
++            else
++                Console.WriteLine("An error occured during the creation of the category");
++            
++            ConsoleAccess.Wait();
++        }
++        catch (Exception e)
++        {
++            Console.WriteLine(e.Message);
++            ConsoleAccess.Wait();
++        }
++    } 
++
++    private Category? UpdateCategory()
++    {
++        ConsoleAccess.CreateScreen("Update category");
++
++        try
++        {
++            int id = ValueControl.CheckPositiveInt("Enter category's id : ");
++        
++            Category? category = _categoryService.GetById(id);
++
++            if (category is not null)
++            {
++                DisplayHeader();
++                DisplayCategory(category);
++
++                category.Name = ValueControl.CheckString(category.Name, "Category's name : ");
++
++                category.DailyRate = ValueControl.CheckPositiveDecimal("Daily rate : ");
++
++                DisplayCategory(category);
++                return this._categoryService.Update(category);
++            }
++            else
++            {
++                Console.WriteLine("Category not found");
++                return null;
++            }
++        }
++        catch (Exception e)
++        {
++            Console.WriteLine(e);
++            return null;
++        }
++        
++    }
++
++    private bool DeleteCategory()
++    {
++        int id;
++        
++        ConsoleAccess.CreateScreen("Delete category");
++
++        id = ValueControl.CheckPositiveInt("Enter category's id : ");
++
++        try
++        {
++            Category? category = _categoryService.GetById(id);
++
++            if (category is not null)
++            {
++                DisplayHeader();
++                DisplayCategory(category);
++                Console.Write("Are you sure you want to delete this category? (y/n) : ");
++                string choice = Console.ReadLine().ToString().ToLower();
++                switch (choice)
++                {
++                    case "y" : _categoryService.Delete(category);
++                        Console.WriteLine("Category deleted");
++                        ConsoleAccess.Wait();
++                        return true;
++                    case "n": break;
++                    default: Console.WriteLine("Invalid choice");
++                        break;
++                }
++            }
++            else
++                Console.WriteLine("Category not found");
++            
++        }
++        catch (Exception e)
++        {
++            Console.WriteLine(e);
++        }
++
++        return false;
++    }
++    
++    #endregion
++
++    #region private methods
++    
++    private void DisplayOptions()
++    {
++        ConsoleAccess.CreateScreen("Category menu");
++        Console.WriteLine("1. All Category");
++        Console.WriteLine("2. Add new Category");
++        Console.WriteLine("3. Update Category");
++        Console.WriteLine("4. Delete Category");
++        Console.WriteLine("5. Back to main menu");
++    }
++    
++    private void DisplayHeader()
++    {
++        Console.WriteLine("ID".PadRight(5) +
++                          "Name".PadRight(15) +
++                          "Daily rate".PadRight(15));
++        Console.WriteLine(new string('-', 50));
++    }
++        
++    private void DisplayCategory(Category category)
++    {
++        Console.WriteLine(category.Id.ToString().PadRight(5) +
++                          category.Name.PadRight(15) +
++                          category.DailyRate.ToString("F").PadRight(15));
++    }
++
++    private void DisplayCategory(List<Category> categories)
++    {
++        foreach(Category category in categories)
++            DisplayCategory(category);
++    }
++    
++    #endregion
++    
++}
+\ No newline at end of file
+Index: LocationVoiture/Presentation/ModelController.cs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/LocationVoiture/Presentation/ModelController.cs b/LocationVoiture/Presentation/ModelController.cs
+new file mode 100644
+--- /dev/null	(date 1734021337819)
++++ b/LocationVoiture/Presentation/ModelController.cs	(date 1734021337819)
+@@ -0,0 +1,220 @@
++using LocationVoiture.bll.Services;
++using LocationVoiture.dal.Entities;
++
++namespace LocationVoiture.Presentation;
++
++public class ModelController
++{
++    private readonly IModelService _modelService;
++
++    public ModelController(IModelService modelService)
++    {
++        this._modelService = modelService;
++    }
++    
++    public void DisplayMenu()
++    {
++        int choice = 0;
++        
++        while (choice != 5)
++        {
++            DisplayOptions();
++            choice = ConsoleAccess.ReadInput<int>("Enter your choice : ");
++            switch (choice)
++            {
++                case 1 : GetallModels();
++                    break;
++                case 2 : CreateModel();
++                    break;
++                case 3 : UpdateModel();
++                    break;
++                case 4 : DeleteModel();
++                    break;
++                case 5 : Console.WriteLine("back to menu");
++                    break;
++                default : Console.WriteLine("Invalid choice");
++                    break;
++            }
++        }
++    }
++    
++    #region Crud
++
++    private void GetallModels()
++    {
++        ConsoleAccess.CreateScreen("All models");
++        DisplayHeader();
++        try
++        { 
++            List<Model> models = _modelService.GetAll();
++            DisplayModel(models);
++            ConsoleAccess.Wait();
++        }
++        catch (Exception e)
++        {
++            Console.WriteLine(e.Message);
++        }
++    }
++
++    private void CreateModel()
++    {
++        Model model;
++        string name = "", brand = "";
++        int seatNumber = 0, categoryId = 0;
++        
++        ConsoleAccess.CreateScreen("New model");
++        
++        try
++        {
++            name = ValueControl.CheckString(name, "name");
++            brand = ValueControl.CheckString(brand, "brand");
++            seatNumber = ValueControl.CheckPositiveInt("Seat number : ");
++            categoryId = ValueControl.CheckPositiveInt("Category : ");
++            
++            model = new Model
++            {
++                Name = name,
++                Brand = brand,
++                SeatNumber = seatNumber,
++                CategoryId = categoryId
++            };
++            
++            Model? createdModel = _modelService.Create(model);
++
++            if (createdModel is not null)
++            {
++                Console.WriteLine("Model created successfully");
++                DisplayHeader();
++                DisplayModel(createdModel);
++            }
++            else
++                Console.WriteLine("An error occured during the creation of the model");
++            
++            ConsoleAccess.Wait();
++        }
++        catch (Exception e)
++        {
++            Console.WriteLine(e.Message);
++            ConsoleAccess.Wait();
++        }
++    } 
++
++    private Model? UpdateModel()
++    {
++        ConsoleAccess.CreateScreen("Update model");
++
++        try
++        {
++            int id = ValueControl.CheckPositiveInt("Enter model's id : ");
++        
++            Model? model = _modelService.GetById(id);
++
++            if (model is not null)
++            {
++                DisplayHeader();
++                DisplayModel(model);
++
++                model.Name = ValueControl.CheckString(model.Name, "Model's name : ");
++                model.Brand = ValueControl.CheckString(model.Brand, "Model's brand : ");
++                model.SeatNumber = ValueControl.CheckPositiveInt("Seat number : ");
++                model.CategoryId = ValueControl.CheckPositiveInt("Category id : ");
++
++                DisplayModel(model);
++                return this._modelService.Update(model);
++            }
++            else
++            {
++                Console.WriteLine("Model not found");
++                return null;
++            }
++        }
++        catch (Exception e)
++        {
++            Console.WriteLine(e);
++            return null;
++        }
++        
++    }
++
++    private bool DeleteModel()
++    {
++        int id;
++        
++        ConsoleAccess.CreateScreen("Delete model");
++
++        id = ValueControl.CheckPositiveInt("Enter category's id : ");
++
++        try
++        {
++            Model? model = _modelService.GetById(id);
++
++            if (model is not null)
++            {
++                DisplayHeader();
++                DisplayModel(model);
++                Console.Write("Are you sure you want to delete this model? (y/n) : ");
++                string choice = Console.ReadLine().ToString().ToLower();
++                switch (choice)
++                {
++                    case "y" : _modelService.Delete(model);
++                        Console.WriteLine("Model deleted");
++                        ConsoleAccess.Wait();
++                        return true;
++                    case "n": break;
++                    default: Console.WriteLine("Invalid choice");
++                        break;
++                }
++            }
++            else
++                Console.WriteLine("Model not found");
++            
++        }
++        catch (Exception e)
++        {
++            Console.WriteLine(e);
++        }
++
++        return false;
++    }
++    #endregion 
++    
++    #region private methods
++    
++    private void DisplayOptions()
++    {
++        ConsoleAccess.CreateScreen("Model menu");
++        Console.WriteLine("1. All Models");
++        Console.WriteLine("2. Add new model");
++        Console.WriteLine("3. Update model");
++        Console.WriteLine("4. Delete model");
++        Console.WriteLine("5. Back to main menu");
++    }
++    
++    private void DisplayHeader()
++    {
++        Console.WriteLine("ID".PadRight(5) +
++                          "Name".PadRight(15) +
++                          "Brand".PadRight(15) +
++                          "Seat number".PadRight(5) +
++                          "Category".PadRight(5));
++        Console.WriteLine(new string('-', 50));
++    }
++        
++    private void DisplayModel(Model model)
++    {
++        Console.WriteLine(model.Id.ToString().PadRight(5) +
++                          model.Name.PadRight(15) +
++                          model.Brand.PadRight(15) +
++                          model.SeatNumber.ToString().PadRight(5),
++                          model.CategoryId.ToString().PadRight(5));
++    }
++
++    private void DisplayModel(List<Model> models)
++    {
++        foreach(Model model in models)
++            DisplayModel(model);
++    }
++    
++    #endregion
++    
++}
+\ No newline at end of file
+Index: LocationVoiture/obj/rider.project.model.nuget.info
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>17340209952407820
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/LocationVoiture/obj/rider.project.model.nuget.info b/LocationVoiture/obj/rider.project.model.nuget.info
+--- a/LocationVoiture/obj/rider.project.model.nuget.info	(revision 4859fa6620fc225aac49ad8738176148531ae75f)
++++ b/LocationVoiture/obj/rider.project.model.nuget.info	(date 1734262189556)
+@@ -1,1 +1,1 @@
+-17340209952407820
+\ No newline at end of file
++17325290690573362
+\ No newline at end of file
+Index: LocationVoiture.sln.DotSettings.user
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><wpf:ResourceDictionary xml:space=\"preserve\" xmlns:x=\"http://schemas.microsoft.com/winfx/2006/xaml\" xmlns:s=\"clr-namespace:System;assembly=mscorlib\" xmlns:ss=\"urn:shemas-jetbrains-com:settings-storage-xaml\" xmlns:wpf=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\">\r\n\t<s:String x:Key=\"/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003AExceptionDispatchInfo_002Ecs_002Fl_003A_002E_002E_003F_002E_002E_003F_002E_002E_003F_002E_002E_003F_002E_002E_003F_002E_002E_003F_002E_002E_003F_002E_002E_003FAppData_003FRoaming_003FJetBrains_003FRider2024_002E2_003Fresharper_002Dhost_003FSourcesCache_003Fbd1d5c50194fea68ff3559c160230b0ab50f5acf4ce3061bffd6d62958e2182_003FExceptionDispatchInfo_002Ecs/@EntryIndexedValue\">ForceIncluded</s:String></wpf:ResourceDictionary>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/LocationVoiture.sln.DotSettings.user b/LocationVoiture.sln.DotSettings.user
+--- a/LocationVoiture.sln.DotSettings.user	(revision 4859fa6620fc225aac49ad8738176148531ae75f)
++++ b/LocationVoiture.sln.DotSettings.user	(date 1734021337815)
+@@ -1,2 +1,5 @@
+ <wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+-	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003AExceptionDispatchInfo_002Ecs_002Fl_003A_002E_002E_003F_002E_002E_003F_002E_002E_003F_002E_002E_003F_002E_002E_003F_002E_002E_003F_002E_002E_003F_002E_002E_003FAppData_003FRoaming_003FJetBrains_003FRider2024_002E2_003Fresharper_002Dhost_003FSourcesCache_003Fbd1d5c50194fea68ff3559c160230b0ab50f5acf4ce3061bffd6d62958e2182_003FExceptionDispatchInfo_002Ecs/@EntryIndexedValue">ForceIncluded</s:String></wpf:ResourceDictionary>
+\ No newline at end of file
++	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003AExceptionDispatchInfo_002Ecs_002Fl_003A_002E_002E_003F_002E_002E_003F_002E_002E_003F_002E_002E_003F_002E_002E_003F_002E_002E_003F_002E_002E_003F_002E_002E_003FAppData_003FRoaming_003FJetBrains_003FRider2024_002E2_003Fresharper_002Dhost_003FSourcesCache_003Fbd1d5c50194fea68ff3559c160230b0ab50f5acf4ce3061bffd6d62958e2182_003FExceptionDispatchInfo_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
++	
++	
++	</wpf:ResourceDictionary>
+\ No newline at end of file
+Index: LocationVoiture.dal/obj/rider.project.model.nuget.info
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>17340209952307754
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/LocationVoiture.dal/obj/rider.project.model.nuget.info b/LocationVoiture.dal/obj/rider.project.model.nuget.info
+--- a/LocationVoiture.dal/obj/rider.project.model.nuget.info	(revision 4859fa6620fc225aac49ad8738176148531ae75f)
++++ b/LocationVoiture.dal/obj/rider.project.model.nuget.info	(date 1734261423262)
+@@ -1,1 +1,1 @@
+-17340209952307754
+\ No newline at end of file
++17340209992839990
+\ No newline at end of file
