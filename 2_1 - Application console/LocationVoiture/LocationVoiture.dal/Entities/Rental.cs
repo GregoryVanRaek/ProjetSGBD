@@ -2,7 +2,7 @@
 
 public class Rental
 {
-    public required int Id { get; set; }
+    public int Id { get; set; }
     public required int CarId { get; set; }
     public required int ClientId { get; set; }
     public required DateTime StartDate { get; set; }

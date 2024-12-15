@@ -28,7 +28,8 @@ public class HomeController
                         client.ClientMenu();
                         break;
                     case 2: 
-                        Console.WriteLine("Choice 2");
+                        RentalController rental = _serviceProvider.GetRequiredService<RentalController>();
+                        rental.DisplayMenu();
                         break;
                     case 3: 
                         CarController car = _serviceProvider.GetRequiredService<CarController>();

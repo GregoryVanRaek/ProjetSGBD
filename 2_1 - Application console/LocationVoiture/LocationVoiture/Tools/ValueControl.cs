@@ -40,4 +40,23 @@ public static class ValueControl
         return value;
     }
     
+    public static DateTime CheckDate(string message)
+    {
+        DateTime dateValue;
+        bool incorrect = true;
+        
+        do
+        {
+            string input = ConsoleAccess.ReadInput<string>($"{message}");
+            if (!DateTime.TryParse(input, out dateValue))
+                Console.WriteLine("Invalid date format. Please enter a valid date (e.g. YYYY-MM-DD).");
+            else
+                incorrect = false;
+        } while (incorrect);
+
+        return dateValue;
+    }
+    
+    
+    
 }

@@ -23,6 +23,18 @@ public class CarService : ICarService
             throw new Exception("Error in car service : " + e.Message);
         }
     }
+    
+    public List<Car> GetAll(bool onlyAvailable)
+    {
+        try
+        {
+            return this._carRepository.GetAll(onlyAvailable);
+        }
+        catch (Exception e)
+        {
+            throw new Exception("Error in car service : " + e.Message);
+        }
+    }
 
     public Car? GetById(int id)
     {
@@ -86,6 +98,30 @@ public class CarService : ICarService
         catch (Exception e)
         {
             throw new Exception("Error in car service : " + e.Message);
+        }
+    }
+
+    public Decimal GetAmount(int id)
+    {
+        try
+        {
+            return this._carRepository.GetAmount(id);
+        }
+        catch (Exception e)
+        {
+            throw new Exception("Error in car service : " + e.Message);
+        }
+    }
+    
+    public bool GetFreeParkingPlace(int carId)
+    {
+        try
+        {
+            return this._carRepository.GetFreeParkingPlace(carId);
+        }
+        catch (Exception e)
+        {
+            throw new Exception("Car service error: " + e.Message);
         }
     }
     

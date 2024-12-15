@@ -1,5 +1,6 @@
 ﻿using LocationVoiture.bll.Services;
 using LocationVoiture.dal;
+using LocationVoiture.dal.Entities;
 using LocationVoiture.dal.Repositories;
 using LocationVoiture.dal.Repositories.Interface;
 using LocationVoiture.Presentation;
@@ -17,12 +18,14 @@ var services = new ServiceCollection();
     services.AddScoped<RentController>();
     services.AddScoped<CategoryController>();
     services.AddScoped<ModelController>();
+    services.AddScoped<RentalController>();
 
     // BLL
     services.AddScoped<ICarService, CarService>();
     services.AddScoped<IClientService, ClientService>();
     services.AddScoped<ICategoryService, CategoryService>();
     services.AddScoped<IModelService, ModelService>();
+    services.AddScoped<IRentalService, RentalService>();
 
     // DAL
     services.AddSingleton<DBAccess>();
@@ -30,6 +33,7 @@ var services = new ServiceCollection();
     services.AddScoped<IClientRepository, ClientRepository>();
     services.AddScoped<ICategoryRepository, CategoryRepository>();
     services.AddScoped<IModelRepository, ModelRepository>();
+    services.AddScoped<IRentalRepository, RentalRepository>();
 
 ServiceProvider serviceProvider = services.BuildServiceProvider();
 

@@ -44,7 +44,7 @@ public class ClientController
     
     #region Crud
     
-    private void GetAllClient()
+    public void GetAllClient()
     {
         ConsoleAccess.CreateScreen("All client");
         DisplayHeader();
@@ -134,7 +134,7 @@ public class ClientController
         }
     }
 
-    private Client? CreateClient()
+    public Client? CreateClient()
     {
         Client? newClient;
         string lastname = "", firstname = "", email = "", street = "", postalCode = "", city = "", country = "", drivingLicense = "";

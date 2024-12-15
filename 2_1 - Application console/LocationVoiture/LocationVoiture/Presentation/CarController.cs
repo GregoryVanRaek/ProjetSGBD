@@ -22,7 +22,7 @@ public class CarController
     {
         int choice = 0;
         
-        while (choice != 9)
+        while (choice != 8)
         {
             DisplayMainOptions();
             choice = ConsoleAccess.ReadInput<int>("Enter your choice : ");
@@ -30,15 +30,19 @@ public class CarController
             {
                 case 1 : this.GetAllCars();
                     break;
-                case 2 : this.CreateCar();
+                case 2 : this.GetAllAvailableCars();
                     break;
-                case 3 : this.DeleteCar();
+                case 3 : this.GetAllRentCars();
                     break;
-                case 7 : this._categoryController.DisplayMenu();
+                case 4 : this.CreateCar();
                     break;
-                case 8 : this._modelController.DisplayMenu();
+                case 5 : this.DeleteCar();
                     break;
-                case 9 : Console.WriteLine("back to menu");
+                case 6 : this._categoryController.DisplayMenu();
+                    break;
+                case 7 : this._modelController.DisplayMenu();
+                    break;
+                case 8 : Console.WriteLine("back to menu");
                     break;
                 default : Console.WriteLine("Invalid choice");
                     break;
@@ -104,7 +108,6 @@ public class CarController
             ConsoleAccess.Wait();
         }
     }
-
     private bool DeleteCar()
     {
         int id;
@@ -112,8 +115,7 @@ public class CarController
         try
         {
             ConsoleAccess.CreateScreen("Delete a car");
-            DisplayHeader();
-            DisplayCars(_carService.GetAll());
+            this.DisplayAllCars(false);
 
             id = ValueControl.CheckPositiveInt("Enter the id of the car that you want to delete : ");
             
@@ -152,6 +154,41 @@ public class CarController
 
         return false;
     }
+    private void GetAllAvailableCars()
+    {
+        ConsoleAccess.CreateScreen("All available cars");
+        DisplayHeader();
+        try
+        { 
+            List<Car> cars = _carService.GetAll(true);
+            DisplayCars(cars);
+            ConsoleAccess.Wait();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+        }
+    }
+    
+    private void GetAllRentCars()
+    {
+        ConsoleAccess.CreateScreen("All rent cars");
+        DisplayHeader();
+        try
+        { 
+            List<Car> availableCars = _carService.GetAll(true);
+            List<Car> allCars = _carService.GetAll(false);
+            
+            List<Car> rentedCars = allCars.Where(c => !availableCars.Any(ac => ac.Id == c.Id)).ToList();
+            
+            DisplayCars(rentedCars);
+            ConsoleAccess.Wait();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+        }
+    }
     
     #region Private methods
     
@@ -159,11 +196,13 @@ public class CarController
     {
         ConsoleAccess.CreateScreen("Car management menu");
         Console.WriteLine("1. All cars");
-        Console.WriteLine("2. Create new car");
-        Console.WriteLine("3. Delete a car");
-        Console.WriteLine("7. Categories");
-        Console.WriteLine("8. Models");
-        Console.WriteLine("9. Back to main menu");
+        Console.WriteLine("2. Available cars");
+        Console.WriteLine("3. Rent cars");
+        Console.WriteLine("4. Create new car");
+        Console.WriteLine("5. Delete a car");
+        Console.WriteLine("6. Categories");
+        Console.WriteLine("7. Models");
+        Console.WriteLine("8. Back to main menu");
     }
     
     private void DisplayHeader()
@@ -191,6 +230,15 @@ public class CarController
         {
             DisplayCar(car);
         }
+    }
+
+    public void DisplayAllCars(bool onlyAvailable)
+    {
+        DisplayHeader();
+        if(onlyAvailable)
+            DisplayCars(_carService.GetAll(onlyAvailable));
+        else
+            DisplayCars(_carService.GetAll());
     }
     
     private int CheckParkingAvailability()

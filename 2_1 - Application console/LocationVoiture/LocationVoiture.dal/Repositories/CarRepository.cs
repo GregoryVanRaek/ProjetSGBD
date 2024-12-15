@@ -14,7 +14,7 @@ public class CarRepository : ICarRepository
         _connection = new DBAccess(); 
     }
 
-    public List<Car> GetAll()
+    public List<Car> GetAll(bool onlyAvailable)
     {
         List<Car> cars = new List<Car>();
         NpgsqlCommand command = null;
@@ -22,13 +22,28 @@ public class CarRepository : ICarRepository
         try
         {
             _connection.OpenConnection();
-            command = new NpgsqlCommand(
-                @"SELECT c.id, c.license_plate, c.color, p.code AS parking_code, m.name AS model_name
+            
+            if(onlyAvailable)
+            {
+                command = new NpgsqlCommand(
+                    @"SELECT c.id, c.license_plate, c.color, p.code AS parking_code, m.name AS model_name
+                  FROM CAR c 
+                  LEFT JOIN PARKING p ON c.parking_id = p.id
+                  LEFT JOIN MODEL m ON c.model_id = m.id
+                  WHERE c.parking_id is not null;",
+                    _connection._SqlConnection
+                );
+            }
+            else
+            {
+                command = new NpgsqlCommand(
+                    @"SELECT c.id, c.license_plate, c.color, p.code AS parking_code, m.name AS model_name
                   FROM CAR c 
                   LEFT JOIN PARKING p ON c.parking_id = p.id
                   LEFT JOIN MODEL m ON c.model_id = m.id;",
-                _connection._SqlConnection
-            );
+                    _connection._SqlConnection
+                ); 
+            }
 
             NpgsqlDataReader reader = command.ExecuteReader();
 
@@ -40,7 +55,7 @@ public class CarRepository : ICarRepository
                     LicensePlate = (string)reader["license_plate"],
                     Color = (string)reader["color"],
                     ModelName = (string)reader["model_name"],
-                    ParkingCode = (string)reader["parking_code"]
+                    ParkingCode = reader["parking_code"] as string ?? string.Empty,
                 };
                 cars.Add(c);
             }
@@ -56,6 +71,11 @@ public class CarRepository : ICarRepository
         }
 
         return cars;
+    }
+
+    public List<Car> GetAll()
+    {
+        return this.GetAll(false);
     }
 
     public Car? GetOneById(int id)
@@ -178,6 +198,42 @@ public class CarRepository : ICarRepository
         
     }
 
+    public Decimal GetAmount(int id)
+    {
+        decimal dailyRate = 0 ;
+        NpgsqlCommand command;
+
+        try
+        {
+            _connection.OpenConnection();
+
+            command = new NpgsqlCommand(
+                @"SELECT cat.daily_rate
+              FROM car c
+              JOIN model m ON c.model_id = m.id
+              JOIN category cat ON m.category_id = cat.id
+              WHERE c.id = @carId", 
+                _connection._SqlConnection);
+
+            command.Parameters.AddWithValue("@carId", id);
+
+            var result = command.ExecuteScalar();
+            
+            if (result != null && result != DBNull.Value)
+                dailyRate = Convert.ToDecimal(result);
+        }
+        catch (Exception e)
+        {
+            throw new DBAccessException("Error while retrieving daily rate by car ID", e.ToString());
+        }
+        finally
+        {
+            _connection.CloseConnection();
+        }
+
+        return dailyRate;
+    }
+
     #region Parking 
     
     public Parking GetParkingCode(int parking_code)
@@ -259,6 +315,46 @@ public class CarRepository : ICarRepository
         }
 
         return parkings;
+    }
+    
+    public bool GetFreeParkingPlace(int carId)
+    {
+        NpgsqlCommand command;
+
+        try
+        {
+            _connection.OpenConnection();
+            
+            // prendre le premier id de parking trouvé qui est libre
+            command = new NpgsqlCommand("SELECT id FROM parking"
+                                       +" WHERE id NOT IN (SELECT parking_id FROM car WHERE parking_id IS NOT NULL)"
+                                       + " LIMIT 1", _connection._SqlConnection);
+
+            int? parkingId = (int?)command.ExecuteScalar();
+
+            if (parkingId is not null)
+            {
+                command = new NpgsqlCommand(@"UPDATE car
+                                           SET parking_id = @parking_id
+                                           WHERE id = @car_id", _connection._SqlConnection);
+
+                command.Parameters.AddWithValue("@parking_id", parkingId);
+                command.Parameters.AddWithValue("@car_id", carId);
+
+                int rowsAffected = command.ExecuteNonQuery();
+                return rowsAffected == 1;
+            }
+
+            return false;
+        }
+        catch (Exception e)
+        {
+            throw new DBAccessException("Error while assigning free parking place", e.ToString());
+        }
+        finally
+        {
+            _connection.CloseConnection();
+        }
     }
     
     #endregion
