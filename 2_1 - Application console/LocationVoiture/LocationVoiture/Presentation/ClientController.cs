@@ -49,7 +49,7 @@ public class ClientController
         ConsoleAccess.CreateScreen("All client");
         DisplayHeader();
         try
-        { 
+        {
             List<Client> clients = _clientService.GetAll();
             DisplayClient(clients);
             ConsoleAccess.Wait();
@@ -59,9 +59,15 @@ public class ClientController
             Console.WriteLine(e.Message);
             ConsoleAccess.Wait();
         }
+        catch (ServiceErrorException e)
+        {
+            Console.WriteLine(e.Message);
+            ConsoleAccess.Wait();
+        }
         catch (Exception e)
         {
             Console.WriteLine(e.Message);
+            ConsoleAccess.Wait();
         }
     }
 
@@ -78,13 +84,16 @@ public class ClientController
                 DisplayClient(client);
             }
             else
-            {
                 Console.WriteLine("Client not found");
-            }
             
             ConsoleAccess.Wait();
         }
         catch (DBAccessException e)
+        {
+            Console.WriteLine("DB error : " + e.Message);
+            ConsoleAccess.Wait();
+        }
+        catch (ServiceErrorException e)
         {
             Console.WriteLine(e.Message);
             ConsoleAccess.Wait();
@@ -92,6 +101,7 @@ public class ClientController
         catch (Exception e)
         {
             Console.WriteLine(e.Message);
+            ConsoleAccess.Wait();
         }
     }
     
@@ -116,12 +126,18 @@ public class ClientController
         }
         catch (DBAccessException e)
         {
+            Console.WriteLine("DB error : " + e.Message);
+            ConsoleAccess.Wait();
+        }
+        catch (ServiceErrorException e)
+        {
             Console.WriteLine(e.Message);
             ConsoleAccess.Wait();
         }
         catch (Exception e)
         {
             Console.WriteLine(e.Message);
+            ConsoleAccess.Wait();
         }
     }
 
@@ -134,7 +150,7 @@ public class ClientController
 
             switch (researchType)
             {
-                case 1 : GetOneById(ConsoleAccess.ReadInput<int>("Enter client's id : "));
+                case 1 : GetOneById(ValueControl.CheckPositiveInt("Enter client's id : "));
                     break;
                 case 2 : GetOneByName(ConsoleAccess.ReadInput<string>("Enter client's name : "));
                     break;
@@ -145,12 +161,18 @@ public class ClientController
         }
         catch (DBAccessException e)
         {
+            Console.WriteLine("DB error : " + e.Message);
+            ConsoleAccess.Wait();
+        }
+        catch (ServiceErrorException e)
+        {
             Console.WriteLine(e.Message);
             ConsoleAccess.Wait();
         }
         catch (Exception e)
         {
             Console.WriteLine("Invalid choice" + e.Message);
+            ConsoleAccess.Wait();
         }
     }
 
@@ -165,25 +187,15 @@ public class ClientController
         
         try
         {
-            lastname = ValueControl.CheckString(lastname, "Lastname");
-            firstname = ValueControl.CheckString(firstname, "Firstname");
-            
-            do
-            {
-                email = ConsoleAccess.ReadInput<string>("Email : ");
-                emailSuccess = new Regex("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$").Match(email).Success;
-                if(!emailSuccess)
-                    Console.WriteLine("Please enter a valid email address");
-            } while (!emailSuccess);
-            
-            street = ValueControl.CheckString(street, "Street");
+            lastname = ValueControl.CheckString(lastname, "Lastname : ");
+            firstname = ValueControl.CheckString(firstname, "Firstname : ");
+            email = ValueControl.CheckEmail(email);
+            street = ValueControl.CheckString(street, "Street : ");
             postalCode = ValueControl.CheckString(postalCode, "Postal Code : ");
             city = ValueControl.CheckString(city, "City : ");
             country = ValueControl.CheckString(country, "Country : ");
             drivingLicense = ValueControl.CheckString(drivingLicense, "Driving license : ");
-            
-            while (!DateTime.TryParse(ConsoleAccess.ReadInput<string>("Birthdate : "), out birthdate))
-                Console.WriteLine("Invalid date format. Please try again.");
+            birthdate = ValueControl.CheckBirthdate();
             
             newClient = new Client
             {
@@ -217,6 +229,11 @@ public class ClientController
         }
         catch (DBAccessException e)
         {
+            Console.WriteLine("DB error : " + e.Message);
+            ConsoleAccess.Wait();
+        }
+        catch (ServiceErrorException e)
+        {
             Console.WriteLine(e.Message);
             ConsoleAccess.Wait();
         }
@@ -231,16 +248,12 @@ public class ClientController
     private Client? UpdateClient()
     {
         int id;
-        bool emailSuccess;
-        DateTime birthdate;
+        
         ConsoleAccess.CreateScreen("Update client");
 
         try
         {
-            do
-            {
-                id = ConsoleAccess.ReadInput<int>("Enter client's id : ");
-            } while (id <= 0);
+            id = ValueControl.CheckPositiveInt("Enter client's id : ");
         
             Client? client = _clientService.GetById(id);
 
@@ -249,39 +262,30 @@ public class ClientController
                 DisplayHeader();
                 DisplayClient(client);
                 
-                client.Lastname = ValueControl.CheckString(client.Lastname, "Lastname");
-                client.Firstname = ValueControl.CheckString(client.Firstname, "Firstname");
-            
-                do
-                {
-                    client.Email = ConsoleAccess.ReadInput<string>("Email : ");
-                    emailSuccess = new Regex("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$").Match(client.Email).Success;
-                    if(!emailSuccess)
-                        Console.WriteLine("Please enter a valid email address");
-                } while (!emailSuccess);
-            
+                client.Lastname = ValueControl.CheckString(client.Lastname, "Lastname : ");
+                client.Firstname = ValueControl.CheckString(client.Firstname, "Firstname : ");
+                client.Email = ValueControl.CheckEmail(client.Email);
                 client.Address.Street = ValueControl.CheckString(client.Address.Street, "Street");
                 client.Address.PostalCode = ValueControl.CheckString(client.Address.PostalCode, "Postal Code : ");
                 client.Address.City = ValueControl.CheckString(client.Address.City, "City : ");
                 client.Address.Country = ValueControl.CheckString(client.Address.Country, "Country : ");
                 client.DrivingLicense = ValueControl.CheckString(client.DrivingLicense, "Driving license : ");
-                
-                
-                while (!DateTime.TryParse(ConsoleAccess.ReadInput<string>("Birthdate : "), out birthdate))
-                    Console.WriteLine("Invalid date format. Please try again.");
-            
-                client.BirthDate = birthdate;
+                client.BirthDate = ValueControl.CheckBirthdate();
                 
                 DisplayClient(client);
                 return this._clientService.Update(client);
             }
-            else
-            {
-                Console.WriteLine("Client not found");
-                return null;
-            }
+            
+            Console.WriteLine("Client not found");
+            return null;
         }
         catch (DBAccessException e)
+        {
+            Console.WriteLine("DB error : " + e.Message);
+            ConsoleAccess.Wait();
+            return null;
+        }
+        catch (ServiceErrorException e)
         {
             Console.WriteLine(e.Message);
             ConsoleAccess.Wait();
@@ -290,6 +294,7 @@ public class ClientController
         catch (Exception e)
         {
             Console.WriteLine(e);
+            ConsoleAccess.Wait();
             return null;
         }
     }
@@ -299,11 +304,8 @@ public class ClientController
         int id;
         
         ConsoleAccess.CreateScreen("Delete client");
-        
-        do
-        {
-            id = ConsoleAccess.ReadInput<int>("Enter client's id : ");
-        } while (id <= 0);
+
+        id = ValueControl.CheckPositiveInt("Enter client's id : ");
 
         try
         {
@@ -315,6 +317,7 @@ public class ClientController
                 DisplayClient(client);
                 Console.Write("Are you sure you want to delete this client? (y/n)");
                 string choice = Console.ReadLine().ToLower();
+                
                 switch (choice)
                 {
                     case "y" : _clientService.Delete(client);
@@ -322,7 +325,8 @@ public class ClientController
                         ConsoleAccess.Wait();
                         return true;
                     case "n": break;
-                    default: Console.WriteLine("Invalid choice");ConsoleAccess.Wait();
+                    default: Console.WriteLine("Invalid choice");
+                        ConsoleAccess.Wait();
                         break;
                 }
             }
@@ -332,6 +336,11 @@ public class ClientController
         }
         catch (DBAccessException e)
         {
+            Console.WriteLine("DB error : " + e.Message);
+            ConsoleAccess.Wait();
+        }
+        catch (ServiceErrorException e)
+        {
             Console.WriteLine(e.Message);
             ConsoleAccess.Wait();
         }
@@ -340,8 +349,6 @@ public class ClientController
             Console.WriteLine(e);
             ConsoleAccess.Wait();
         }
-
-        ConsoleAccess.Wait();
         return false;
     }
     
@@ -393,6 +400,6 @@ public class ClientController
         foreach (var client in clients)
             DisplayClient(client);
     }
-    #endregion
     
+    #endregion
 }

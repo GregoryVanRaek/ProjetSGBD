@@ -15,7 +15,6 @@ var services = new ServiceCollection();
     services.AddScoped<HomeController>();
     services.AddScoped<ClientController>();
     services.AddScoped<CarController>();
-    services.AddScoped<RentController>();
     services.AddScoped<CategoryController>();
     services.AddScoped<ModelController>();
     services.AddScoped<RentalController>();

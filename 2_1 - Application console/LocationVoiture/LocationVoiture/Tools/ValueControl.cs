@@ -1,4 +1,6 @@
-﻿namespace LocationVoiture.Presentation;
+﻿using System.Text.RegularExpressions;
+
+namespace LocationVoiture.Presentation;
 
 public static class ValueControl
 {
@@ -56,7 +58,29 @@ public static class ValueControl
 
         return dateValue;
     }
-    
-    
+    public static string CheckEmail(string email)
+    {
+        bool emailSuccess ;
+        do
+        {
+            email = CheckString(email, "Email : ");
+            emailSuccess = new Regex("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$").Match(email).Success;
+            
+            if(!emailSuccess)
+                Console.WriteLine("Please enter a valid email address");
+        } while (!emailSuccess);
+
+        return email;
+    }
+
+    public static DateTime CheckBirthdate()
+    {
+        DateTime birthdate;
+        
+        while (!DateTime.TryParse(ConsoleAccess.ReadInput<string>("Birthdate : "), out birthdate))
+            Console.WriteLine("Invalid date format. Please try again.");
+
+        return birthdate;
+    }
     
 }

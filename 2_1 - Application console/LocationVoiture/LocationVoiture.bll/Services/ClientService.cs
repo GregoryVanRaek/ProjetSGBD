@@ -1,4 +1,5 @@
-﻿using LocationVoiture.dal.Entities;
+﻿using LocationVoiture.dal.CustomException;
+using LocationVoiture.dal.Entities;
 using LocationVoiture.dal.Repositories.Interface;
 
 namespace LocationVoiture.bll.Services;
@@ -20,9 +21,8 @@ public class ClientService : IClientService
         }
         catch (Exception e)
         {
-            throw new Exception("Client service error : " + e.Message);
+            throw new ServiceErrorException("Client", e);
         }
-        
     }
 
     public Client? GetById(int id)
@@ -33,7 +33,7 @@ public class ClientService : IClientService
         }
         catch (Exception e)
         {
-            throw new Exception("Client service error : " + e.Message);
+            throw new ServiceErrorException("Client", e);
         }
     }
     
@@ -46,7 +46,7 @@ public class ClientService : IClientService
         }
         catch (Exception e)
         {
-            throw new Exception("Client service error : " + e.Message);
+            throw new ServiceErrorException("Client", e);
         }
     }
     
@@ -54,16 +54,11 @@ public class ClientService : IClientService
     {
         try
         {
-            if(_clientRepository.GetOneById(entity.Id) is not null)
-                 return this._clientRepository.Update(entity);
-            else
-            {
-                throw new Exception("Client service error : Id not found");
-            }
+            return this._clientRepository.Update(entity);
         }
         catch (Exception e)
         {
-            throw new Exception("Client service error : " + e.Message);
+            throw new ServiceErrorException("Client", e);
         }
     }
     
@@ -75,7 +70,7 @@ public class ClientService : IClientService
         }
         catch (Exception e)
         {
-            throw new Exception("Client service error : " + e.Message);
+            throw new ServiceErrorException("Client", e);
         }
     }
 
@@ -83,8 +78,8 @@ public class ClientService : IClientService
     {
         try
         {
-            if(_clientRepository.GetOneByEmail(entity.Email) is not null)
-                throw new Exception("Email already exists");
+            if (this._clientRepository.GetOneByEmail(entity.Email) is not null)
+                throw new AlreadyExistException("user email");
             
             if(DateTime.Today.Year - entity.BirthDate.Year < 21 )
                 throw new Exception("The driver must be at least 21 years old.");
@@ -93,7 +88,7 @@ public class ClientService : IClientService
         }
         catch (Exception e)
         {
-            throw new Exception("Client service error : " + e.Message);
+            throw new ServiceErrorException("Client", e);
         }
     }
     
