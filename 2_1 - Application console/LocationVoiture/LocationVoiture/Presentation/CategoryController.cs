@@ -20,7 +20,7 @@ public class CategoryController
         while (choice != 5)
         {
             DisplayOptions();
-            choice = ConsoleAccess.ReadInput<int>("Enter your choice : ");
+            choice = ValueControl.CheckPositiveInt("Enter your choice : ");
             switch (choice)
             {
                 case 1 : GetAllCategory();
@@ -46,7 +46,7 @@ public class CategoryController
         ConsoleAccess.CreateScreen("All Category");
         DisplayHeader();
         try
-        { 
+        {
             List<Category> categories = _categoryService.GetAll();
             DisplayCategory(categories);
             ConsoleAccess.Wait();
@@ -56,12 +56,17 @@ public class CategoryController
             Console.WriteLine(e.Message);
             ConsoleAccess.Wait();
         }
+        catch (ServiceErrorException e)
+        {
+            Console.WriteLine(e.Message);
+            ConsoleAccess.Wait();
+        }
         catch (Exception e)
         {
             Console.WriteLine(e.Message);
+            ConsoleAccess.Wait();
         }
     }
-
     private void CreateCategory()
     {
         Category category;
@@ -76,7 +81,7 @@ public class CategoryController
 
             do
             {
-                name = ValueControl.CheckString(name, "name").ToLower();
+                name = ValueControl.CheckString(name, "name");
                 
                 if(existingCategories.Select(x => x.Name.ToLower()).Contains(name))
                     Console.WriteLine("This category already exists");
@@ -109,13 +114,17 @@ public class CategoryController
             Console.WriteLine(e.Message);
             ConsoleAccess.Wait();
         }
+        catch (ServiceErrorException e)
+        {
+            Console.WriteLine(e.Message);
+            ConsoleAccess.Wait();
+        }
         catch (Exception e)
         {
             Console.WriteLine(e.Message);
             ConsoleAccess.Wait();
         }
     } 
-
     private Category? UpdateCategory()
     {
         ConsoleAccess.CreateScreen("Update category");
@@ -123,8 +132,8 @@ public class CategoryController
         try
         {
             List<Category> existingCategories = _categoryService.GetAll();
+            
             int id = ValueControl.CheckPositiveInt("Enter category's id : ");
-        
             Category? category = _categoryService.GetById(id);
 
             if (category is not null)
@@ -134,7 +143,7 @@ public class CategoryController
 
                 do
                 {
-                    category.Name = ValueControl.CheckString(category.Name, "Category's name : ").ToLower();
+                    category.Name = ValueControl.CheckString(category.Name, "Category's name : ");
                 
                     if(existingCategories.Select(x => x.Name.ToLower()).Contains(category.Name))
                         Console.WriteLine("This category already exists");
@@ -144,15 +153,19 @@ public class CategoryController
                 category.DailyRate = ValueControl.CheckPositiveDecimal("Daily rate : ");
 
                 DisplayCategory(category);
+                ConsoleAccess.Wait();
                 return this._categoryService.Update(category);
             }
-            else
-            {
-                Console.WriteLine("Category not found");
-                return null;
-            }
+            Console.WriteLine("Category not found");
+            return null;
         }
         catch (DBAccessException e)
+        {
+            Console.WriteLine(e.Message);
+            ConsoleAccess.Wait();
+            return null;
+        }
+        catch (ServiceErrorException e)
         {
             Console.WriteLine(e.Message);
             ConsoleAccess.Wait();
@@ -161,10 +174,10 @@ public class CategoryController
         catch (Exception e)
         {
             Console.WriteLine(e);
+            ConsoleAccess.Wait();
             return null;
         }
     }
-
     private bool DeleteCategory()
     {
         int id;
@@ -182,30 +195,36 @@ public class CategoryController
                 DisplayHeader();
                 DisplayCategory(category);
                 Console.Write("Are you sure you want to delete this category? (y/n) : ");
-                string choice = Console.ReadLine().ToString().ToLower();
+                string choice = Console.ReadLine().ToLower();
                 switch (choice)
                 {
                     case "y" : _categoryService.Delete(category);
                         Console.WriteLine("Category deleted");
                         ConsoleAccess.Wait();
                         return true;
-                    case "n": break;
-                    default: Console.WriteLine("Invalid choice");
+                    case "n":
+                        return false; 
+                    default: Console.WriteLine("Invalid choice");ConsoleAccess.Wait();
                         break;
                 }
             }
             else
                 Console.WriteLine("Category not found");
-            
         }
         catch (DBAccessException e)
         {
             Console.WriteLine(e.Message);
             ConsoleAccess.Wait();
         }
+        catch (ServiceErrorException e)
+        {
+            Console.WriteLine(e.Message);
+            ConsoleAccess.Wait();
+        }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            Console.WriteLine(e.Message);
+            ConsoleAccess.Wait();
         }
 
         return false;
@@ -224,7 +243,6 @@ public class CategoryController
         Console.WriteLine("4. Delete Category");
         Console.WriteLine("5. Back to main menu");
     }
-    
     private void DisplayHeader()
     {
         Console.WriteLine("ID".PadRight(5) +
@@ -232,14 +250,12 @@ public class CategoryController
                           "Daily rate".PadRight(15));
         Console.WriteLine(new string('-', 50));
     }
-        
     private void DisplayCategory(Category category)
     {
         Console.WriteLine(category.Id.ToString().PadRight(5) +
                           category.Name.PadRight(15) +
                           category.DailyRate.ToString("F").PadRight(15));
     }
-
     private void DisplayCategory(List<Category> categories)
     {
         foreach(Category category in categories)

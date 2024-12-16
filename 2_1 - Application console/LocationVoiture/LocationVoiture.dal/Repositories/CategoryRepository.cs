@@ -8,12 +8,10 @@ namespace LocationVoiture.dal.Repositories;
 public class CategoryRepository : ICategoryRepository
 {
     private readonly DBAccess _connection;
-    
     public CategoryRepository(DBAccess connection)
     {
         _connection = connection; 
     }
-    
     public List<Category> GetAll()
     {
         List<Category> categories = new List<Category>();
@@ -26,7 +24,7 @@ public class CategoryRepository : ICategoryRepository
             command = new NpgsqlCommand(@"SELECT id, name, daily_rate
                                         FROM category ORDER BY id", _connection._SqlConnection);
 
-            var reader = command.ExecuteReader();
+            NpgsqlDataReader reader = command.ExecuteReader();
 
             while (reader.Read())
             {
@@ -50,7 +48,6 @@ public class CategoryRepository : ICategoryRepository
 
         return categories;
     }
-
     public Category? GetOneById(int id)
     {
         Category? category = null;
@@ -89,10 +86,9 @@ public class CategoryRepository : ICategoryRepository
 
         return category;
     }
-
     public Category? Create(Category entity)
     {
-        int insert = 0;
+        int? insert = 0;
         NpgsqlCommand command = null;
         
         try
@@ -106,11 +102,10 @@ public class CategoryRepository : ICategoryRepository
             command.Parameters.AddWithValue("@name", entity.Name);
             command.Parameters.AddWithValue("@daily_rate", entity.DailyRate);
             
-            var result = command.ExecuteScalar();
-            if (result == null || result == DBNull.Value)
+            insert = (int?)command.ExecuteScalar();
+            if (insert == null || insert == 0)
                 throw new Exception("Failed to insert the category.");
-            
-            insert = Convert.ToInt32(result);
+
         }
         catch (Exception e)
         {
@@ -121,9 +116,8 @@ public class CategoryRepository : ICategoryRepository
             _connection.CloseConnection();
         }
 
-        return insert != 0 ? GetOneById(insert) : null;
+        return insert != 0 ? GetOneById((int)insert) : null;
     }
-
     public Category? Update(Category entity)
     {
         NpgsqlCommand command = null;
@@ -140,7 +134,6 @@ public class CategoryRepository : ICategoryRepository
                 command.Parameters.AddWithValue("@id", entity.Id);
                 command.Parameters.AddWithValue("@name", entity.Name);
                 command.Parameters.AddWithValue("@daily_rate", entity.DailyRate);
-
                 
                 int insert = command.ExecuteNonQuery();
 
@@ -158,7 +151,6 @@ public class CategoryRepository : ICategoryRepository
             _connection.CloseConnection();
         }
     }
-
     public bool Delete(Category entity)
     {
         NpgsqlCommand command = null;

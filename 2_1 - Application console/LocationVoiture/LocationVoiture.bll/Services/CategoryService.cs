@@ -1,4 +1,5 @@
-﻿using LocationVoiture.dal.Entities;
+﻿using LocationVoiture.dal.CustomException;
+using LocationVoiture.dal.Entities;
 using LocationVoiture.dal.Repositories.Interface;
 
 namespace LocationVoiture.bll.Services;
@@ -20,10 +21,9 @@ public class CategoryService : ICategoryService
         }
         catch (Exception e)
         {
-            throw new Exception("Category service error : " + e.Message);
+            throw new ServiceErrorException("Category", e);
         }
     }
-
     public Category? GetById(int id)
     {
         try
@@ -32,10 +32,9 @@ public class CategoryService : ICategoryService
         }
         catch (Exception e)
         {
-            throw new Exception("Category service error : " + e.Message);
+            throw new ServiceErrorException("Category", e);
         }
     }
-
     public Category? Update(Category value)
     {
         try
@@ -44,10 +43,9 @@ public class CategoryService : ICategoryService
         }
         catch (Exception e)
         {
-            throw new Exception("Category service error : " + e.Message);
+            throw new ServiceErrorException("Category", e);
         }
     }
-
     public bool Delete(Category value)
     {
         try
@@ -56,10 +54,9 @@ public class CategoryService : ICategoryService
         }
         catch (Exception e)
         {
-            throw new Exception("Category service error : " + e.Message);
+            throw new ServiceErrorException("Category", e);
         }
     }
-
     public Category? Create(Category value)
     {
         try
@@ -68,7 +65,7 @@ public class CategoryService : ICategoryService
         }
         catch (Exception e)
         {
-            throw new Exception("Category service error : " + e.Message);
+            throw new ServiceErrorException("Category", e);
         }
     }
 }
