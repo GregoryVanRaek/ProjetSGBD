@@ -1,4 +1,5 @@
 ﻿using LocationVoiture.bll.Services;
+using LocationVoiture.dal.CustomException;
 using LocationVoiture.dal.Entities;
 
 namespace LocationVoiture.Presentation;
@@ -55,14 +56,20 @@ public class CarController
         ConsoleAccess.CreateScreen("All cars");
         DisplayHeader();
         try
-        { 
+        {
             List<Car> cars = _carService.GetAll();
             DisplayCars(cars);
+            ConsoleAccess.Wait();
+        }
+        catch (DBAccessException e)
+        {
+            Console.WriteLine(e.Message);
             ConsoleAccess.Wait();
         }
         catch (Exception e)
         {
             Console.WriteLine(e.Message);
+            ConsoleAccess.Wait();
         }
     }
     private void CreateCar()
@@ -73,39 +80,52 @@ public class CarController
         Model? model;
         
         ConsoleAccess.CreateScreen("New Car");
-    
-        try
+
+        if (CheckParkingAvailability() == 0)
         {
-            license = ValueControl.CheckString(license, "License plate : ");
-            color = ValueControl.CheckString(color, "Color : ");
-            parking = this._carService.GetParkingCode(this.CheckParkingAvailability());
-            model = this._modelService.GetById(this.CheckModel());
-            
-            car = new Car
-            {
-                LicensePlate = license,
-                Color = color,
-                ParkingId = parking.Id,
-                ModelId = model.Id,
-            };
-
-            Car? createdCar = _carService.Create(car);
-
-            if (createdCar is not null)
-            {
-                Console.WriteLine("Car created successfully");
-                DisplayHeader();
-                DisplayCar(createdCar);
-            }
-            else
-                Console.WriteLine("An error occured during the creation of the car");
-        
+            Console.WriteLine("You can't add a new car, there is no parking place available");
             ConsoleAccess.Wait();
         }
-        catch (Exception e)
+        else
         {
-            Console.WriteLine(e.Message);
-            ConsoleAccess.Wait();
+            try
+            {
+                license = ValueControl.CheckString(license, "License plate : ");
+                color = ValueControl.CheckString(color, "Color : ");
+                parking = this._carService.GetParkingCode(this.CheckParkingAvailability());
+                model = this._modelService.GetById(this.CheckModel());
+
+                car = new Car
+                {
+                    LicensePlate = license,
+                    Color = color,
+                    ParkingId = parking.Id,
+                    ModelId = model.Id,
+                };
+
+                Car? createdCar = _carService.Create(car);
+
+                if (createdCar is not null)
+                {
+                    Console.WriteLine("Car created successfully");
+                    DisplayHeader();
+                    DisplayCar(createdCar);
+                }
+                else
+                    Console.WriteLine("An error occured during the creation of the car");
+
+                ConsoleAccess.Wait();
+            }
+            catch (DBAccessException e)
+            {
+                Console.WriteLine(e.Message);
+                ConsoleAccess.Wait();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                ConsoleAccess.Wait();
+            }
         }
     }
     private bool DeleteCar()
@@ -144,7 +164,11 @@ public class CarController
                 Console.WriteLine("Car not found");
                 ConsoleAccess.Wait();
             }
-            
+        }
+        catch (DBAccessException e)
+        {
+            Console.WriteLine(e.Message);
+            ConsoleAccess.Wait();
         }
         catch (Exception e)
         {
@@ -164,12 +188,16 @@ public class CarController
             DisplayCars(cars);
             ConsoleAccess.Wait();
         }
+        catch (DBAccessException e)
+        {
+            Console.WriteLine(e.Message);
+            ConsoleAccess.Wait();
+        }
         catch (Exception e)
         {
             Console.WriteLine(e.Message);
         }
     }
-    
     private void GetAllRentCars()
     {
         ConsoleAccess.CreateScreen("All rent cars");
@@ -182,6 +210,11 @@ public class CarController
             List<Car> rentedCars = allCars.Where(c => !availableCars.Any(ac => ac.Id == c.Id)).ToList();
             
             DisplayCars(rentedCars);
+            ConsoleAccess.Wait();
+        }
+        catch (DBAccessException e)
+        {
+            Console.WriteLine(e.Message);
             ConsoleAccess.Wait();
         }
         catch (Exception e)
@@ -198,7 +231,7 @@ public class CarController
         Console.WriteLine("1. All cars");
         Console.WriteLine("2. Available cars");
         Console.WriteLine("3. Rent cars");
-        Console.WriteLine("4. Create new car");
+        Console.WriteLine("4. Add a new car");
         Console.WriteLine("5. Delete a car");
         Console.WriteLine("6. Categories");
         Console.WriteLine("7. Models");
@@ -241,7 +274,7 @@ public class CarController
             DisplayCars(_carService.GetAll());
     }
     
-    private int CheckParkingAvailability()
+    public int CheckParkingAvailability()
     {
         List<Parking> available = new List<Parking>();
         int chosenPlace = 0;
@@ -249,16 +282,28 @@ public class CarController
         try
         {
             available = this._carService.GetAllParking(true);
-            Console.WriteLine("Here are every available parking place :");
-            do
+            if (available.Count > 0)
             {
-                DisplayParking(available);
-                chosenPlace = ValueControl.CheckPositiveInt("Enter the id of the parking place : ");
-                
-                if(available.FirstOrDefault(c => c.Id == chosenPlace) is null)
-                    Console.WriteLine("Please choose an available parking place");
-                
-            } while (available.FirstOrDefault(c => c.Id == chosenPlace) is null);
+                Console.WriteLine("Here are every available parking place :");
+                do
+                {
+                    DisplayParking(available);
+                    chosenPlace = ValueControl.CheckPositiveInt("Enter the id of the parking place for the returned car : ");
+                    
+                    if(available.FirstOrDefault(c => c.Id == chosenPlace) is null)
+                        Console.WriteLine("Please choose an available parking place");
+                    
+                } while (available.FirstOrDefault(c => c.Id == chosenPlace) is null);
+            }
+            else
+            {
+                chosenPlace = 0;
+            }
+        }
+        catch (DBAccessException e)
+        {
+            Console.WriteLine(e.Message);
+            ConsoleAccess.Wait();
         }
         catch (Exception e)
         {
@@ -301,6 +346,11 @@ public class CarController
                     Console.WriteLine("Please choose a model specified above");
                 
             } while (models.FirstOrDefault(c => c.Id == chosenModel) is null);
+        }
+        catch (DBAccessException e)
+        {
+            Console.WriteLine(e.Message);
+            ConsoleAccess.Wait();
         }
         catch (Exception e)
         {

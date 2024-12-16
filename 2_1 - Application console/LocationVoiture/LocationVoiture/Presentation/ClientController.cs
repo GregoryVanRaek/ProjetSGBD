@@ -28,9 +28,9 @@ public class ClientController
                     break;
                 case 2 : GetOneClient();
                     break;
-                case 3 : UpdateClient();
+                case 3 : CreateClient();
                     break;
-                case 4 : CreateClient();
+                case 4 : UpdateClient();
                     break;
                 case 5 : DeleteClient();
                     break;
@@ -52,6 +52,11 @@ public class ClientController
         { 
             List<Client> clients = _clientService.GetAll();
             DisplayClient(clients);
+            ConsoleAccess.Wait();
+        }
+        catch (DBAccessException e)
+        {
+            Console.WriteLine(e.Message);
             ConsoleAccess.Wait();
         }
         catch (Exception e)
@@ -79,6 +84,11 @@ public class ClientController
             
             ConsoleAccess.Wait();
         }
+        catch (DBAccessException e)
+        {
+            Console.WriteLine(e.Message);
+            ConsoleAccess.Wait();
+        }
         catch (Exception e)
         {
             Console.WriteLine(e.Message);
@@ -104,6 +114,11 @@ public class ClientController
             
             ConsoleAccess.Wait();
         }
+        catch (DBAccessException e)
+        {
+            Console.WriteLine(e.Message);
+            ConsoleAccess.Wait();
+        }
         catch (Exception e)
         {
             Console.WriteLine(e.Message);
@@ -127,6 +142,11 @@ public class ClientController
                     ConsoleAccess.Wait();
                     break;
             }
+        }
+        catch (DBAccessException e)
+        {
+            Console.WriteLine(e.Message);
+            ConsoleAccess.Wait();
         }
         catch (Exception e)
         {
@@ -193,6 +213,12 @@ public class ClientController
                 Console.WriteLine("An error occured during the creation of the client");
             
             ConsoleAccess.Wait();
+            return c;
+        }
+        catch (DBAccessException e)
+        {
+            Console.WriteLine(e.Message);
+            ConsoleAccess.Wait();
         }
         catch (Exception e)
         {
@@ -255,6 +281,12 @@ public class ClientController
                 return null;
             }
         }
+        catch (DBAccessException e)
+        {
+            Console.WriteLine(e.Message);
+            ConsoleAccess.Wait();
+            return null;
+        }
         catch (Exception e)
         {
             Console.WriteLine(e);
@@ -282,7 +314,7 @@ public class ClientController
                 DisplayHeader();
                 DisplayClient(client);
                 Console.Write("Are you sure you want to delete this client? (y/n)");
-                string choice = Console.ReadLine().ToString().ToLower();
+                string choice = Console.ReadLine().ToLower();
                 switch (choice)
                 {
                     case "y" : _clientService.Delete(client);
@@ -290,7 +322,7 @@ public class ClientController
                         ConsoleAccess.Wait();
                         return true;
                     case "n": break;
-                    default: Console.WriteLine("Invalid choice");
+                    default: Console.WriteLine("Invalid choice");ConsoleAccess.Wait();
                         break;
                 }
             }
@@ -298,11 +330,18 @@ public class ClientController
                 Console.WriteLine("Client not found");
             
         }
+        catch (DBAccessException e)
+        {
+            Console.WriteLine(e.Message);
+            ConsoleAccess.Wait();
+        }
         catch (Exception e)
         {
             Console.WriteLine(e);
+            ConsoleAccess.Wait();
         }
 
+        ConsoleAccess.Wait();
         return false;
     }
     
@@ -314,8 +353,8 @@ public class ClientController
         ConsoleAccess.CreateScreen("Client menu");
         Console.WriteLine("1. All clients");
         Console.WriteLine("2. Research one client");
-        Console.WriteLine("3. Update client");
-        Console.WriteLine("4. Add new client");
+        Console.WriteLine("3. Add new client");
+        Console.WriteLine("4. Update client");
         Console.WriteLine("5. Delete client");
         Console.WriteLine("6. Back to main menu");
     }
@@ -330,8 +369,9 @@ public class ClientController
                           "PostalCode".PadRight(12) + 
                           "City".PadRight(15) + 
                           "Country".PadRight(15) + 
-                          "License");
-        Console.WriteLine(new string('-', 130));
+                          "License".PadRight(15) +
+                          "Birthdate");
+        Console.WriteLine(new string('-', 155));
     }
     
     private void DisplayClient(Client client)
@@ -344,7 +384,8 @@ public class ClientController
                           client.Address.PostalCode.PadRight(12) +
                           client.Address.City.PadRight(15) +
                           client.Address.Country.PadRight(15) +
-                          client.DrivingLicense);
+                          client.DrivingLicense.PadRight(15) +
+                          client.BirthDate.ToString("d"));
     }
 
     private void DisplayClient(List<Client> clients)

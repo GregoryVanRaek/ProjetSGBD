@@ -59,10 +59,12 @@ public class CarRepository : ICarRepository
                 };
                 cars.Add(c);
             }
+            reader.Close();
         }
         catch (Exception e)
         {
-            throw new DBAccessException("An error occurred while getting all cars: ", e.Message);
+            throw new DBAccessException(command.CommandText, e.Message);
+
         }
         finally
         {
@@ -107,13 +109,14 @@ public class CarRepository : ICarRepository
                     LicensePlate = (string)reader["license_plate"],
                     Color = (string)reader["color"],
                     ModelName = (string)reader["model_name"],
-                    ParkingCode = (string)reader["parking_code"]
+                    ParkingCode = reader["parking_code"] == DBNull.Value ? null : (string)reader["parking_code"]
                 };
             }
+            reader.Close();
         }
         catch (Exception e)
         {
-            throw new DBAccessException("An error occurred while getting the car: ", e.Message);
+            throw new DBAccessException(command.CommandText, e.Message);
         }
         finally
         {
@@ -127,7 +130,7 @@ public class CarRepository : ICarRepository
     public Car? Create(Car car)
     {
         int insert = 0;
-        NpgsqlCommand command;
+        NpgsqlCommand command = null;
         
         try
         {
@@ -150,7 +153,7 @@ public class CarRepository : ICarRepository
         }
         catch (Exception e)
         {
-            throw new DBAccessException("Error while inserting category", e.ToString());
+            throw new DBAccessException(command.CommandText, e.Message);
         }
         finally
         {
@@ -162,12 +165,39 @@ public class CarRepository : ICarRepository
 
     public Car Update(Car entity)
     {
-        throw new NotImplementedException();
+        NpgsqlCommand command = null;
+        
+        try
+        {
+            if (this.GetOneById(entity.Id) is not null)
+            {
+                _connection.OpenConnection();
+                
+                command = new NpgsqlCommand("UPDATE car SET parking_id = null WHERE id = @id", _connection._SqlConnection);
+                
+                command.Parameters.AddWithValue("@id", entity.Id);
+                
+                int rowsAffected = command.ExecuteNonQuery();
+                
+                return rowsAffected != 0 ? this.GetOneById(entity.Id) : null;
+            }
+            else
+            {
+                throw new Exception("Car not found.");
+            }
+        }
+        catch (Exception e)
+        {
+            throw new DBAccessException(command.CommandText, e.Message);
+        }
+        finally
+        {
+            _connection.CloseConnection();
+        }
     }
-
     public bool Delete(Car entity)
     {
-        NpgsqlCommand command;
+        NpgsqlCommand command = null;
 
         try
         {
@@ -189,7 +219,8 @@ public class CarRepository : ICarRepository
         }
         catch (Exception e)
         {
-            throw new DBAccessException("Error while deleting the car", e.ToString());
+            throw new DBAccessException(command.CommandText, e.Message);
+
         }
         finally
         {
@@ -201,7 +232,7 @@ public class CarRepository : ICarRepository
     public Decimal GetAmount(int id)
     {
         decimal dailyRate = 0 ;
-        NpgsqlCommand command;
+        NpgsqlCommand command = null;
 
         try
         {
@@ -224,7 +255,7 @@ public class CarRepository : ICarRepository
         }
         catch (Exception e)
         {
-            throw new DBAccessException("Error while retrieving daily rate by car ID", e.ToString());
+            throw new DBAccessException(command.CommandText, e.Message);
         }
         finally
         {
@@ -239,8 +270,7 @@ public class CarRepository : ICarRepository
     public Parking GetParkingCode(int parking_code)
     {
         Parking? parking = null;
-        NpgsqlCommand command;
-
+        NpgsqlCommand command = null;
         try
         {
             _connection.OpenConnection();
@@ -260,10 +290,11 @@ public class CarRepository : ICarRepository
                     Code = (string)reader["code"],
                 };
             }
+            reader.Close();
         }
         catch (Exception e)
         {
-            throw new DBAccessException("Error while trying to get parking place", e.ToString());
+            throw new DBAccessException(command.CommandText, e.Message);
         }
         finally
         {
@@ -303,10 +334,11 @@ public class CarRepository : ICarRepository
                 };
                 parkings.Add(p);
             }
+            reader.Close();
         }
         catch (Exception e)
         {
-            throw new DBAccessException("An error occurred while getting all cars: ", e.Message);
+            throw new DBAccessException(command.CommandText, e.Message);
         }
         finally
         {
@@ -319,7 +351,7 @@ public class CarRepository : ICarRepository
     
     public bool GetFreeParkingPlace(int carId)
     {
-        NpgsqlCommand command;
+        NpgsqlCommand command = null;
 
         try
         {
@@ -349,7 +381,7 @@ public class CarRepository : ICarRepository
         }
         catch (Exception e)
         {
-            throw new DBAccessException("Error while assigning free parking place", e.ToString());
+            throw new DBAccessException(command.CommandText, e.Message);
         }
         finally
         {

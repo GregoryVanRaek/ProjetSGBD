@@ -48,9 +48,16 @@ public class CarService : ICarService
         }
     }
 
-    public Car? Update( Car value)
+    public Car? Update(Car value)
     {
-        throw new NotImplementedException();
+        try
+        {
+            return this._carRepository.Update(value);
+        }
+        catch (Exception e)
+        {
+            throw new Exception("Error in car service : " + e.Message);
+        }
     }
     
     public bool Delete(Car value)

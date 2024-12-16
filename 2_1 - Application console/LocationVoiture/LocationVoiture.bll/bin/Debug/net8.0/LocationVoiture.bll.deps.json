@@ -51,10 +51,7 @@
           "Npgsql": "9.0.1"
         },
         "runtime": {
-          "LocationVoiture.dal.dll": {
-            "assemblyVersion": "1.0.0",
-            "fileVersion": "1.0.0.0"
-          }
+          "LocationVoiture.dal.dll": {}
         }
       }
     }

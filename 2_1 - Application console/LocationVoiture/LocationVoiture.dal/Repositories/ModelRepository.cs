@@ -24,9 +24,9 @@ public class ModelRepository : IModelRepository
         {
             _connection.OpenConnection();
             command = new NpgsqlCommand(
-                @"SELECT m.ID, m.NAME, m.BRAND, m.SEAT_NUMBER, CATEGORY_ID FROM MODEL m 
-                         LEFT JOIN CATEGORY 
-                         ON m.CATEGORY_ID = CATEGORY.ID",
+                @"SELECT m.ID, m.NAME, m.BRAND, m.SEAT_NUMBER, m.CATEGORY_ID, c.NAME as category_name, c.DAILY_RATE FROM MODEL m 
+                         LEFT JOIN CATEGORY c
+                         ON m.CATEGORY_ID = c.ID",
                 _connection._SqlConnection
             );
 
@@ -40,14 +40,17 @@ public class ModelRepository : IModelRepository
                     Name = (string)reader["name"],
                     Brand = (string)reader["brand"],
                     SeatNumber = (int)reader["seat_number"],
-                    CategoryId = (int)reader["category_id"]
+                    CategoryId = (int)reader["category_id"],
+                    CategoryName = (string)reader["category_name"],
+                    DailyRate  = (decimal)reader["daily_rate"],
                 };
                 models.Add(m);
             }
+            reader.Close();
         }
         catch (Exception e)
         {
-            throw new DBAccessException("An error occurred while getting all models: ", e.Message);
+            throw new DBAccessException(command.CommandText, e.Message);
         }
         finally
         {
@@ -61,14 +64,15 @@ public class ModelRepository : IModelRepository
     public Model? GetOneById(int id)
     {
         Model? model = null;
-        NpgsqlCommand command;
+        NpgsqlCommand command = null;
 
         try
         {
             _connection.OpenConnection();
 
-            command = new NpgsqlCommand(@"SELECT m.ID, m.NAME, m.BRAND, m.SEAT_NUMBER, m.CATEGORY_ID
-                          FROM MODEL m LEFT JOIN CATEGORY ON m.CATEGORY_ID = CATEGORY.ID
+            command = new NpgsqlCommand(@"SELECT m.ID, m.NAME, m.BRAND, m.SEAT_NUMBER, m.CATEGORY_ID, c.NAME as category_name, c.DAILY_RATE FROM MODEL m 
+                         LEFT JOIN CATEGORY c
+                         ON m.CATEGORY_ID = c.ID
                           WHERE m.ID = @id"
                 , _connection._SqlConnection);
 
@@ -84,13 +88,16 @@ public class ModelRepository : IModelRepository
                     Name = (string)reader["name"],
                     Brand = (string)reader["brand"],
                     SeatNumber = (int)reader["seat_number"],
-                    CategoryId = (int)reader["category_id"]
+                    CategoryId = (int)reader["category_id"],
+                    CategoryName = (string)reader["category_name"],
+                    DailyRate  = (decimal)reader["daily_rate"],
                 };
             }
+            reader.Close();
         }
         catch (Exception e)
         {
-            throw new DBAccessException("Error while trying to get model", e.ToString());
+            throw new DBAccessException(command.CommandText, e.Message);
         }
         finally
         {
@@ -103,7 +110,7 @@ public class ModelRepository : IModelRepository
     public Model? Create(Model entity)
     {
         int insert = 0;
-        NpgsqlCommand command;
+        NpgsqlCommand command = null;
         
         try
         {
@@ -126,7 +133,7 @@ public class ModelRepository : IModelRepository
         }
         catch (Exception e)
         {
-            throw new DBAccessException("Error while inserting model", e.ToString());
+            throw new DBAccessException(command.CommandText, e.Message);
         }
         finally
         {
@@ -138,7 +145,7 @@ public class ModelRepository : IModelRepository
 
     public Model? Update(Model entity)
     {
-        NpgsqlCommand command;
+        NpgsqlCommand command = null;
 
         try
         {
@@ -165,7 +172,7 @@ public class ModelRepository : IModelRepository
         }
         catch (Exception e)
         {
-            throw new DBAccessException("Error while updating model", e.ToString());
+            throw new DBAccessException(command.CommandText, e.Message);
         }
         finally
         {
@@ -175,7 +182,7 @@ public class ModelRepository : IModelRepository
 
     public bool Delete(Model entity)
     {
-        NpgsqlCommand command;
+        NpgsqlCommand command = null;
 
         try
         {
@@ -197,7 +204,7 @@ public class ModelRepository : IModelRepository
         }
         catch (Exception e)
         {
-            throw new DBAccessException("Error while deleting model", e.ToString());
+            throw new DBAccessException(command.CommandText, e.Message);
         }
         finally
         {

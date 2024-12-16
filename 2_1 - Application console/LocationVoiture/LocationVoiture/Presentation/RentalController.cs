@@ -1,4 +1,5 @@
 ﻿using LocationVoiture.bll.Services;
+using LocationVoiture.dal.CustomException;
 using LocationVoiture.dal.Entities;
 
 namespace LocationVoiture.Presentation
@@ -56,9 +57,15 @@ namespace LocationVoiture.Presentation
                 DisplayRental(rentals);
                 ConsoleAccess.Wait();
             }
+            catch (DBAccessException e)
+            {
+                Console.WriteLine(e.Message);
+                ConsoleAccess.Wait();
+            }
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
+                ConsoleAccess.Wait();
             }
         }
 
@@ -80,9 +87,9 @@ namespace LocationVoiture.Presentation
                 this._carController.DisplayAllCars(true);
                 do
                 {
-                    carId = ValueControl.CheckPositiveInt("Enter the Car ID from the available cars: ");
+                    carId = ValueControl.CheckPositiveInt("Enter the ID of an available car: ");
                     if (!cars.Any(car => car.Id == carId))
-                        Console.WriteLine("Invalid Car ID. Please select a valid ID from the available cars.");
+                        Console.WriteLine("Invalid Car ID. Please select a valid ID of the available cars.");
                     
                 } while (!cars.Any(car => car.Id == carId));
                 
@@ -115,10 +122,22 @@ namespace LocationVoiture.Presentation
                 // autres données
                 startDate = ValueControl.CheckDate("Start date : ");
                 duration = ValueControl.CheckPositiveInt("Duration (in days) : ");
+                
+                if (CheckDuplicateRental(carId, startDate, duration))
+                {
+                    Console.WriteLine("This car is already rented or reserved for the selected dates.");
+                    ConsoleAccess.Wait();
+                    return;
+                }
+                
                 amount = this._carService.GetAmount(carId) * duration;
                 Console.WriteLine("Amount of rentals : " + amount);
                 ConsoleAccess.Wait();
                 status = startDate > DateTime.Today ? RentalStatus.reserved : RentalStatus.rent;
+                
+                // supprimer l'emplacement de parking si la voiture est en location actuellement
+                if (status == RentalStatus.rent)
+                    UpdateCarParking(carId);
                 
                 rental = new Rental
                 {
@@ -143,6 +162,11 @@ namespace LocationVoiture.Presentation
                 
                 ConsoleAccess.Wait();
             }
+            catch (DBAccessException e)
+            {
+                Console.WriteLine(e.Message);
+                ConsoleAccess.Wait();
+            }
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
@@ -153,7 +177,14 @@ namespace LocationVoiture.Presentation
         private Rental? UpdateRental()
         {
             ConsoleAccess.CreateScreen("Rental enclosing");
-
+        
+            if(this._carController.CheckParkingAvailability() == 0)
+            {
+                Console.WriteLine("You can't enclose this rental because there is no parking availability for the car.");
+                ConsoleAccess.Wait();
+                return null;
+            }
+            
             try
             {
                 this.GetAllRental(false);
@@ -164,19 +195,29 @@ namespace LocationVoiture.Presentation
 
                 if (rental is not null)
                 {
-                    DisplayHeader();
-                    DisplayRental(rental);
                     int choice = 0;
-                    
+                    bool done = false;
                     do
                     {
                         choice = ValueControl.CheckPositiveInt("Is this rental completed(1) or cancelled(2) ? ");
-                        switch (choice)
-                        {
-                            case 1 : rental.Status = RentalStatus.completed; break;
-                            case 2 : rental.Status = RentalStatus.cancelled; break;
-                        }
-                    } while (choice != 1 && choice != 2);
+                        
+                        if(choice == 1 && rental.Status == RentalStatus.reserved)
+                            Console.WriteLine("You can't enclose this rental because rental status is reserved.");
+                        else if (choice == 2 && rental.Status == RentalStatus.rent)
+                            Console.WriteLine("You can't cancel a current rental ");
+                        else if(choice == 1 || choice == 2)
+                            done = true;
+                    } while (!done);
+                    
+                    switch (choice)
+                    {
+                        case 1 : rental.Status = RentalStatus.completed; break;
+                        case 2 : rental.Status = RentalStatus.cancelled; break;
+                    }
+                    DisplayHeader();
+                    DisplayRental(rental);
+                                        
+                    ConsoleAccess.Wait();
                     
                     Rental? updatedRental = this._rentalService.Update(rental);
                     if (updatedRental is not null && rental.Status == RentalStatus.completed)
@@ -198,9 +239,16 @@ namespace LocationVoiture.Presentation
                 Console.WriteLine("Rental not found");
                 return null;
             }
+            catch (DBAccessException e)
+            {
+                Console.WriteLine(e.Message);
+                ConsoleAccess.Wait();
+                return null;
+            }
             catch (Exception e)
             {
                 Console.WriteLine(e);
+                ConsoleAccess.Wait();
                 return null;
             }
         }
@@ -238,9 +286,15 @@ namespace LocationVoiture.Presentation
                     Console.WriteLine("Rental not found");
                 
             }
+            catch (DBAccessException e)
+            {
+                Console.WriteLine(e.Message);
+                ConsoleAccess.Wait();
+            }
             catch (Exception e)
             {
                 Console.WriteLine(e);
+                ConsoleAccess.Wait();
             }
 
             return false;
@@ -255,11 +309,10 @@ namespace LocationVoiture.Presentation
             ConsoleAccess.CreateScreen("Rental menu");
             Console.WriteLine("1. All Rentals");
             Console.WriteLine("2. Add new Rental");
-            Console.WriteLine("3. Update Rental");
+            Console.WriteLine("3. Return/cancel Rental");
             Console.WriteLine("4. Delete Rental");
             Console.WriteLine("5. Back to main menu");
         }
-        
         private void DisplayHeader()
         {
             Console.WriteLine("ID".PadRight(5) +
@@ -271,7 +324,6 @@ namespace LocationVoiture.Presentation
                               "Status".PadRight(15));
             Console.WriteLine(new string('-', 80));
         }
-            
         private void DisplayRental(Rental rental)
         {
             Console.WriteLine(rental.Id.ToString().PadRight(5) +
@@ -282,14 +334,30 @@ namespace LocationVoiture.Presentation
                               rental.Amount.ToString("F").PadRight(15) +
                               rental.Status.ToString().PadRight(15));
         }
-
         private void DisplayRental(List<Rental> rentals)
         {
             foreach(Rental rental in rentals)
                 DisplayRental(rental);
         }
-        
-       
+        private bool CheckDuplicateRental(int carId, DateTime startDate, int duration)
+        {
+            var rentals = _rentalService.GetAll().Where(r => r.CarId == carId);
+
+            DateTime endDate = startDate.AddDays(duration);
+
+            return rentals.Any(r => (r.Status == RentalStatus.rent || r.Status == RentalStatus.reserved) &&
+                                    (startDate < r.StartDate.AddDays(r.Duration) &&
+                                     endDate > r.StartDate));
+        }
+
+        private void UpdateCarParking(int id)
+        {
+            Car? car = _carService.GetById(id);
+           
+            car.ParkingCode = null;
+            
+            this._carService.Update(car);
+        }
         
         #endregion
     }

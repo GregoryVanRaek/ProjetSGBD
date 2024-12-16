@@ -2,7 +2,9 @@
     id SERIAL NOT NULL,
     name VARCHAR(25) NOT NULL,
     daily_rate NUMERIC(5, 2) NOT NULL,
-    CONSTRAINT pk_category PRIMARY KEY (id)
+    CONSTRAINT pk_category PRIMARY KEY (id),
+    CONSTRAINT uk_name UNIQUE(name),
+    CONSTRAINT check_daily_rate CHECK (daily_rate > 0)
 );
 
 CREATE TABLE model (
@@ -12,7 +14,8 @@ CREATE TABLE model (
     seat_number INT NOT NULL,
     category_id INT NOT NULL,
     CONSTRAINT pk_model PRIMARY KEY (id),
-    CONSTRAINT fk_category FOREIGN KEY (category_id) REFERENCES category(id)
+    CONSTRAINT fk_category FOREIGN KEY (category_id) REFERENCES category(id),
+    CONSTRAINT check_seat_number CHECK (seat_number > 1)
 );
 
 CREATE TABLE parking (
@@ -53,7 +56,9 @@ CREATE TABLE client (
     CONSTRAINT pk_client PRIMARY KEY (id),
     CONSTRAINT uk_email UNIQUE (email),
     CONSTRAINT uk_driving_license UNIQUE (driving_license),
-    CONSTRAINT check_age CHECK (EXTRACT(YEAR FROM AGE(birth_date)) >= 21)
+    CONSTRAINT check_age CHECK (EXTRACT(YEAR FROM AGE(birth_date)) >= 21),
+    CONSTRAINT check_first_name_length CHECK (char_length(first_name) >= 2),
+    CONSTRAINT check_last_name_length CHECK (char_length(last_name) >= 2)
 );
 
 CREATE TABLE rental (
@@ -67,7 +72,8 @@ CREATE TABLE rental (
     CONSTRAINT pk_rental PRIMARY KEY (id),
     CONSTRAINT fk_car FOREIGN KEY (car_id) REFERENCES car(id),
     CONSTRAINT fk_client FOREIGN KEY (client_id) REFERENCES client(id),
-    CONSTRAINT check_status CHECK (status IN ('rent', 'completed', 'reserved', 'cancelled'))
+    CONSTRAINT check_status CHECK (status IN ('rent', 'completed', 'reserved', 'cancelled')),
+    CONSTRAINT check_amount CHECK(amount > 0)
 );
 
 

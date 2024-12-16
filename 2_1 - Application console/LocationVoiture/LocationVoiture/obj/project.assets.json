@@ -1813,11 +1813,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\vanra\\Desktop\\SynologyDrive\\Bachelier informatique de gestion\\3ème année\\ProjetSGBD\\ProjetSGBD\\2_1 - Application console\\LocationVoiture\\LocationVoiture\\LocationVoiture.csproj",
+      "projectUniqueName": "C:\\Users\\vanra\\Desktop\\SynologyDrive\\Bachelier informatique de gestion\\3ème année\\ProjetSGBD\\projet\\ProjetSGBD\\2_1 - Application console\\LocationVoiture\\LocationVoiture\\LocationVoiture.csproj",
       "projectName": "LocationVoiture",
-      "projectPath": "C:\\Users\\vanra\\Desktop\\SynologyDrive\\Bachelier informatique de gestion\\3ème année\\ProjetSGBD\\ProjetSGBD\\2_1 - Application console\\LocationVoiture\\LocationVoiture\\LocationVoiture.csproj",
+      "projectPath": "C:\\Users\\vanra\\Desktop\\SynologyDrive\\Bachelier informatique de gestion\\3ème année\\ProjetSGBD\\projet\\ProjetSGBD\\2_1 - Application console\\LocationVoiture\\LocationVoiture\\LocationVoiture.csproj",
       "packagesPath": "C:\\Users\\vanra\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\vanra\\Desktop\\SynologyDrive\\Bachelier informatique de gestion\\3ème année\\ProjetSGBD\\ProjetSGBD\\2_1 - Application console\\LocationVoiture\\LocationVoiture\\obj\\",
+      "outputPath": "C:\\Users\\vanra\\Desktop\\SynologyDrive\\Bachelier informatique de gestion\\3ème année\\ProjetSGBD\\projet\\ProjetSGBD\\2_1 - Application console\\LocationVoiture\\LocationVoiture\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\vanra\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -1832,8 +1832,8 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "C:\\Users\\vanra\\Desktop\\SynologyDrive\\Bachelier informatique de gestion\\3ème année\\ProjetSGBD\\ProjetSGBD\\2_1 - Application console\\LocationVoiture\\LocationVoiture.bll\\LocationVoiture.bll.csproj": {
-              "projectPath": "C:\\Users\\vanra\\Desktop\\SynologyDrive\\Bachelier informatique de gestion\\3ème année\\ProjetSGBD\\ProjetSGBD\\2_1 - Application console\\LocationVoiture\\LocationVoiture.bll\\LocationVoiture.bll.csproj"
+            "C:\\Users\\vanra\\Desktop\\SynologyDrive\\Bachelier informatique de gestion\\3ème année\\ProjetSGBD\\projet\\ProjetSGBD\\2_1 - Application console\\LocationVoiture\\LocationVoiture.bll\\LocationVoiture.bll.csproj": {
+              "projectPath": "C:\\Users\\vanra\\Desktop\\SynologyDrive\\Bachelier informatique de gestion\\3ème année\\ProjetSGBD\\projet\\ProjetSGBD\\2_1 - Application console\\LocationVoiture\\LocationVoiture.bll\\LocationVoiture.bll.csproj"
             }
           }
         }

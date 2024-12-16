@@ -3,7 +3,8 @@ INSERT INTO category (name, daily_rate)
 VALUES
 ('Economy', 20.00),
 ('Compact', 30.00),
-('Luxury', 50.00);
+('Luxury', 50.00),
+('4x4'n 80.00);
 
 INSERT INTO model (name, brand, seat_number, category_id)
 VALUES

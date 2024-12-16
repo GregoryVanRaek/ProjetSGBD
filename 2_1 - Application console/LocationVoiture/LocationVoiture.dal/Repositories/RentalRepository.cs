@@ -22,7 +22,7 @@ namespace LocationVoiture.dal.Repositories
         public List<Rental> GetAll(bool withCompletedAndCancellled)
         {
             List<Rental> rentals = new List<Rental>();
-            NpgsqlCommand command;
+            NpgsqlCommand command = null;
 
             try
             {
@@ -63,10 +63,11 @@ namespace LocationVoiture.dal.Repositories
                         Status = (RentalStatus)Enum.Parse(typeof(RentalStatus), reader["status"].ToString())
                     });
                 }
+                reader.Close();
             }
             catch (Exception e)
             {
-                throw new DBAccessException("Error while retrieving rentals", e.ToString());
+                throw new DBAccessException(command.CommandText, e.Message);
             }
             finally
             {
@@ -79,7 +80,7 @@ namespace LocationVoiture.dal.Repositories
         public Rental? GetOneById(int id)
         {
             Rental? rental = null;
-            NpgsqlCommand command;
+            NpgsqlCommand command = null;
 
             try
             {
@@ -109,10 +110,11 @@ namespace LocationVoiture.dal.Repositories
                         Status = (RentalStatus)Enum.Parse(typeof(RentalStatus), reader["status"].ToString())
                     };
                 }
+                reader.Close();
             }
             catch (Exception e)
             {
-                throw new DBAccessException("Error while retrieving rental by ID", e.ToString());
+                throw new DBAccessException(command.CommandText, e.Message);
             }
             finally
             {
@@ -125,7 +127,7 @@ namespace LocationVoiture.dal.Repositories
         public Rental? Create(Rental entity)
         {
             int insert = 0;
-            NpgsqlCommand command;
+            NpgsqlCommand command = null;
 
             try
             {
@@ -151,7 +153,7 @@ namespace LocationVoiture.dal.Repositories
             }
             catch (Exception e)
             {
-                throw new DBAccessException("Error while inserting rental", e.ToString());
+                throw new DBAccessException(command.CommandText, e.Message);
             }
             finally
             {
@@ -163,7 +165,7 @@ namespace LocationVoiture.dal.Repositories
 
         public Rental? Update(Rental entity)
         {
-            NpgsqlCommand command;
+            NpgsqlCommand command = null;
 
             try
             {
@@ -193,7 +195,7 @@ namespace LocationVoiture.dal.Repositories
             }
             catch (Exception e)
             {
-                throw new DBAccessException("Error while updating rental", e.ToString());
+                throw new DBAccessException(command.CommandText, e.Message);
             }
             finally
             {
@@ -203,7 +205,7 @@ namespace LocationVoiture.dal.Repositories
 
         public bool Delete(Rental entity)
         {
-            NpgsqlCommand command;
+            NpgsqlCommand command = null;
 
             try
             {
@@ -224,7 +226,7 @@ namespace LocationVoiture.dal.Repositories
             }
             catch (Exception e)
             {
-                throw new DBAccessException("Error while deleting rental", e.ToString());
+                throw new DBAccessException(command.CommandText, e.Message);
             }
             finally
             {

@@ -17,7 +17,7 @@ public class CategoryRepository : ICategoryRepository
     public List<Category> GetAll()
     {
         List<Category> categories = new List<Category>();
-        NpgsqlCommand command;
+        NpgsqlCommand command = null;
 
         try
         {
@@ -37,10 +37,11 @@ public class CategoryRepository : ICategoryRepository
                     DailyRate = (decimal)reader["daily_rate"]
                 });
             }
+            reader.Close();
         }
         catch (Exception e)
         {
-            throw new DBAccessException("Error while retrieving category", e.ToString());
+            throw new DBAccessException(command.CommandText, e.Message);
         }
         finally
         {
@@ -53,7 +54,7 @@ public class CategoryRepository : ICategoryRepository
     public Category? GetOneById(int id)
     {
         Category? category = null;
-        NpgsqlCommand command;
+        NpgsqlCommand command = null;
 
         try
         {
@@ -75,10 +76,11 @@ public class CategoryRepository : ICategoryRepository
                     DailyRate = (decimal)reader["daily_rate"]
                 };
             }
+            reader.Close();
         }
         catch (Exception e)
         {
-            throw new DBAccessException("Error while trying to get category", e.ToString());
+            throw new DBAccessException(command.CommandText, e.Message);
         }
         finally
         {
@@ -91,7 +93,7 @@ public class CategoryRepository : ICategoryRepository
     public Category? Create(Category entity)
     {
         int insert = 0;
-        NpgsqlCommand command;
+        NpgsqlCommand command = null;
         
         try
         {
@@ -112,7 +114,7 @@ public class CategoryRepository : ICategoryRepository
         }
         catch (Exception e)
         {
-            throw new DBAccessException("Error while inserting category", e.ToString());
+            throw new DBAccessException(command.CommandText, e.Message);
         }
         finally
         {
@@ -124,7 +126,7 @@ public class CategoryRepository : ICategoryRepository
 
     public Category? Update(Category entity)
     {
-        NpgsqlCommand command;
+        NpgsqlCommand command = null;
 
         try
         {
@@ -149,7 +151,7 @@ public class CategoryRepository : ICategoryRepository
         }
         catch (Exception e)
         {
-            throw new DBAccessException("Error while updating category", e.ToString());
+            throw new DBAccessException(command.CommandText, e.Message);
         }
         finally
         {
@@ -159,7 +161,7 @@ public class CategoryRepository : ICategoryRepository
 
     public bool Delete(Category entity)
     {
-        NpgsqlCommand command;
+        NpgsqlCommand command = null;
 
         try
         {
@@ -181,7 +183,7 @@ public class CategoryRepository : ICategoryRepository
         }
         catch (Exception e)
         {
-            throw new DBAccessException("Error while deleting category", e.ToString());
+            throw new DBAccessException(command.CommandText, e.Message);
         }
         finally
         {

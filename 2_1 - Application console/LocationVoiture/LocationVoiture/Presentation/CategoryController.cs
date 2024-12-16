@@ -1,4 +1,5 @@
 ﻿using LocationVoiture.bll.Services;
+using LocationVoiture.dal.CustomException;
 using LocationVoiture.dal.Entities;
 
 namespace LocationVoiture.Presentation;
@@ -50,6 +51,11 @@ public class CategoryController
             DisplayCategory(categories);
             ConsoleAccess.Wait();
         }
+        catch (DBAccessException e)
+        {
+            Console.WriteLine(e.Message);
+            ConsoleAccess.Wait();
+        }
         catch (Exception e)
         {
             Console.WriteLine(e.Message);
@@ -66,7 +72,17 @@ public class CategoryController
         
         try
         {
-            name = ValueControl.CheckString(name, "name");
+            List<Category> existingCategories = _categoryService.GetAll();
+
+            do
+            {
+                name = ValueControl.CheckString(name, "name").ToLower();
+                
+                if(existingCategories.Select(x => x.Name.ToLower()).Contains(name))
+                    Console.WriteLine("This category already exists");
+                
+            } while (existingCategories.Select(x => x.Name.ToLower()).Contains(name));
+            
             dailyRate = ValueControl.CheckPositiveDecimal("Daily rate : ");
             
             category = new Category
@@ -88,6 +104,11 @@ public class CategoryController
             
             ConsoleAccess.Wait();
         }
+        catch (DBAccessException e)
+        {
+            Console.WriteLine(e.Message);
+            ConsoleAccess.Wait();
+        }
         catch (Exception e)
         {
             Console.WriteLine(e.Message);
@@ -101,6 +122,7 @@ public class CategoryController
 
         try
         {
+            List<Category> existingCategories = _categoryService.GetAll();
             int id = ValueControl.CheckPositiveInt("Enter category's id : ");
         
             Category? category = _categoryService.GetById(id);
@@ -110,7 +132,14 @@ public class CategoryController
                 DisplayHeader();
                 DisplayCategory(category);
 
-                category.Name = ValueControl.CheckString(category.Name, "Category's name : ");
+                do
+                {
+                    category.Name = ValueControl.CheckString(category.Name, "Category's name : ").ToLower();
+                
+                    if(existingCategories.Select(x => x.Name.ToLower()).Contains(category.Name))
+                        Console.WriteLine("This category already exists");
+                
+                } while (existingCategories.Select(x => x.Name.ToLower()).Contains(category.Name));
 
                 category.DailyRate = ValueControl.CheckPositiveDecimal("Daily rate : ");
 
@@ -123,12 +152,17 @@ public class CategoryController
                 return null;
             }
         }
+        catch (DBAccessException e)
+        {
+            Console.WriteLine(e.Message);
+            ConsoleAccess.Wait();
+            return null;
+        }
         catch (Exception e)
         {
             Console.WriteLine(e);
             return null;
         }
-        
     }
 
     private bool DeleteCategory()
@@ -163,6 +197,11 @@ public class CategoryController
             else
                 Console.WriteLine("Category not found");
             
+        }
+        catch (DBAccessException e)
+        {
+            Console.WriteLine(e.Message);
+            ConsoleAccess.Wait();
         }
         catch (Exception e)
         {

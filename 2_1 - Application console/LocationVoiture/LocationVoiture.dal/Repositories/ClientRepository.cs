@@ -17,12 +17,12 @@ public class ClientRepository : IClientRepository
     public List<Client> GetAll()
     {
         List<Client> clients = new List<Client>();
-        NpgsqlCommand command;
-        
+        NpgsqlCommand command = null;
+
         try
         {
             _connection.OpenConnection();
-            
+
             command = new NpgsqlCommand(@"SELECT id, last_name, first_name, email, 
                                         (address).street AS street,
                                         (address).postal_code AS postal_code,
@@ -30,10 +30,10 @@ public class ClientRepository : IClientRepository
                                         (address).country AS country,
                                         driving_license, birth_date 
                                         FROM client ORDER BY last_name"
-                                        , _connection._SqlConnection);
+                , _connection._SqlConnection);
 
             var reader = command.ExecuteReader();
-            
+
             while (reader.Read())
             {
                 clients.Add(new Client
@@ -53,11 +53,15 @@ public class ClientRepository : IClientRepository
                     BirthDate = (DateTime)reader["birth_date"],
                 });
             }
-            _connection.CloseConnection();
+            reader.Close();
         }
         catch (Exception e)
         {
-            throw new DBAccessException("Error while retrieving clients", e.ToString());
+            throw new DBAccessException(command.CommandText, e.Message);
+        }
+        finally
+        {
+            _connection.CloseConnection();
         }
 
         return clients;
@@ -66,12 +70,12 @@ public class ClientRepository : IClientRepository
     public Client? GetOneById(int givenId)
     {
         Client client = null;
-        NpgsqlCommand command;
-        
+        NpgsqlCommand command = null;
+
         try
         {
             _connection.OpenConnection();
-            
+
             command = new NpgsqlCommand(@"SELECT id, last_name, first_name, email, 
                                         (address).street AS street,
                                         (address).postal_code AS postal_code,
@@ -80,12 +84,12 @@ public class ClientRepository : IClientRepository
                                         driving_license, birth_date 
                                         FROM client
                                         WHERE id = @id"
-                                        , _connection._SqlConnection);
-    
+                , _connection._SqlConnection);
+
             command.Parameters.AddWithValue("@id", givenId);
-            
+
             NpgsqlDataReader reader = command.ExecuteReader();
-            
+
             if (reader.Read())
             {
                 client = new Client
@@ -105,11 +109,15 @@ public class ClientRepository : IClientRepository
                     BirthDate = (DateTime)reader["birth_date"],
                 };
             }
-            _connection.CloseConnection();
+            reader.Close();
         }
         catch (Exception e)
         {
-            throw new DBAccessException("Error while retrieving clients", e.ToString());
+            throw new DBAccessException(command.CommandText, e.Message);
+        }
+        finally
+        {
+            _connection.CloseConnection();
         }
 
         return client;
@@ -118,12 +126,12 @@ public class ClientRepository : IClientRepository
     public Client? GetOneByName(string givenName)
     {
         Client? client = null;
-        NpgsqlCommand command;
-        
+        NpgsqlCommand command = null;
+
         try
         {
             _connection.OpenConnection();
-            
+
             command = new NpgsqlCommand(@"SELECT id, last_name, first_name, email, 
                                         (address).street AS street,
                                         (address).postal_code AS postal_code,
@@ -133,11 +141,11 @@ public class ClientRepository : IClientRepository
                                         FROM client
                                         WHERE last_name = @name"
                 , _connection._SqlConnection);
-    
+
             command.Parameters.AddWithValue("@name", givenName);
-            
+
             var reader = command.ExecuteReader();
-            
+
             if (reader.Read())
             {
                 client = new Client
@@ -157,11 +165,15 @@ public class ClientRepository : IClientRepository
                     BirthDate = (DateTime)reader["birth_date"],
                 };
             }
-            _connection.CloseConnection();
+            reader.Close();
         }
         catch (Exception e)
         {
-            throw new DBAccessException("Error while retrieving clients", e.ToString());
+            throw new DBAccessException(command.CommandText, e.Message);
+        }
+        finally
+        {
+            _connection.CloseConnection();
         }
 
         return client;
@@ -170,12 +182,12 @@ public class ClientRepository : IClientRepository
     public Client? GetOneByEmail(string email)
     {
         Client? client = null;
-        NpgsqlCommand command;
-        
+        NpgsqlCommand command = null;
+
         try
         {
             _connection.OpenConnection();
-            
+
             command = new NpgsqlCommand(@"SELECT id, last_name, first_name, email, 
                                         (address).street AS street,
                                         (address).postal_code AS postal_code,
@@ -185,11 +197,11 @@ public class ClientRepository : IClientRepository
                                         FROM client
                                         WHERE email = @email"
                 , _connection._SqlConnection);
-    
+
             command.Parameters.AddWithValue("@email", email);
-            
+
             var reader = command.ExecuteReader();
-            
+
             if (reader.Read())
             {
                 client = new Client
@@ -209,11 +221,15 @@ public class ClientRepository : IClientRepository
                     BirthDate = (DateTime)reader["birth_date"],
                 };
             }
-            _connection.CloseConnection();
+            reader.Close();
         }
         catch (Exception e)
         {
-            throw new DBAccessException("Error while retrieving clients", e.ToString());
+            throw new DBAccessException(command.CommandText, e.Message);
+        }
+        finally
+        {
+            _connection.CloseConnection();
         }
 
         return client;
@@ -221,17 +237,18 @@ public class ClientRepository : IClientRepository
 
     public Client? Create(Client entity)
     {
-        NpgsqlCommand command;
+        NpgsqlCommand command = null;
         int insert = 0;
-        
+
         try
         {
             _connection.OpenConnection();
-            
-            command = new NpgsqlCommand(@"INSERT INTO CLIENT(last_name, first_name, email, address, driving_license, birth_date)
+
+            command = new NpgsqlCommand(
+                @"INSERT INTO CLIENT(last_name, first_name, email, address, driving_license, birth_date)
                                                  VALUES(@last_name, @first_name, @email, ROW(@street, @postal_code, @city, @country), @driving_license, @birth_date)"
-                                                 , _connection._SqlConnection);
-    
+                , _connection._SqlConnection);
+
             command.Parameters.AddWithValue("@last_name", entity.Lastname);
             command.Parameters.AddWithValue("@first_name", entity.Firstname);
             command.Parameters.AddWithValue("@email", entity.Email);
@@ -241,14 +258,16 @@ public class ClientRepository : IClientRepository
             command.Parameters.AddWithValue("@country", entity.Address.Country);
             command.Parameters.AddWithValue("@driving_license", entity.DrivingLicense);
             command.Parameters.AddWithValue("@birth_date", entity.BirthDate);
-            
+
             insert = command.ExecuteNonQuery();
-            
-            _connection.CloseConnection();
         }
         catch (Exception e)
         {
-            throw new DBAccessException("Error while inserting clients", e.ToString());
+            throw new DBAccessException(command.CommandText, e.Message);
+        }
+        finally
+        {
+            _connection.CloseConnection();
         }
 
         return insert == 1 ? GetOneByEmail(entity.Email) : null;
@@ -256,7 +275,7 @@ public class ClientRepository : IClientRepository
 
     public Client? Update(Client entity)
     {
-        NpgsqlCommand command;
+        NpgsqlCommand command = null;
 
         try
         {
@@ -293,7 +312,7 @@ public class ClientRepository : IClientRepository
         }
         catch (Exception e)
         {
-            throw new DBAccessException("Error while updating clients", e.ToString());
+            throw new DBAccessException(command.CommandText, e.Message);
         }
         finally
         {
@@ -303,7 +322,7 @@ public class ClientRepository : IClientRepository
 
     public bool Delete(Client entity)
     {
-        NpgsqlCommand command;
+        NpgsqlCommand command = null;
 
         try
         {
@@ -325,14 +344,11 @@ public class ClientRepository : IClientRepository
         }
         catch (Exception e)
         {
-            throw new DBAccessException("Error while deleting clients", e.ToString());
+            throw new DBAccessException(command.CommandText, e.Message);
         }
         finally
         {
             _connection.CloseConnection();
         }
-        
     }
-
-
 }

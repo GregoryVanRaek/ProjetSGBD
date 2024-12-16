@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\vanra\\Desktop\\SynologyDrive\\Bachelier informatique de gestion\\3ème année\\ProjetSGBD\\ProjetSGBD\\2_1 - Application console\\LocationVoiture\\LocationVoiture.dal\\LocationVoiture.dal.csproj": {}
+    "C:\\Users\\vanra\\Desktop\\SynologyDrive\\Bachelier informatique de gestion\\3ème année\\ProjetSGBD\\projet\\ProjetSGBD\\2_1 - Application console\\LocationVoiture\\LocationVoiture.dal\\LocationVoiture.dal.csproj": {}
   },
   "projects": {
-    "C:\\Users\\vanra\\Desktop\\SynologyDrive\\Bachelier informatique de gestion\\3ème année\\ProjetSGBD\\ProjetSGBD\\2_1 - Application console\\LocationVoiture\\LocationVoiture.dal\\LocationVoiture.dal.csproj": {
+    "C:\\Users\\vanra\\Desktop\\SynologyDrive\\Bachelier informatique de gestion\\3ème année\\ProjetSGBD\\projet\\ProjetSGBD\\2_1 - Application console\\LocationVoiture\\LocationVoiture.dal\\LocationVoiture.dal.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\vanra\\Desktop\\SynologyDrive\\Bachelier informatique de gestion\\3ème année\\ProjetSGBD\\ProjetSGBD\\2_1 - Application console\\LocationVoiture\\LocationVoiture.dal\\LocationVoiture.dal.csproj",
+        "projectUniqueName": "C:\\Users\\vanra\\Desktop\\SynologyDrive\\Bachelier informatique de gestion\\3ème année\\ProjetSGBD\\projet\\ProjetSGBD\\2_1 - Application console\\LocationVoiture\\LocationVoiture.dal\\LocationVoiture.dal.csproj",
         "projectName": "LocationVoiture.dal",
-        "projectPath": "C:\\Users\\vanra\\Desktop\\SynologyDrive\\Bachelier informatique de gestion\\3ème année\\ProjetSGBD\\ProjetSGBD\\2_1 - Application console\\LocationVoiture\\LocationVoiture.dal\\LocationVoiture.dal.csproj",
+        "projectPath": "C:\\Users\\vanra\\Desktop\\SynologyDrive\\Bachelier informatique de gestion\\3ème année\\ProjetSGBD\\projet\\ProjetSGBD\\2_1 - Application console\\LocationVoiture\\LocationVoiture.dal\\LocationVoiture.dal.csproj",
         "packagesPath": "C:\\Users\\vanra\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\vanra\\Desktop\\SynologyDrive\\Bachelier informatique de gestion\\3ème année\\ProjetSGBD\\ProjetSGBD\\2_1 - Application console\\LocationVoiture\\LocationVoiture.dal\\obj\\",
+        "outputPath": "C:\\Users\\vanra\\Desktop\\SynologyDrive\\Bachelier informatique de gestion\\3ème année\\ProjetSGBD\\projet\\ProjetSGBD\\2_1 - Application console\\LocationVoiture\\LocationVoiture.dal\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\vanra\\AppData\\Roaming\\NuGet\\NuGet.Config"
