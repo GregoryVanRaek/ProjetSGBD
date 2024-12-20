@@ -181,7 +181,6 @@ public class ClientController
         Client? newClient;
         string lastname = "", firstname = "", email = "", street = "", postalCode = "", city = "", country = "", drivingLicense = "";
         DateTime birthdate = new DateTime();
-        bool emailSuccess ;
         
         ConsoleAccess.CreateScreen("Create new client");
         
@@ -191,10 +190,10 @@ public class ClientController
             firstname = ValueControl.CheckString(firstname, "Firstname : ");
             email = ValueControl.CheckEmail(email);
             street = ValueControl.CheckString(street, "Street : ");
-            postalCode = ValueControl.CheckString(postalCode, "Postal Code : ");
+            postalCode = ValueControl.CheckString(postalCode, "Postal Code : ", true);
             city = ValueControl.CheckString(city, "City : ");
             country = ValueControl.CheckString(country, "Country : ");
-            drivingLicense = ValueControl.CheckString(drivingLicense, "Driving license : ");
+            drivingLicense = ValueControl.CheckString(drivingLicense, "Driving license : ", true);
             birthdate = ValueControl.CheckBirthdate();
             
             newClient = new Client
@@ -265,14 +264,15 @@ public class ClientController
                 client.Lastname = ValueControl.CheckString(client.Lastname, "Lastname : ");
                 client.Firstname = ValueControl.CheckString(client.Firstname, "Firstname : ");
                 client.Email = ValueControl.CheckEmail(client.Email);
-                client.Address.Street = ValueControl.CheckString(client.Address.Street, "Street");
-                client.Address.PostalCode = ValueControl.CheckString(client.Address.PostalCode, "Postal Code : ");
+                client.Address.Street = ValueControl.CheckString(client.Address.Street, "Street : ");
+                client.Address.PostalCode = ValueControl.CheckString(client.Address.PostalCode, "Postal Code : ", true);
                 client.Address.City = ValueControl.CheckString(client.Address.City, "City : ");
                 client.Address.Country = ValueControl.CheckString(client.Address.Country, "Country : ");
-                client.DrivingLicense = ValueControl.CheckString(client.DrivingLicense, "Driving license : ");
+                client.DrivingLicense = ValueControl.CheckString(client.DrivingLicense, "Driving license : ", true);
                 client.BirthDate = ValueControl.CheckBirthdate();
                 
                 DisplayClient(client);
+                ConsoleAccess.Wait();
                 return this._clientService.Update(client);
             }
             

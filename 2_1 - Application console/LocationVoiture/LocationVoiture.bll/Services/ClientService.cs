@@ -91,5 +91,4 @@ public class ClientService : IClientService
             throw new ServiceErrorException("Client", e);
         }
     }
-    
 }

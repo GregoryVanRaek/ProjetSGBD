@@ -76,7 +76,8 @@ public class ModelController
         
         try
         {
-            name = ValueControl.CheckString(name, "name : ");
+            name = ValueControl.CheckString(name, "name :" +
+                                                  "");
             brand = ValueControl.CheckString(brand, "brand : ");
 
             do

@@ -4,14 +4,16 @@ namespace LocationVoiture.Presentation;
 
 public static class ValueControl
 {
-    public static string CheckString(string value, string fieldName)
+    public static string CheckString(string value, string fieldName, bool allowDigit = false)
     {
         do
         {
             value = ConsoleAccess.ReadInput<string>($"{fieldName} ");
             if(string.IsNullOrEmpty(value.Trim()))
                 Console.WriteLine($"{fieldName} is required");
-        } while (string.IsNullOrEmpty(value.Trim()));
+            else if (value.Trim().All(char.IsDigit) && !allowDigit)
+                Console.WriteLine($"{fieldName} cannot contain only numbers");
+        } while (string.IsNullOrEmpty(value.Trim()) || value.Trim().All(char.IsDigit));
 
         return value.Trim().ToLower();
     }

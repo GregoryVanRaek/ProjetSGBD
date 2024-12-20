@@ -131,5 +131,19 @@ public class CarService : ICarService
             throw new Exception("Car service error: " + e.Message);
         }
     }
+
+    public decimal CalculateRentalAmount(int carId, int duration)
+    {
+        return this.GetAmount(carId) * duration;
+    }
+    
+    public void UpdateCarParking(int id)
+    {
+        Car car = this.GetById(id);
+           
+        car.ParkingCode = null;
+            
+        this.Update(car);
+    }
     
 }

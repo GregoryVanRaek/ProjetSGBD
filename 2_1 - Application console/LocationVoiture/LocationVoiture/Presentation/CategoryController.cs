@@ -81,7 +81,7 @@ public class CategoryController
 
             do
             {
-                name = ValueControl.CheckString(name, "name");
+                name = ValueControl.CheckString(name, "name : ");
                 
                 if(existingCategories.Select(x => x.Name.ToLower()).Contains(name))
                     Console.WriteLine("This category already exists");

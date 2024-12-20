@@ -33,5 +33,5 @@ VALUES
 
 INSERT INTO rental (car_id, client_id, start_date, duration, amount, status)
 VALUES
-(1, 1, '2024-11-22', 5, 100.00, 'reserved'),
-(2, 2, '2024-11-23', 3, 90.00, 'rent');
+(1, 1, '2024-12-25', 5, 100.00, 'reserved'),
+(2, 2, '2024-12-20', 3, 90.00, 'rent');

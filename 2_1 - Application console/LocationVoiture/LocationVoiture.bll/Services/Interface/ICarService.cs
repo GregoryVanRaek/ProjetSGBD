@@ -9,4 +9,6 @@ public interface ICarService : IService<int, Car>
     List<Car> GetAll(bool onlyAvailable);
     Decimal GetAmount(int car_id);
     bool GetFreeParkingPlace(int carId);
+    decimal CalculateRentalAmount(int carId, int duration);
+    void UpdateCarParking(int id);
 }

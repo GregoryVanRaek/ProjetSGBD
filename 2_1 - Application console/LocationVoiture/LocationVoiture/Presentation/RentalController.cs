@@ -10,17 +10,21 @@ namespace LocationVoiture.Presentation
         private readonly CarController _carController;
         private readonly ClientController _clientController;
         private readonly ICarService _carService;
+        private readonly IClientService _clientService;
 
-        public RentalController(ICarService carService, IRentalService rentalService, CarController carController, ClientController clientController)
+        public RentalController(ICarService carService, IRentalService rentalService, CarController carController, ClientController clientController, IClientService clientService)
         {
             this._rentalService = rentalService;
             this._carController = carController;
             this._clientController = clientController;
             this._carService = carService;
+            this._clientService = clientService;
         }
 
         public void DisplayMenu()
         {
+            this._rentalService.UpdateRentalState(); // mettre à jour le statut de la location si elle concerne la date du jour
+            
             int choice = 0;
             
             while (choice != 5)
@@ -120,24 +124,30 @@ namespace LocationVoiture.Presentation
                 }
                 
                 // autres données
-                startDate = ValueControl.CheckDate("Start date : ");
+                do
+                {
+                    startDate = ValueControl.CheckDate("Start date : ");
+                    if(startDate < DateTime.Now)
+                        Console.WriteLine("Start date must be in the future.");
+                } while (startDate < DateTime.Now);
+                
                 duration = ValueControl.CheckPositiveInt("Duration (in days) : ");
                 
-                if (CheckDuplicateRental(carId, startDate, duration))
+                if (_rentalService.CheckDuplicateRental(carId, startDate, duration))
                 {
                     Console.WriteLine("This car is already rented or reserved for the selected dates.");
                     ConsoleAccess.Wait();
                     return;
                 }
-                
-                amount = this._carService.GetAmount(carId) * duration;
+
+                amount = this._carService.CalculateRentalAmount(carId, duration);
                 Console.WriteLine("Amount of rentals : " + amount);
                 ConsoleAccess.Wait();
                 status = startDate > DateTime.Today ? RentalStatus.reserved : RentalStatus.rent;
                 
                 // supprimer l'emplacement de parking si la voiture est en location actuellement
                 if (status == RentalStatus.rent)
-                    UpdateCarParking(carId);
+                    this._carService.UpdateCarParking(carId);
                 
                 rental = new Rental
                 {
@@ -226,10 +236,12 @@ namespace LocationVoiture.Presentation
                         if (carUpdated)
                         {
                             Console.WriteLine("Car status updated successfully with a free parking spot.");
+                            ConsoleAccess.Wait();
                         }
                         else
                         {
                             Console.WriteLine("Car status update failed: No free parking spot found.");
+                            ConsoleAccess.Wait();
                         }
                     }
 
@@ -339,26 +351,6 @@ namespace LocationVoiture.Presentation
             foreach(Rental rental in rentals)
                 DisplayRental(rental);
         }
-        private bool CheckDuplicateRental(int carId, DateTime startDate, int duration)
-        {
-            var rentals = _rentalService.GetAll().Where(r => r.CarId == carId);
-
-            DateTime endDate = startDate.AddDays(duration);
-
-            return rentals.Any(r => (r.Status == RentalStatus.rent || r.Status == RentalStatus.reserved) &&
-                                    (startDate < r.StartDate.AddDays(r.Duration) &&
-                                     endDate > r.StartDate));
-        }
-
-        private void UpdateCarParking(int id)
-        {
-            Car? car = _carService.GetById(id);
-           
-            car.ParkingCode = null;
-            
-            this._carService.Update(car);
-        }
-        
         #endregion
     }
 }

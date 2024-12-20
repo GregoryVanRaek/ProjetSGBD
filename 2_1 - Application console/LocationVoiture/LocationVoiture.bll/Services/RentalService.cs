@@ -6,10 +6,12 @@ namespace LocationVoiture.bll.Services
     public class RentalService : IRentalService
     {
         private readonly IRentalRepository _rentalRepository;
+        private readonly ICarService _carService;
         
-        public RentalService(IRentalRepository rentalRepository)
+        public RentalService(IRentalRepository rentalRepository, ICarService carService)
         {
             this._rentalRepository = rentalRepository;
+            this._carService = carService;
         }
         
         public List<Rental> GetAll(bool withCompletedAndCancellled)
@@ -84,6 +86,31 @@ namespace LocationVoiture.bll.Services
             }
         }
         
+        public bool CheckDuplicateRental(int carId, DateTime startDate, int duration)
+        {
+            var rentals = this.GetAll().Where(r => r.CarId == carId);
+
+            DateTime endDate = startDate.AddDays(duration);
+
+            return rentals.Any(r => (r.Status == RentalStatus.rent || r.Status == RentalStatus.reserved) &&
+                                    (startDate < r.StartDate.AddDays(r.Duration) &&
+                                     endDate > r.StartDate));
+        }
+        
+        public void UpdateRentalState()
+        {
+            List<Rental> rentals = this.GetAll(); 
+    
+            foreach (var rental in rentals)
+            {
+                if (rental.Status == RentalStatus.reserved && rental.StartDate <= DateTime.Now)
+                {
+                    rental.Status = RentalStatus.rent;
+                    this.Update(rental); // mettre à jour le statut 
+                    this._carService.UpdateCarParking(rental.CarId); // la voiture a quitté le parking
+                }
+            }
+        }
         
     }
 }

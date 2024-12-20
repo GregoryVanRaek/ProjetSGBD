@@ -11,4 +11,18 @@ public class Client
     public required DateTime BirthDate { get; set; }
     
     public Client(){}
+
+    public override string ToString()
+    {
+        return Id.ToString().PadRight(5) +
+               Lastname.PadRight(15) +
+               Firstname.PadRight(15) +
+               Email.PadRight(30) +
+               Address.Street.PadRight(20) +
+               Address.PostalCode.PadRight(12) +
+               Address.City.PadRight(15) +
+               Address.Country.PadRight(15) +
+               DrivingLicense.PadRight(15) +
+               BirthDate.ToString("d");
+    }
 }
