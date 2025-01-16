@@ -23,12 +23,8 @@ public class ModelRepository : IModelRepository
         try
         {
             _connection.OpenConnection();
-            command = new NpgsqlCommand(
-                @"SELECT m.ID, m.NAME, m.BRAND, m.SEAT_NUMBER, m.CATEGORY_ID, c.NAME as category_name, c.DAILY_RATE FROM MODEL m 
-                         LEFT JOIN CATEGORY c
-                         ON m.CATEGORY_ID = c.ID",
-                _connection._SqlConnection
-            );
+            command = new NpgsqlCommand("SELECT * from getallmodels()", _connection._SqlConnection);
+
 
             NpgsqlDataReader reader = command.ExecuteReader();
 
@@ -50,7 +46,7 @@ public class ModelRepository : IModelRepository
         }
         catch (Exception e)
         {
-            throw new DBAccessException(command.CommandText, e.Message);
+            throw new DBAccessException($"Error deleting client: {e.Message}", e.StackTrace);
         }
         finally
         {
@@ -70,11 +66,8 @@ public class ModelRepository : IModelRepository
         {
             _connection.OpenConnection();
 
-            command = new NpgsqlCommand(@"SELECT m.ID, m.NAME, m.BRAND, m.SEAT_NUMBER, m.CATEGORY_ID, c.NAME as category_name, c.DAILY_RATE FROM MODEL m 
-                         LEFT JOIN CATEGORY c
-                         ON m.CATEGORY_ID = c.ID
-                          WHERE m.ID = @id"
-                , _connection._SqlConnection);
+            command = new NpgsqlCommand("SELECT * FROM getmodelbyid(@id)", _connection._SqlConnection);
+
 
             command.Parameters.AddWithValue("@id", id);
 
@@ -117,8 +110,8 @@ public class ModelRepository : IModelRepository
             _connection.OpenConnection();
 
             command = new NpgsqlCommand(
-                @"INSERT INTO MODEL(NAME, BRAND, SEAT_NUMBER, CATEGORY_ID) VALUES(@name, @brand, @seatNumber, @categoryId) RETURNING id"
-                , _connection._SqlConnection);
+                "SELECT * FROM createmodel(@name, @brand, @seatNumber, @categoryId)",
+                _connection._SqlConnection);
 
             command.Parameters.AddWithValue("@name", entity.Name);
             command.Parameters.AddWithValue("@brand", entity.Brand);
@@ -153,9 +146,9 @@ public class ModelRepository : IModelRepository
             {
                 _connection.OpenConnection();
 
-                command = new NpgsqlCommand(@"UPDATE MODEL SET name = @name, BRAND = @brand, SEAT_NUMBER = @seatNumber, CATEGORY_ID = @categoryId 
-             WHERE id = @id"
-                    , _connection._SqlConnection);
+                command = new NpgsqlCommand(
+                    "SELECT * from updatemodel(@id, @name, @brand, @seatNumber, @categoryId)",
+                    _connection._SqlConnection);
 
                 command.Parameters.AddWithValue("@id", entity.Id);
                 command.Parameters.AddWithValue("@name", entity.Name);
@@ -188,8 +181,8 @@ public class ModelRepository : IModelRepository
         {
             _connection.OpenConnection();
             
-            command = new NpgsqlCommand(@"DELETE FROM MODEL WHERE id = @id"
-                , _connection._SqlConnection);
+            command = new NpgsqlCommand("SELECT deletemodel(@id)", _connection._SqlConnection);
+
             
             command.Parameters.AddWithValue("@id", entity.Id);
             

@@ -48,6 +48,7 @@ public class HomeController
             catch (Exception e)
             {
                 Console.WriteLine($"An error occurred: {e.Message}");
+                ConsoleAccess.Wait();
             }
         }
     }

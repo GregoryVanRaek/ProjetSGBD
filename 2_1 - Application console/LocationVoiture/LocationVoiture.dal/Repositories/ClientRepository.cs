@@ -23,14 +23,7 @@ public class ClientRepository : IClientRepository
         {
             _connection.OpenConnection();
 
-            command = new NpgsqlCommand(@"SELECT id, last_name, first_name, email, 
-                                        (address).street AS street,
-                                        (address).postal_code AS postal_code,
-                                        (address).city AS city,
-                                        (address).country AS country,
-                                        driving_license, birth_date 
-                                        FROM client ORDER BY last_name"
-                , _connection._SqlConnection);
+            command = new NpgsqlCommand("SELECT * FROM GetAllClients()", _connection._SqlConnection);
 
             var reader = command.ExecuteReader();
 
@@ -57,7 +50,7 @@ public class ClientRepository : IClientRepository
         }
         catch (Exception e)
         {
-            throw new DBAccessException(command.CommandText, e.Message);
+            throw new DBAccessException($"Error executing query: {command?.CommandText}. Error: {e.Message}", e.StackTrace);
         }
         finally
         {
@@ -76,16 +69,7 @@ public class ClientRepository : IClientRepository
         {
             _connection.OpenConnection();
 
-            command = new NpgsqlCommand(@"SELECT id, last_name, first_name, email, 
-                                        (address).street AS street,
-                                        (address).postal_code AS postal_code,
-                                        (address).city AS city,
-                                        (address).country AS country,
-                                        driving_license, birth_date 
-                                        FROM client
-                                        WHERE id = @id"
-                , _connection._SqlConnection);
-
+            command = new NpgsqlCommand("SELECT * FROM GetClientById(@id)", _connection._SqlConnection);
             command.Parameters.AddWithValue("@id", givenId);
 
             NpgsqlDataReader reader = command.ExecuteReader();
@@ -122,6 +106,7 @@ public class ClientRepository : IClientRepository
 
         return client;
     }
+
     
     public Client? GetOneByName(string givenName)
     {
@@ -132,16 +117,7 @@ public class ClientRepository : IClientRepository
         {
             _connection.OpenConnection();
 
-            command = new NpgsqlCommand(@"SELECT id, last_name, first_name, email, 
-                                        (address).street AS street,
-                                        (address).postal_code AS postal_code,
-                                        (address).city AS city,
-                                        (address).country AS country,
-                                        driving_license, birth_date 
-                                        FROM client
-                                        WHERE last_name = @name"
-                , _connection._SqlConnection);
-
+            command = new NpgsqlCommand("SELECT * FROM getclientbyname(@name)", _connection._SqlConnection);
             command.Parameters.AddWithValue("@name", givenName);
 
             var reader = command.ExecuteReader();
@@ -179,6 +155,7 @@ public class ClientRepository : IClientRepository
         return client;
     }
 
+
     public Client? GetOneByEmail(string email)
     {
         Client? client = null;
@@ -188,16 +165,7 @@ public class ClientRepository : IClientRepository
         {
             _connection.OpenConnection();
 
-            command = new NpgsqlCommand(@"SELECT id, last_name, first_name, email, 
-                                        (address).street AS street,
-                                        (address).postal_code AS postal_code,
-                                        (address).city AS city,
-                                        (address).country AS country,
-                                        driving_license, birth_date 
-                                        FROM client
-                                        WHERE email = @email"
-                , _connection._SqlConnection);
-
+            command = new NpgsqlCommand("SELECT * FROM GetClientByEmail(@email)", _connection._SqlConnection);
             command.Parameters.AddWithValue("@email", email);
 
             var reader = command.ExecuteReader();
@@ -235,19 +203,17 @@ public class ClientRepository : IClientRepository
         return client;
     }
 
+
     public Client? Create(Client entity)
     {
         NpgsqlCommand command = null;
-        int insert = 0;
+        int clientId = 0;
 
         try
         {
             _connection.OpenConnection();
 
-            command = new NpgsqlCommand(
-                @"INSERT INTO CLIENT(last_name, first_name, email, address, driving_license, birth_date)
-                                                 VALUES(@last_name, @first_name, @email, ROW(@street, @postal_code, @city, @country), @driving_license, @birth_date)"
-                , _connection._SqlConnection);
+            command = new NpgsqlCommand("SELECT * FROM createclient(@last_name, @first_name, @email, @street, @postal_code, @city, @country, @driving_license, @birth_date)", _connection._SqlConnection);
 
             command.Parameters.AddWithValue("@last_name", entity.Lastname);
             command.Parameters.AddWithValue("@first_name", entity.Firstname);
@@ -259,96 +225,93 @@ public class ClientRepository : IClientRepository
             command.Parameters.AddWithValue("@driving_license", entity.DrivingLicense);
             command.Parameters.AddWithValue("@birth_date", entity.BirthDate);
 
-            insert = command.ExecuteNonQuery();
+            clientId = (int)command.ExecuteScalar();
         }
         catch (Exception e)
         {
-            throw new DBAccessException(command.CommandText, e.Message);
+            throw new DBAccessException($"Error executing query: {command?.CommandText}. Error: {e.Message}", e.StackTrace);
         }
         finally
         {
             _connection.CloseConnection();
         }
 
-        return insert == 1 ? GetOneByEmail(entity.Email) : null;
+        return GetOneById(clientId);
     }
-
+    
     public Client? Update(Client entity)
+{
+    try
     {
-        NpgsqlCommand command = null;
-
-        try
+        if (GetOneById(entity.Id) is null)
         {
-            if (GetOneById(entity.Id) is not null)
-            {
-                _connection.OpenConnection();
-
-                command = new NpgsqlCommand(@"UPDATE CLIENT
-                                                    SET last_name = @last_name, first_name = @first_name , 
-                                                        email = @email, address = ROW(@street, @postal_code, @city, @country)
-                                                      , driving_license = @driving_license, birth_date = @birth_date
-                                                    WHERE id = @id"
-                    , _connection._SqlConnection);
-
-                command.Parameters.AddWithValue("@id", entity.Id);
-                command.Parameters.AddWithValue("@last_name", entity.Lastname);
-                command.Parameters.AddWithValue("@first_name", entity.Firstname);
-                command.Parameters.AddWithValue("@email", entity.Email);
-                command.Parameters.AddWithValue("@street", entity.Address.Street);
-                command.Parameters.AddWithValue("@postal_code", entity.Address.PostalCode);
-                command.Parameters.AddWithValue("@city", entity.Address.City);
-                command.Parameters.AddWithValue("@country", entity.Address.Country);
-                command.Parameters.AddWithValue("@driving_license", entity.DrivingLicense);
-                command.Parameters.AddWithValue("@birth_date", entity.BirthDate);
-
-                int insert = command.ExecuteNonQuery();
-
-                return insert == 1 ? GetOneById(entity.Id) : null;
-            }
-            else
-            {
-                throw new Exception("Client not found");
-            }
+            throw new Exception("Client not found");
         }
-        catch (Exception e)
+
+        _connection.OpenConnection();
+
+        using (var command = new NpgsqlCommand(
+            "SELECT UpdateClient(@id, @last_name, @first_name, @email, @street, @postal_code, @city, @country, @driving_license, @birth_date)", 
+            _connection._SqlConnection))
         {
-            throw new DBAccessException(command.CommandText, e.Message);
-        }
-        finally
-        {
-            _connection.CloseConnection();
+            command.Parameters.AddWithValue("@id", entity.Id);
+            command.Parameters.AddWithValue("@last_name", entity.Lastname ?? (object)DBNull.Value);
+            command.Parameters.AddWithValue("@first_name", entity.Firstname ?? (object)DBNull.Value);
+            command.Parameters.AddWithValue("@email", entity.Email ?? (object)DBNull.Value);
+            command.Parameters.AddWithValue("@street", entity.Address?.Street ?? (object)DBNull.Value);
+            command.Parameters.AddWithValue("@postal_code", entity.Address?.PostalCode ?? (object)DBNull.Value);
+            command.Parameters.AddWithValue("@city", entity.Address?.City ?? (object)DBNull.Value);
+            command.Parameters.AddWithValue("@country", entity.Address?.Country ?? (object)DBNull.Value);
+            command.Parameters.AddWithValue("@driving_license", entity.DrivingLicense ?? (object)DBNull.Value);
+            command.Parameters.AddWithValue("@birth_date", entity.BirthDate);
+
+            var result = (bool)command.ExecuteScalar();
+
+            if (!result)
+            {
+                throw new Exception("Client update failed.");
+            }
+
+            return GetOneById(entity.Id);
         }
     }
+    catch (Exception e)
+    {
+        throw new DBAccessException($"Error updating client: {e.Message}", e.StackTrace);
+    }
+    finally
+    {
+        _connection.CloseConnection();
+    }
+}
 
     public bool Delete(Client entity)
     {
-        NpgsqlCommand command = null;
-
         try
         {
-            _connection.OpenConnection();
-            
-            command = new NpgsqlCommand(@"DELETE FROM CLIENT WHERE id = @id"
-                                                 , _connection._SqlConnection);
-            
-            command.Parameters.AddWithValue("@id", entity.Id);
-            
-            if(GetOneById(entity.Id) is not null)
+            if (GetOneById(entity.Id) is null)
             {
-                int insert = command.ExecuteNonQuery();
-
-                return insert != 0;
-            }
-            else
                 throw new Exception("Client not found");
+            }
+
+            _connection.OpenConnection();
+
+            using (var command = new NpgsqlCommand(
+                "SELECT DeleteClient(@id)", 
+                _connection._SqlConnection))
+            {
+                command.Parameters.AddWithValue("@id", entity.Id);
+                return (bool)command.ExecuteScalar();
+            }
         }
         catch (Exception e)
         {
-            throw new DBAccessException(command.CommandText, e.Message);
+            throw new DBAccessException($"Error deleting client: {e.Message}", e.StackTrace);
         }
         finally
         {
             _connection.CloseConnection();
         }
     }
+
 }

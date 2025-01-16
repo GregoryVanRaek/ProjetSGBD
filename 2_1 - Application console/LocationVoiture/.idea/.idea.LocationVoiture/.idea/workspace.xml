@@ -9,14 +9,35 @@
   <component name="ChangeListManager">
     <list default="true" id="c7eebc29-c104-4a95-9dd4-e5445400d08e" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.LocationVoiture/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.LocationVoiture/.idea/dataSources.local.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.LocationVoiture/.idea/dataSources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.LocationVoiture/.idea/dataSources.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.LocationVoiture/.idea/dataSources/fe9d3d7f-10d5-40ba-9d28-0748a4ae4225.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.LocationVoiture/.idea/dataSources/fe9d3d7f-10d5-40ba-9d28-0748a4ae4225.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.LocationVoiture/.idea/dataSources/fe9d3d7f-10d5-40ba-9d28-0748a4ae4225/storage_v2/_src_/database/test.kkQ2AA/schema/public.abK9xQ.meta" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.LocationVoiture/.idea/dataSources/fe9d3d7f-10d5-40ba-9d28-0748a4ae4225/storage_v2/_src_/database/test.kkQ2AA/schema/public.abK9xQ.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.LocationVoiture/.idea/dataSources/fe9d3d7f-10d5-40ba-9d28-0748a4ae4225/storage_v2/_src_/database/test.kkQ2AA/schema/pg_catalog.0S1ZNQ.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.LocationVoiture/.idea/dataSources/fe9d3d7f-10d5-40ba-9d28-0748a4ae4225/storage_v2/_src_/database/test.kkQ2AA/schema/pg_catalog.0S1ZNQ.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.LocationVoiture/.idea/shelf/Uncommitted_changes_before_Update_at_15-12-24_13_50_[not_to_commit]1/LocationVoiture.AssemblyInfoInputs.cache" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.LocationVoiture/.idea/shelf/Uncommitted_changes_before_Update_at_15-12-24_13_50_[not_to_commit]1/LocationVoiture.assets.cache" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.LocationVoiture/.idea/shelf/Uncommitted_changes_before_Update_at_15-12-24_13_50_[not_to_commit]1/LocationVoiture.bll.AssemblyInfoInputs.cache" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.LocationVoiture/.idea/shelf/Uncommitted_changes_before_Update_at_15-12-24_13_50_[not_to_commit]1/LocationVoiture.bll.assets.cache" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.LocationVoiture/.idea/shelf/Uncommitted_changes_before_Update_at_15-12-24_13_50_[not_to_commit]1/LocationVoiture.bll.csproj.AssemblyReference.cache" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.LocationVoiture/.idea/shelf/Uncommitted_changes_before_Update_at_15-12-24_13_50_[not_to_commit]1/LocationVoiture.bll.csproj.CoreCompileInputs.cache" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.LocationVoiture/.idea/shelf/Uncommitted_changes_before_Update_at_15-12-24_13_50_[not_to_commit]1/LocationVoiture.bll.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.LocationVoiture/.idea/shelf/Uncommitted_changes_before_Update_at_15-12-24_13_50_[not_to_commit]1/LocationVoiture.bll.pdb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.LocationVoiture/.idea/shelf/Uncommitted_changes_before_Update_at_15-12-24_13_50_[not_to_commit]1/LocationVoiture.csproj.AssemblyReference.cache" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.LocationVoiture/.idea/shelf/Uncommitted_changes_before_Update_at_15-12-24_13_50_[not_to_commit]1/LocationVoiture.csproj.CoreCompileInputs.cache" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.LocationVoiture/.idea/shelf/Uncommitted_changes_before_Update_at_15-12-24_13_50_[not_to_commit]1/LocationVoiture.dal.AssemblyInfoInputs.cache" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.LocationVoiture/.idea/shelf/Uncommitted_changes_before_Update_at_15-12-24_13_50_[not_to_commit]1/LocationVoiture.dal.assets.cache" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.LocationVoiture/.idea/shelf/Uncommitted_changes_before_Update_at_15-12-24_13_50_[not_to_commit]1/LocationVoiture.dal.csproj.AssemblyReference.cache" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.LocationVoiture/.idea/shelf/Uncommitted_changes_before_Update_at_15-12-24_13_50_[not_to_commit]1/LocationVoiture.dal.csproj.CoreCompileInputs.cache" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.LocationVoiture/.idea/shelf/Uncommitted_changes_before_Update_at_15-12-24_13_50_[not_to_commit]1/LocationVoiture.dal.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.LocationVoiture/.idea/shelf/Uncommitted_changes_before_Update_at_15-12-24_13_50_[not_to_commit]1/LocationVoiture.dal.pdb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.LocationVoiture/.idea/shelf/Uncommitted_changes_before_Update_at_15-12-24_13_50_[not_to_commit]1/LocationVoiture.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.LocationVoiture/.idea/shelf/Uncommitted_changes_before_Update_at_15-12-24_13_50_[not_to_commit]1/LocationVoiture.exe" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.LocationVoiture/.idea/shelf/Uncommitted_changes_before_Update_at_15-12-24_13_50_[not_to_commit]1/LocationVoiture.genruntimeconfig.cache" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.LocationVoiture/.idea/shelf/Uncommitted_changes_before_Update_at_15-12-24_13_50_[not_to_commit]1/LocationVoiture.pdb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.LocationVoiture/.idea/shelf/Uncommitted_changes_before_Update_at_15-12-24_13_50_[not_to_commit]1/apphost.exe" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.LocationVoiture/.idea/shelf/Uncommitted_changes_before_Update_at_15-12-24_13_50_[not_to_commit]1/project.nuget.cache" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.LocationVoiture/.idea/shelf/Uncommitted_changes_before_Update_at_15-12-24_13_50_[not_to_commit]1/shelved.patch" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.LocationVoiture/.idea/shelf/Uncommitted_changes_before_Update_at_15-12-24_13_50__not_to_commit_1.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.LocationVoiture/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.LocationVoiture/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/LocationVoiture.bll/Services/CarService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.bll/Services/CarService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/LocationVoiture.bll/Services/ClientService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.bll/Services/ClientService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/LocationVoiture.bll/Services/Interface/ICarService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.bll/Services/Interface/ICarService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/LocationVoiture.bll/Services/Interface/IRentalService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.bll/Services/Interface/IRentalService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/LocationVoiture.bll/Services/RentalService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.bll/Services/RentalService.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/LocationVoiture.bll/bin/Debug/net8.0/LocationVoiture.bll.dll" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.bll/bin/Debug/net8.0/LocationVoiture.bll.dll" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/LocationVoiture.bll/bin/Debug/net8.0/LocationVoiture.bll.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.bll/bin/Debug/net8.0/LocationVoiture.bll.pdb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/LocationVoiture.bll/bin/Debug/net8.0/LocationVoiture.dal.dll" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.bll/bin/Debug/net8.0/LocationVoiture.dal.dll" afterDir="false" />
@@ -24,12 +45,24 @@
       <change beforePath="$PROJECT_DIR$/LocationVoiture.bll/obj/Debug/net8.0/LocationVoiture.bll.AssemblyInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.bll/obj/Debug/net8.0/LocationVoiture.bll.AssemblyInfo.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/LocationVoiture.bll/obj/Debug/net8.0/LocationVoiture.bll.AssemblyInfoInputs.cache" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.bll/obj/Debug/net8.0/LocationVoiture.bll.AssemblyInfoInputs.cache" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/LocationVoiture.bll/obj/Debug/net8.0/LocationVoiture.bll.csproj.AssemblyReference.cache" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.bll/obj/Debug/net8.0/LocationVoiture.bll.csproj.AssemblyReference.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LocationVoiture.bll/obj/Debug/net8.0/LocationVoiture.bll.csproj.CoreCompileInputs.cache" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.bll/obj/Debug/net8.0/LocationVoiture.bll.csproj.CoreCompileInputs.cache" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/LocationVoiture.bll/obj/Debug/net8.0/LocationVoiture.bll.dll" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.bll/obj/Debug/net8.0/LocationVoiture.bll.dll" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/LocationVoiture.bll/obj/Debug/net8.0/LocationVoiture.bll.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.bll/obj/Debug/net8.0/LocationVoiture.bll.pdb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/LocationVoiture.bll/obj/Debug/net8.0/LocationVoiture.bll.sourcelink.json" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.bll/obj/Debug/net8.0/LocationVoiture.bll.sourcelink.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/LocationVoiture.bll/obj/Debug/net8.0/ref/LocationVoiture.bll.dll" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.bll/obj/Debug/net8.0/ref/LocationVoiture.bll.dll" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/LocationVoiture.bll/obj/Debug/net8.0/refint/LocationVoiture.bll.dll" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.bll/obj/Debug/net8.0/refint/LocationVoiture.bll.dll" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/LocationVoiture.dal/Entities/Client.cs" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.dal/Entities/Client.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LocationVoiture.bll/obj/LocationVoiture.bll.csproj.nuget.dgspec.json" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.bll/obj/LocationVoiture.bll.csproj.nuget.dgspec.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LocationVoiture.bll/obj/project.assets.json" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.bll/obj/project.assets.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LocationVoiture.bll/obj/project.nuget.cache" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.bll/obj/project.nuget.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LocationVoiture.bll/obj/project.packagespec.json" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.bll/obj/project.packagespec.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LocationVoiture.bll/obj/rider.project.model.nuget.info" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.bll/obj/rider.project.model.nuget.info" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LocationVoiture.bll/obj/rider.project.restore.info" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.bll/obj/rider.project.restore.info" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LocationVoiture.dal/DBAccess.cs" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.dal/DBAccess.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LocationVoiture.dal/Repositories/CarRepository.cs" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.dal/Repositories/CarRepository.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LocationVoiture.dal/Repositories/CategoryRepository.cs" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.dal/Repositories/CategoryRepository.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LocationVoiture.dal/Repositories/ClientRepository.cs" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.dal/Repositories/ClientRepository.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LocationVoiture.dal/Repositories/ModelRepository.cs" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.dal/Repositories/ModelRepository.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LocationVoiture.dal/Repositories/RentalRepository.cs" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.dal/Repositories/RentalRepository.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/LocationVoiture.dal/bin/Debug/net8.0/LocationVoiture.dal.dll" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.dal/bin/Debug/net8.0/LocationVoiture.dal.dll" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/LocationVoiture.dal/bin/Debug/net8.0/LocationVoiture.dal.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.dal/bin/Debug/net8.0/LocationVoiture.dal.pdb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/LocationVoiture.dal/obj/Debug/net8.0/LocationVoiture.dal.AssemblyInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.dal/obj/Debug/net8.0/LocationVoiture.dal.AssemblyInfo.cs" afterDir="false" />
@@ -40,10 +73,15 @@
       <change beforePath="$PROJECT_DIR$/LocationVoiture.dal/obj/Debug/net8.0/LocationVoiture.dal.sourcelink.json" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.dal/obj/Debug/net8.0/LocationVoiture.dal.sourcelink.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/LocationVoiture.dal/obj/Debug/net8.0/ref/LocationVoiture.dal.dll" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.dal/obj/Debug/net8.0/ref/LocationVoiture.dal.dll" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/LocationVoiture.dal/obj/Debug/net8.0/refint/LocationVoiture.dal.dll" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.dal/obj/Debug/net8.0/refint/LocationVoiture.dal.dll" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/LocationVoiture/Presentation/CategoryController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture/Presentation/CategoryController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/LocationVoiture/Presentation/ClientController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture/Presentation/ClientController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/LocationVoiture/Presentation/ModelController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture/Presentation/ModelController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LocationVoiture.dal/obj/LocationVoiture.dal.csproj.nuget.dgspec.json" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.dal/obj/LocationVoiture.dal.csproj.nuget.dgspec.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LocationVoiture.dal/obj/project.assets.json" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.dal/obj/project.assets.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LocationVoiture.dal/obj/project.nuget.cache" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.dal/obj/project.nuget.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LocationVoiture.dal/obj/project.packagespec.json" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.dal/obj/project.packagespec.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LocationVoiture.dal/obj/rider.project.model.nuget.info" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.dal/obj/rider.project.model.nuget.info" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LocationVoiture.dal/obj/rider.project.restore.info" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture.dal/obj/rider.project.restore.info" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LocationVoiture/Presentation/HomeController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture/Presentation/HomeController.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/LocationVoiture/Presentation/RentalController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture/Presentation/RentalController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LocationVoiture/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture/Program.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/LocationVoiture/Tools/ValueControl.cs" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture/Tools/ValueControl.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/LocationVoiture/bin/Debug/net8.0/LocationVoiture.bll.dll" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture/bin/Debug/net8.0/LocationVoiture.bll.dll" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/LocationVoiture/bin/Debug/net8.0/LocationVoiture.bll.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture/bin/Debug/net8.0/LocationVoiture.bll.pdb" afterDir="false" />
@@ -55,12 +93,20 @@
       <change beforePath="$PROJECT_DIR$/LocationVoiture/obj/Debug/net8.0/LocationVoiture.AssemblyInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture/obj/Debug/net8.0/LocationVoiture.AssemblyInfo.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/LocationVoiture/obj/Debug/net8.0/LocationVoiture.AssemblyInfoInputs.cache" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture/obj/Debug/net8.0/LocationVoiture.AssemblyInfoInputs.cache" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/LocationVoiture/obj/Debug/net8.0/LocationVoiture.csproj.AssemblyReference.cache" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture/obj/Debug/net8.0/LocationVoiture.csproj.AssemblyReference.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LocationVoiture/obj/Debug/net8.0/LocationVoiture.csproj.CoreCompileInputs.cache" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture/obj/Debug/net8.0/LocationVoiture.csproj.CoreCompileInputs.cache" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/LocationVoiture/obj/Debug/net8.0/LocationVoiture.dll" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture/obj/Debug/net8.0/LocationVoiture.dll" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/LocationVoiture/obj/Debug/net8.0/LocationVoiture.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture/obj/Debug/net8.0/LocationVoiture.pdb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/LocationVoiture/obj/Debug/net8.0/LocationVoiture.sourcelink.json" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture/obj/Debug/net8.0/LocationVoiture.sourcelink.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/LocationVoiture/obj/Debug/net8.0/apphost.exe" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture/obj/Debug/net8.0/apphost.exe" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/LocationVoiture/obj/Debug/net8.0/ref/LocationVoiture.dll" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture/obj/Debug/net8.0/ref/LocationVoiture.dll" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/LocationVoiture/obj/Debug/net8.0/refint/LocationVoiture.dll" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture/obj/Debug/net8.0/refint/LocationVoiture.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LocationVoiture/obj/LocationVoiture.csproj.nuget.dgspec.json" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture/obj/LocationVoiture.csproj.nuget.dgspec.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LocationVoiture/obj/project.assets.json" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture/obj/project.assets.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LocationVoiture/obj/project.nuget.cache" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture/obj/project.nuget.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LocationVoiture/obj/project.packagespec.json" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture/obj/project.packagespec.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LocationVoiture/obj/rider.project.model.nuget.info" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture/obj/rider.project.model.nuget.info" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LocationVoiture/obj/rider.project.restore.info" beforeDir="false" afterPath="$PROJECT_DIR$/LocationVoiture/obj/rider.project.restore.info" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../test_data.sql" beforeDir="false" afterPath="$PROJECT_DIR$/../test_data.sql" afterDir="false" />
     </list>
     <list id="b7d62939-6aa0-42ab-99ec-d37e0ad414f8" name="not to commit" comment="" />
     <option name="SHOW_DIALOG" value="false" />
@@ -109,7 +155,7 @@
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "editor.preferences.smartKeys_rider",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
     "vue.rearranger.settings.migration": "true"
   },
   "keyToStringList": {
@@ -160,7 +206,17 @@
       <workItem from="1732713765168" duration="661000" />
       <workItem from="1732782164757" duration="16718000" />
       <workItem from="1734262373885" duration="25962000" />
-      <workItem from="1734354700909" duration="36484000" />
+      <workItem from="1734354700909" duration="48022000" />
+      <workItem from="1734899288220" duration="333000" />
+      <workItem from="1735375845231" duration="367000" />
+      <workItem from="1735463646698" duration="539000" />
+      <workItem from="1735892905398" duration="5000" />
+      <workItem from="1736363975328" duration="233000" />
+      <workItem from="1736874683495" duration="191000" />
+      <workItem from="1736874900013" duration="1272000" />
+      <workItem from="1736964292755" duration="94000" />
+      <workItem from="1736964461279" duration="11271000" />
+      <workItem from="1737053692410" duration="8264000" />
     </task>
     <task id="LOCAL-00001" summary="add entities">
       <option name="closed" value="true" />
@@ -219,5 +275,42 @@
     <MESSAGE value="car entity" />
     <MESSAGE value="rental entity" />
     <option name="LAST_COMMIT_MESSAGE" value="rental entity" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/LocationVoiture/Presentation/RentalController.cs</url>
+          <line>188</line>
+          <properties documentPath="C:\Users\vanra\Desktop\SynologyDrive\Bachelier informatique de gestion\3ème année\ProjetSGBD\projet\ProjetSGBD\2_1 - Application console\LocationVoiture\LocationVoiture\Presentation\RentalController.cs" containingFunctionPresentation="Method 'UpdateRental'">
+            <startOffsets>
+              <option value="7110" />
+            </startOffsets>
+            <endOffsets>
+              <option value="7157" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/LocationVoiture.dal/Repositories/ClientRepository.cs</url>
+          <line>119</line>
+          <properties documentPath="C:\Users\vanra\Desktop\SynologyDrive\Bachelier informatique de gestion\3ème année\ProjetSGBD\projet\ProjetSGBD\2_1 - Application console\LocationVoiture\LocationVoiture.dal\Repositories\ClientRepository.cs" containingFunctionPresentation="Method 'GetOneByName'">
+            <startOffsets>
+              <option value="3588" />
+            </startOffsets>
+            <endOffsets>
+              <option value="3684" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="OracleBreakpointType">
+          <url>dbSrc:///ad5eaa15/5e5433b6-638e-4f1b-a4da-53f463ed8ea3/database/location_voiture/schema/public/routine/getclientbyname@(varchar).sql</url>
+          <line>6</line>
+          <option name="timeStamp" value="3" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

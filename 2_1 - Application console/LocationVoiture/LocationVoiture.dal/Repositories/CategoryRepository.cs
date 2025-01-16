@@ -21,8 +21,7 @@ public class CategoryRepository : ICategoryRepository
         {
             _connection.OpenConnection();
 
-            command = new NpgsqlCommand(@"SELECT id, name, daily_rate
-                                        FROM category ORDER BY id", _connection._SqlConnection);
+            command = new NpgsqlCommand("SELECT * FROM getallcategories()", _connection._SqlConnection);
 
             NpgsqlDataReader reader = command.ExecuteReader();
 
@@ -57,8 +56,7 @@ public class CategoryRepository : ICategoryRepository
         {
             _connection.OpenConnection();
 
-            command = new NpgsqlCommand(@"SELECT id, name, daily_rate FROM CATEGORY WHERE id = @id"
-                , _connection._SqlConnection);
+            command = new NpgsqlCommand("SELECT * FROM getcategorybyid(@id)", _connection._SqlConnection);
 
             command.Parameters.AddWithValue("@id", id);
 
@@ -96,8 +94,8 @@ public class CategoryRepository : ICategoryRepository
             _connection.OpenConnection();
 
             command = new NpgsqlCommand(
-                @"INSERT INTO CATEGORY(name, daily_rate) VALUES(@name, @daily_rate) RETURNING id"
-                , _connection._SqlConnection);
+                "SELECT * FROM createcategory(@name, @daily_rate)",
+                _connection._SqlConnection);
 
             command.Parameters.AddWithValue("@name", entity.Name);
             command.Parameters.AddWithValue("@daily_rate", entity.DailyRate);
@@ -128,8 +126,9 @@ public class CategoryRepository : ICategoryRepository
             {
                 _connection.OpenConnection();
 
-                command = new NpgsqlCommand(@"UPDATE CATEGORY SET name = @name, daily_rate = @daily_rate WHERE id = @id"
-                    , _connection._SqlConnection);
+                command = new NpgsqlCommand(
+                    "SELECT updatecategory(@id, @name, @daily_rate)",
+                    _connection._SqlConnection);
 
                 command.Parameters.AddWithValue("@id", entity.Id);
                 command.Parameters.AddWithValue("@name", entity.Name);
@@ -159,8 +158,7 @@ public class CategoryRepository : ICategoryRepository
         {
             _connection.OpenConnection();
             
-            command = new NpgsqlCommand(@"DELETE FROM CATEGORY WHERE id = @id"
-                , _connection._SqlConnection);
+            command = new NpgsqlCommand("SELECT deletecategory(@id)", _connection._SqlConnection);
             
             command.Parameters.AddWithValue("@id", entity.Id);
             

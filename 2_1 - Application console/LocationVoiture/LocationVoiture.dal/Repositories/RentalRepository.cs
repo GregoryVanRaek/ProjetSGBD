@@ -19,7 +19,7 @@ namespace LocationVoiture.dal.Repositories
             return this.GetAll(false);
         }
         
-        public List<Rental> GetAll(bool withCompletedAndCancellled)
+        public List<Rental> GetAll(bool withCompletedAndCancelled)
         {
             List<Rental> rentals = new List<Rental>();
             NpgsqlCommand command = null;
@@ -28,25 +28,8 @@ namespace LocationVoiture.dal.Repositories
             {
                 _connection.OpenConnection();
 
-                if (withCompletedAndCancellled)
-                {
-                    command = new NpgsqlCommand(@"SELECT r.id, r.car_id, r.client_id, r.start_date, r.duration, r.amount, r.status,
-                                                  c.license_plate, cl.last_name AS client_name
-                                                  FROM rental r
-                                                  LEFT JOIN car c ON r.car_id = c.id
-                                                  LEFT JOIN client cl ON r.client_id = cl.id
-                                                  ORDER BY r.start_date, r.status", _connection._SqlConnection);
-                }
-                else
-                {
-                    command = new NpgsqlCommand(@"SELECT r.id, r.car_id, r.client_id, r.start_date, r.duration, r.amount, r.status,
-                                                  c.license_plate, cl.last_name AS client_name
-                                                  FROM rental r
-                                                  LEFT JOIN car c ON r.car_id = c.id
-                                                  LEFT JOIN client cl ON r.client_id = cl.id
-                                                  WHERE r.status IN ('rent', 'reserved')
-                                                  ORDER BY r.start_date, r.status", _connection._SqlConnection);
-                }
+                command = new NpgsqlCommand("SELECT * FROM getallrentals(@withcompletedandcancelled)", _connection._SqlConnection);
+                command.Parameters.AddWithValue("@withcompletedandcancelled", withCompletedAndCancelled);
 
                 var reader = command.ExecuteReader();
 
@@ -67,7 +50,8 @@ namespace LocationVoiture.dal.Repositories
             }
             catch (Exception e)
             {
-                throw new DBAccessException(command.CommandText, e.Message);
+                throw new DBAccessException($"Error executing query: {command?.CommandText}. Error: {e.Message}", e.StackTrace);
+
             }
             finally
             {
@@ -86,13 +70,8 @@ namespace LocationVoiture.dal.Repositories
             {
                 _connection.OpenConnection();
 
-                command = new NpgsqlCommand(@"SELECT r.id, r.car_id, r.client_id, r.start_date, r.duration, r.amount, r.status,
-                                              c.license_plate, cl.last_name AS client_name
-                                              FROM rental r
-                                              LEFT JOIN car c ON r.car_id = c.id
-                                              LEFT JOIN client cl ON r.client_id = cl.id
-                                              WHERE r.id = @id", _connection._SqlConnection);
-
+                command = new NpgsqlCommand("SELECT * FROM getrentalbyid(@id)", _connection._SqlConnection);
+                
                 command.Parameters.AddWithValue("@id", id);
 
                 NpgsqlDataReader reader = command.ExecuteReader();
@@ -133,9 +112,7 @@ namespace LocationVoiture.dal.Repositories
             {
                 _connection.OpenConnection();
 
-                command = new NpgsqlCommand(
-                    @"INSERT INTO rental (car_id, client_id, start_date, duration, amount, status)
-                    VALUES (@car_id, @client_id, @start_date, @duration, @amount, @status) RETURNING id"
+                command = new NpgsqlCommand("SELECT createrental(@car_id, @client_id, @start_date, @duration, @amount, @status)"
                     , _connection._SqlConnection);
 
                 command.Parameters.AddWithValue("@car_id", entity.CarId);
@@ -173,11 +150,9 @@ namespace LocationVoiture.dal.Repositories
                 {
                     _connection.OpenConnection();
 
-                    command = new NpgsqlCommand(@"UPDATE rental
-                    SET car_id = @car_id, client_id = @client_id, start_date = @start_date, duration = @duration,
-                        amount = @amount, status = @status
-                    WHERE id = @id", _connection._SqlConnection);
-
+                    command = new NpgsqlCommand("SELECT updaterental(@id, @car_id, @client_id, @start_date, @duration, @amount, @status)"
+                        , _connection._SqlConnection);
+                    
                     command.Parameters.AddWithValue("@id", entity.Id);
                     command.Parameters.AddWithValue("@car_id", entity.CarId);
                     command.Parameters.AddWithValue("@client_id", entity.ClientId);
@@ -211,7 +186,7 @@ namespace LocationVoiture.dal.Repositories
             {
                 _connection.OpenConnection();
 
-                command = new NpgsqlCommand(@"DELETE FROM rental WHERE id = @id", _connection._SqlConnection);
+                command = new NpgsqlCommand("SELECT deleterental(@id)", _connection._SqlConnection);
 
                 command.Parameters.AddWithValue("@id", entity.Id);
 

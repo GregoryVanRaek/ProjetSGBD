@@ -1,6 +1,5 @@
 ﻿using LocationVoiture.bll.Services;
 using LocationVoiture.dal;
-using LocationVoiture.dal.Entities;
 using LocationVoiture.dal.Repositories;
 using LocationVoiture.dal.Repositories.Interface;
 using LocationVoiture.Presentation;
@@ -42,9 +41,5 @@ ServiceProvider serviceProvider = services.BuildServiceProvider();
 
 HomeController homeController = serviceProvider.GetRequiredService<HomeController>();
 homeController.MainMenu(serviceProvider);
-
-#endregion
-
-#region test
 
 #endregion

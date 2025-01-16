@@ -13,7 +13,7 @@ public static class ValueControl
                 Console.WriteLine($"{fieldName} is required");
             else if (value.Trim().All(char.IsDigit) && !allowDigit)
                 Console.WriteLine($"{fieldName} cannot contain only numbers");
-        } while (string.IsNullOrEmpty(value.Trim()) || value.Trim().All(char.IsDigit));
+        } while (string.IsNullOrEmpty(value.Trim()) || (value.Trim().All(char.IsDigit) && !allowDigit));
 
         return value.Trim().ToLower();
     }

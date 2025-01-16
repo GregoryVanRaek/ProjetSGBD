@@ -188,6 +188,13 @@ namespace LocationVoiture.Presentation
         {
             ConsoleAccess.CreateScreen("Rental enclosing");
         
+            if (_rentalService.GetAll(false).Count < 1)
+            {
+                Console.WriteLine("There are no rentals to enclose.");
+                ConsoleAccess.Wait();
+                return null;
+            }
+            
             if(this._carController.CheckParkingAvailability() == 0)
             {
                 Console.WriteLine("You can't enclose this rental because there is no parking availability for the car.");
@@ -244,12 +251,14 @@ namespace LocationVoiture.Presentation
                             ConsoleAccess.Wait();
                         }
                     }
-
+                    
+                    ConsoleAccess.Wait();
                     return updatedRental;
                 }
         
                 Console.WriteLine("Rental not found");
                 return null;
+                
             }
             catch (DBAccessException e)
             {

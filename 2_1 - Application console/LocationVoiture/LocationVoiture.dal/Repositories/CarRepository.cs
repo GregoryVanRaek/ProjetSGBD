@@ -23,27 +23,8 @@ public class CarRepository : ICarRepository
         {
             _connection.OpenConnection();
             
-            if(onlyAvailable)
-            {
-                command = new NpgsqlCommand(
-                    @"SELECT c.id, c.license_plate, c.color, p.code AS parking_code, m.name AS model_name
-                  FROM CAR c 
-                  LEFT JOIN PARKING p ON c.parking_id = p.id
-                  LEFT JOIN MODEL m ON c.model_id = m.id
-                  WHERE c.parking_id is not null;",
-                    _connection._SqlConnection
-                );
-            }
-            else
-            {
-                command = new NpgsqlCommand(
-                    @"SELECT c.id, c.license_plate, c.color, p.code AS parking_code, m.name AS model_name
-                  FROM CAR c 
-                  LEFT JOIN PARKING p ON c.parking_id = p.id
-                  LEFT JOIN MODEL m ON c.model_id = m.id;",
-                    _connection._SqlConnection
-                ); 
-            }
+            command = new NpgsqlCommand("SELECT * FROM getallcars(@onlyavailable)", _connection._SqlConnection);
+            command.Parameters.AddWithValue("@onlyavailable", onlyAvailable);
 
             NpgsqlDataReader reader = command.ExecuteReader();
 
@@ -63,8 +44,7 @@ public class CarRepository : ICarRepository
         }
         catch (Exception e)
         {
-            throw new DBAccessException(command.CommandText, e.Message);
-
+            throw new DBAccessException($"Error executing query: {command?.CommandText}. Error: {e.Message}", e.StackTrace);
         }
         finally
         {
@@ -88,15 +68,7 @@ public class CarRepository : ICarRepository
         try
         {
             _connection.OpenConnection();
-            command = new NpgsqlCommand(
-                @"SELECT c.id, c.license_plate, c.color, p.code AS parking_code, m.name AS model_name
-                  FROM CAR c 
-                  LEFT JOIN PARKING p ON c.parking_id = p.id
-                  LEFT JOIN MODEL m ON c.model_id = m.id
-                  WHERE c.id = @id;",
-                _connection._SqlConnection
-            );
-            
+            command = new NpgsqlCommand("SELECT * FROM getcarbyid(@id)", _connection._SqlConnection);
             command.Parameters.AddWithValue("@id", id);
 
             NpgsqlDataReader reader = command.ExecuteReader();
@@ -136,9 +108,7 @@ public class CarRepository : ICarRepository
         {
             _connection.OpenConnection();
 
-            command = new NpgsqlCommand("INSERT INTO car (license_plate, color, parking_id, model_id) "
-                                        + "VALUES (@License, @Color, @ParkingCode, @ModelName) RETURNING id"
-                                        , _connection._SqlConnection);
+            command = new NpgsqlCommand("SELECT createcar(@License, @Color, @ParkingCode, @ModelName)", _connection._SqlConnection);
 
             command.Parameters.AddWithValue("@License", car.LicensePlate);
             command.Parameters.AddWithValue("@Color", car.Color);
@@ -173,7 +143,7 @@ public class CarRepository : ICarRepository
             {
                 _connection.OpenConnection();
                 
-                command = new NpgsqlCommand("UPDATE car SET parking_id = null WHERE id = @id", _connection._SqlConnection);
+                command = new NpgsqlCommand("SELECT * from updateparking(@id)", _connection._SqlConnection);
                 
                 command.Parameters.AddWithValue("@id", entity.Id);
                 
@@ -203,8 +173,7 @@ public class CarRepository : ICarRepository
         {
             _connection.OpenConnection();
             
-            command = new NpgsqlCommand(@"DELETE FROM CAR WHERE id = @id"
-                , _connection._SqlConnection);
+            command = new NpgsqlCommand(@"SELECT deletecar(@id)", _connection._SqlConnection);
             
             command.Parameters.AddWithValue("@id", entity.Id);
             
@@ -219,7 +188,7 @@ public class CarRepository : ICarRepository
         }
         catch (Exception e)
         {
-            throw new DBAccessException(command.CommandText, e.Message);
+            throw new DBAccessException($"Error executing query: {command?.CommandText}. Error: {e.Message}", e.StackTrace);
 
         }
         finally
@@ -238,15 +207,9 @@ public class CarRepository : ICarRepository
         {
             _connection.OpenConnection();
 
-            command = new NpgsqlCommand(
-                @"SELECT cat.daily_rate
-              FROM car c
-              JOIN model m ON c.model_id = m.id
-              JOIN category cat ON m.category_id = cat.id
-              WHERE c.id = @carId", 
-                _connection._SqlConnection);
-
-            command.Parameters.AddWithValue("@carId", id);
+            command = new NpgsqlCommand("SELECT * from getcaramount(@id)", _connection._SqlConnection);
+            
+            command.Parameters.AddWithValue("@id", id);
 
             var result = command.ExecuteScalar();
             
@@ -255,7 +218,7 @@ public class CarRepository : ICarRepository
         }
         catch (Exception e)
         {
-            throw new DBAccessException(command.CommandText, e.Message);
+            throw new DBAccessException($"Error executing query: {command?.CommandText}. Error: {e.Message}", e.StackTrace);
         }
         finally
         {
@@ -275,8 +238,8 @@ public class CarRepository : ICarRepository
         {
             _connection.OpenConnection();
 
-            command = new NpgsqlCommand(@"SELECT * FROM parking WHERE id = @parkingcode"
-                , _connection._SqlConnection);
+            command = new NpgsqlCommand("SELECT * FROM getparkingcode(@parkingCode)", _connection._SqlConnection);
+
 
             command.Parameters.AddWithValue("@parkingcode", parking_code);
 
@@ -313,15 +276,8 @@ public class CarRepository : ICarRepository
         {
             _connection.OpenConnection();
 
-            if (onlyAvailable)
-            {
-                command = new NpgsqlCommand(
-                    "SELECT * FROM parking " +
-                            "WHERE id NOT IN (SELECT parking_id FROM car WHERE car.parking_id IS NOT NULL)",
-                            _connection._SqlConnection);
-            }
-            else
-                command = new NpgsqlCommand("SELECT * FROM parking",_connection._SqlConnection);
+            command = new NpgsqlCommand("SELECT * FROM getallparkingcodes(@onlyAvailable)", _connection._SqlConnection);
+            command.Parameters.AddWithValue("@onlyAvailable", onlyAvailable);
 
             NpgsqlDataReader reader = command.ExecuteReader();
 
@@ -338,7 +294,8 @@ public class CarRepository : ICarRepository
         }
         catch (Exception e)
         {
-            throw new DBAccessException(command.CommandText, e.Message);
+            throw new DBAccessException($"Error executing query: {command?.CommandText}. Error: {e.Message}", e.StackTrace);
+
         }
         finally
         {
@@ -352,32 +309,17 @@ public class CarRepository : ICarRepository
     public bool GetFreeParkingPlace(int carId)
     {
         NpgsqlCommand command = null;
-
+        
         try
         {
             _connection.OpenConnection();
             
             // prendre le premier id de parking trouvé qui est libre
-            command = new NpgsqlCommand("SELECT id FROM parking"
-                                       +" WHERE id NOT IN (SELECT parking_id FROM car WHERE parking_id IS NOT NULL)"
-                                       + " LIMIT 1", _connection._SqlConnection);
+            command = new NpgsqlCommand("SELECT assignfreeparkingplace(@carId)", _connection._SqlConnection);
+            command.Parameters.AddWithValue("@carId", carId);
 
-            int? parkingId = (int?)command.ExecuteScalar();
-
-            if (parkingId is not null)
-            {
-                command = new NpgsqlCommand(@"UPDATE car
-                                           SET parking_id = @parking_id
-                                           WHERE id = @car_id", _connection._SqlConnection);
-
-                command.Parameters.AddWithValue("@parking_id", parkingId);
-                command.Parameters.AddWithValue("@car_id", carId);
-
-                int rowsAffected = command.ExecuteNonQuery();
-                return rowsAffected == 1;
-            }
-
-            return false;
+            var dbResult = command.ExecuteScalar();
+            return dbResult != null && (bool)dbResult;
         }
         catch (Exception e)
         {
