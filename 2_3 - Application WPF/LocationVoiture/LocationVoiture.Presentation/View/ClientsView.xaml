@@ -1,0 +1,92 @@
+﻿<UserControl x:Class="LocationVoiture.Presentation.View.ClientsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:LocationVoiture.Presentation.View" 
+             xmlns:viewmodel="clr-namespace:LocationVoiture.Presentation.ViewModel" 
+             d:DataContext="{d:DesignInstance Type=viewmodel:ClientViewModel}"
+             mc:Ignorable="d" 
+             d:DesignHeight="800" d:DesignWidth="1200">
+    <Grid Background="#F5F5F5">
+        <TabControl>
+            <TabItem Header="Existing clients" Style="{StaticResource TabItemStyle}">
+                <StackPanel Height="800">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Top">
+                        <Button Content="Load Clients" Command="{Binding ReadCommand}" Width="150" Margin="10" Style="{StaticResource ButtonStyle}" />
+                        <Button Content="Update" Command="{Binding UpdateCommand}" Width="150" Margin="10" Style="{StaticResource ButtonStyle}" />
+                        <Button Content="Delete" Command="{Binding DeleteCommand}" Width="150" Margin="10" Style="{StaticResource ButtonStyle}" VerticalAlignment="Top" />
+                    </StackPanel>
+
+                    <DataGrid ItemsSource="{Binding Clients}" AutoGenerateColumns="False" Margin="30"
+                              SelectedItem="{Binding SelectedClient}" BorderBrush="#DDD" BorderThickness="1">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="First Name" Binding="{Binding Firstname}" Width="*"/>
+                            <DataGridTextColumn Header="Last Name" Binding="{Binding Lastname}" Width="*"/>
+                            <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="*"/>
+                            <DataGridTextColumn Header="Street" Binding="{Binding Address.Street}" Width="*"/>
+                            <DataGridTextColumn Header="Postal Code" Binding="{Binding Address.PostalCode}" Width="*"/>
+                            <DataGridTextColumn Header="City" Binding="{Binding Address.City}" Width="*"/>
+                            <DataGridTextColumn Header="Country" Binding="{Binding Address.Country}" Width="*"/>
+                            <DataGridTextColumn Header="Driving License" Binding="{Binding DrivingLicense}" Width="*"/>
+                            <DataGridTextColumn Header="Birth Date" Binding="{Binding BirthDate, StringFormat='dd-MM-yyyy'}" Width="*" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </StackPanel>
+            </TabItem>
+
+            <TabItem Header="Add New Client" Style="{StaticResource TabItemStyle}">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                    <StackPanel HorizontalAlignment="Stretch" Margin="10" Height="600">
+                        <StackPanel Orientation="Horizontal" Margin="5">
+                            <Label Content="First Name" Width="100" VerticalAlignment="Center" />
+                            <TextBox Name="FirstnameInput" Width="200" Text="{Binding Firstname}" />
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Margin="5">
+                            <Label Content="Last Name" Width="100" VerticalAlignment="Center" />
+                            <TextBox Name="LastnameInput" Width="200" Text="{Binding Lastname}" />
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Margin="5">
+                            <Label Content="Email" Width="100" VerticalAlignment="Center" />
+                            <TextBox Name="EmailInput" Width="200" Text="{Binding Email}" />
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Margin="5">
+                            <Label Content="Street" Width="100" VerticalAlignment="Center" />
+                            <TextBox Name="StreetInput" Width="200" Text="{Binding Street}" />
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Margin="5">
+                            <Label Content="Postal Code" Width="100" VerticalAlignment="Center" />
+                            <TextBox Name="PostalCodeInput" Width="200" Text="{Binding PostalCode}" />
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Margin="5">
+                            <Label Content="City" Width="100" VerticalAlignment="Center" />
+                            <TextBox Name="CityInput" Width="200" Text="{Binding City}" />
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Margin="5">
+                            <Label Content="Country" Width="100" VerticalAlignment="Center" />
+                            <TextBox Name="CountryInput" Width="200" Text="{Binding Country}" />
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Margin="5">
+                            <Label Content="Driving License" Width="100" VerticalAlignment="Center" />
+                            <TextBox Name="LicenseInput" Width="200" Text="{Binding License}" />
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Margin="5">
+                            <Label Content="Birth Date" Width="100" VerticalAlignment="Center" />
+                            <DatePicker Name="BirthDateInput" Width="200" SelectedDate="{Binding BirthDate}" />
+                        </StackPanel>
+
+                        <Button Content="Create Client" Command="{Binding CreateCommand}" Width="200" Margin="10" Style="{StaticResource ButtonStyle}"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</UserControl>

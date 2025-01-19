@@ -1,0 +1,85 @@
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\bin\Debug\net8.0-windows\LocationVoiture.Presentation.exe
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\bin\Debug\net8.0-windows\LocationVoiture.Presentation.deps.json
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\bin\Debug\net8.0-windows\LocationVoiture.Presentation.runtimeconfig.json
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\bin\Debug\net8.0-windows\LocationVoiture.Presentation.dll
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\bin\Debug\net8.0-windows\LocationVoiture.Presentation.pdb
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\bin\Debug\net8.0-windows\Microsoft.Extensions.DependencyInjection.dll
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\bin\Debug\net8.0-windows\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\bin\Debug\net8.0-windows\Microsoft.Extensions.Logging.Abstractions.dll
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\bin\Debug\net8.0-windows\Npgsql.dll
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\bin\Debug\net8.0-windows\LocationVoiture.dal.dll
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\bin\Debug\net8.0-windows\LocationVoiture.dal.pdb
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\obj\Debug\net8.0-windows\LocationVoiture.Presentation.csproj.AssemblyReference.cache
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\obj\Debug\net8.0-windows\MainWindow.g.cs
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\obj\Debug\net8.0-windows\App.g.cs
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\obj\Debug\net8.0-windows\LocationVoiture.Presentation_MarkupCompile.cache
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\obj\Debug\net8.0-windows\LocationVoiture.Presentation_MarkupCompile.lref
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\obj\Debug\net8.0-windows\MainWindow.baml
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\obj\Debug\net8.0-windows\LocationVoiture.Presentation.g.resources
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\obj\Debug\net8.0-windows\LocationVoiture.Presentation.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\obj\Debug\net8.0-windows\LocationVoiture.Presentation.AssemblyInfoInputs.cache
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\obj\Debug\net8.0-windows\LocationVoiture.Presentation.AssemblyInfo.cs
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\obj\Debug\net8.0-windows\LocationVoiture.Presentation.csproj.CoreCompileInputs.cache
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\obj\Debug\net8.0-windows\Location.BFBDBA82.Up2Date
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\obj\Debug\net8.0-windows\LocationVoiture.Presentation.dll
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\obj\Debug\net8.0-windows\refint\LocationVoiture.Presentation.dll
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\obj\Debug\net8.0-windows\LocationVoiture.Presentation.pdb
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\obj\Debug\net8.0-windows\LocationVoiture.Presentation.genruntimeconfig.cache
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\obj\Debug\net8.0-windows\ref\LocationVoiture.Presentation.dll
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\bin\Debug\net8.0-windows\LocationVoiture.deps.json
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\bin\Debug\net8.0-windows\LocationVoiture.runtimeconfig.json
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\bin\Debug\net8.0-windows\LocationVoiture.exe
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\bin\Debug\net8.0-windows\Microsoft.Extensions.Configuration.dll
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\bin\Debug\net8.0-windows\Microsoft.Extensions.Configuration.Abstractions.dll
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\bin\Debug\net8.0-windows\Microsoft.Extensions.Configuration.Binder.dll
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\bin\Debug\net8.0-windows\Microsoft.Extensions.Configuration.CommandLine.dll
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\bin\Debug\net8.0-windows\Microsoft.Extensions.Configuration.EnvironmentVariables.dll
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\bin\Debug\net8.0-windows\Microsoft.Extensions.Configuration.FileExtensions.dll
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\bin\Debug\net8.0-windows\Microsoft.Extensions.Configuration.Json.dll
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\bin\Debug\net8.0-windows\Microsoft.Extensions.Configuration.UserSecrets.dll
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\bin\Debug\net8.0-windows\Microsoft.Extensions.Diagnostics.dll
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\bin\Debug\net8.0-windows\Microsoft.Extensions.Diagnostics.Abstractions.dll
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\bin\Debug\net8.0-windows\Microsoft.Extensions.FileProviders.Abstractions.dll
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\bin\Debug\net8.0-windows\Microsoft.Extensions.FileProviders.Physical.dll
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\bin\Debug\net8.0-windows\Microsoft.Extensions.FileSystemGlobbing.dll
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\bin\Debug\net8.0-windows\Microsoft.Extensions.Hosting.dll
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\bin\Debug\net8.0-windows\Microsoft.Extensions.Hosting.Abstractions.dll
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\bin\Debug\net8.0-windows\Microsoft.Extensions.Logging.dll
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\bin\Debug\net8.0-windows\Microsoft.Extensions.Logging.Configuration.dll
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\bin\Debug\net8.0-windows\Microsoft.Extensions.Logging.Console.dll
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\bin\Debug\net8.0-windows\Microsoft.Extensions.Logging.Debug.dll
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\bin\Debug\net8.0-windows\Microsoft.Extensions.Logging.EventLog.dll
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\bin\Debug\net8.0-windows\Microsoft.Extensions.Logging.EventSource.dll
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\bin\Debug\net8.0-windows\Microsoft.Extensions.Options.dll
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\bin\Debug\net8.0-windows\Microsoft.Extensions.Options.ConfigurationExtensions.dll
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\bin\Debug\net8.0-windows\Microsoft.Extensions.Primitives.dll
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\bin\Debug\net8.0-windows\System.Diagnostics.DiagnosticSource.dll
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\bin\Debug\net8.0-windows\System.Diagnostics.EventLog.dll
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\bin\Debug\net8.0-windows\System.IO.Pipelines.dll
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\bin\Debug\net8.0-windows\System.Text.Encodings.Web.dll
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\bin\Debug\net8.0-windows\System.Text.Json.dll
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\bin\Debug\net8.0-windows\runtimes\win\lib\net8.0\System.Diagnostics.EventLog.Messages.dll
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\bin\Debug\net8.0-windows\runtimes\win\lib\net8.0\System.Diagnostics.EventLog.dll
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\bin\Debug\net8.0-windows\runtimes\browser\lib\net8.0\System.Text.Encodings.Web.dll
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\bin\Debug\net8.0-windows\LocationVoiture.bll.dll
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\bin\Debug\net8.0-windows\LocationVoiture.dll
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\bin\Debug\net8.0-windows\LocationVoiture.pdb
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\bin\Debug\net8.0-windows\LocationVoiture.bll.pdb
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\obj\Debug\net8.0-windows\View\CarView.g.cs
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\obj\Debug\net8.0-windows\View\RentalView.g.cs
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\obj\Debug\net8.0-windows\View\CarView.baml
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\obj\Debug\net8.0-windows\View\RentalView.baml
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\obj\Debug\net8.0-windows\View\ClientsView.g.cs
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\obj\Debug\net8.0-windows\View\ClientsView.baml
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\obj\Debug\net8.0-windows\App.baml
+C:\Users\vanra\Desktop\SynologyDrive\Bachelier informatique de gestion\3ème année\ProjetSGBD\projet\ProjetSGBD\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\obj\Debug\net8.0-windows\LocationVoiture.Presentation.csproj.AssemblyReference.cache
+C:\Users\vanra\Desktop\SynologyDrive\Bachelier informatique de gestion\3ème année\ProjetSGBD\projet\ProjetSGBD\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\obj\Debug\net8.0-windows\MainWindow.g.cs
+C:\Users\vanra\Desktop\SynologyDrive\Bachelier informatique de gestion\3ème année\ProjetSGBD\projet\ProjetSGBD\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\obj\Debug\net8.0-windows\View\CarView.g.cs
+C:\Users\vanra\Desktop\SynologyDrive\Bachelier informatique de gestion\3ème année\ProjetSGBD\projet\ProjetSGBD\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\obj\Debug\net8.0-windows\View\ClientsView.g.cs
+C:\Users\vanra\Desktop\SynologyDrive\Bachelier informatique de gestion\3ème année\ProjetSGBD\projet\ProjetSGBD\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\obj\Debug\net8.0-windows\View\RentalView.g.cs
+C:\Users\vanra\Desktop\SynologyDrive\Bachelier informatique de gestion\3ème année\ProjetSGBD\projet\ProjetSGBD\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\obj\Debug\net8.0-windows\App.g.cs
+C:\Users\vanra\Desktop\SynologyDrive\Bachelier informatique de gestion\3ème année\ProjetSGBD\projet\ProjetSGBD\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\obj\Debug\net8.0-windows\LocationVoiture.Presentation_MarkupCompile.cache
+C:\Users\vanra\Desktop\SynologyDrive\Bachelier informatique de gestion\3ème année\ProjetSGBD\projet\ProjetSGBD\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\obj\Debug\net8.0-windows\LocationVoiture.Presentation_MarkupCompile.lref
+C:\Users\vanra\Desktop\SynologyDrive\Bachelier informatique de gestion\3ème année\ProjetSGBD\projet\ProjetSGBD\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\obj\Debug\net8.0-windows\LocationVoiture.Presentation.dll
+C:\Users\vanra\Desktop\SynologyDrive\Bachelier informatique de gestion\3ème année\ProjetSGBD\projet\ProjetSGBD\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\obj\Debug\net8.0-windows\refint\LocationVoiture.Presentation.dll
+C:\Users\vanra\Desktop\SynologyDrive\Bachelier informatique de gestion\3ème année\ProjetSGBD\projet\ProjetSGBD\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\obj\Debug\net8.0-windows\LocationVoiture.Presentation.pdb
