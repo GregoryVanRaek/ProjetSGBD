@@ -7,27 +7,7 @@
     </ApplicationDefinition>
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="View\CarView.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="View\ClientsView.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="View\RentalView.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Page Update="MainWindow.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="View\CarView.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="View\ClientsView.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="View\RentalView.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>

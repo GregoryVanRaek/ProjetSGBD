@@ -40,5 +40,11 @@ namespace LocationVoiture.Presentation
 
             DataContext = this;
         }
+
+        private void button_Click(object sender, RoutedEventArgs e)
+        {
+            CarView c = new CarView();
+            c.ShowDialog();
+        }
     }
 }

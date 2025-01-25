@@ -1,12 +1,102 @@
-﻿<UserControl x:Class="LocationVoiture.Presentation.View.RentalView"
+﻿<UserControl x:Class="LocationVoiture.Presentation.View.RentalsView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:LocationVoiture.Presentation.View"
+             xmlns:viewmodel="clr-namespace:LocationVoiture.Presentation.ViewModel"
+             xmlns:models="clr-namespace:LocationVoiture.dal.Entities;assembly=LocationVoiture.dal"
+             d:DataContext="{d:DesignInstance Type=viewmodel:RentalViewModel}"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-            
+             d:DesignHeight="800" d:DesignWidth="1200">
+    <UserControl.Resources>
+        <ObjectDataProvider x:Key="RentalStatusEnum" 
+                          MethodName="GetValues" 
+                          ObjectType="{x:Type models:RentalStatus}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type Type="models:RentalStatus"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+    </UserControl.Resources>
+
+    <Grid Background="#F5F5F5">
+        <TabControl>
+            <TabItem Header="Existing Rentals" Style="{StaticResource TabItemStyle}">
+                <StackPanel Height="800">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Top">
+                        <Button Content="Load Rentals" Command="{Binding ReadCommand}" Width="150" Margin="10" Style="{StaticResource ButtonStyle}" />
+                        <Button Content="Update" Command="{Binding UpdateCommand}" Width="150" Margin="10" Style="{StaticResource ButtonStyle}" />
+                        <Button Content="Delete" Command="{Binding DeleteCommand}" Width="150" Margin="10" Style="{StaticResource ButtonStyle}" />
+                    </StackPanel>
+
+                    <DataGrid ItemsSource="{Binding Rentals}" AutoGenerateColumns="False" Margin="30"
+                              SelectedItem="{Binding SelectedRental}" BorderBrush="#DDD" BorderThickness="1">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Car ID" Binding="{Binding CarId}" Width="*"/>
+                            <DataGridTextColumn Header="Client ID" Binding="{Binding ClientId}" Width="*"/>
+                            <DataGridTextColumn Header="Start Date" Binding="{Binding StartDate, StringFormat='dd-MM-yyyy'}" Width="*"/>
+                            <DataGridTextColumn Header="Duration (days)" Binding="{Binding Duration}" Width="*"/>
+                            <DataGridTextColumn Header="Amount" Binding="{Binding Amount, StringFormat='C'}" Width="*"/>
+                            <DataGridComboBoxColumn Header="Status" 
+                                                  ItemsSource="{Binding Source={StaticResource RentalStatusEnum}}"
+                                                  SelectedItemBinding="{Binding Status}" 
+                                                  Width="*"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </StackPanel>
+            </TabItem>
+
+            <TabItem Header="Add New Rental" Style="{StaticResource TabItemStyle}">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                    <StackPanel HorizontalAlignment="Stretch" Margin="10" Height="600">
+                        <Button Content="Load Cars and Clients" Command="{Binding LoadClientsAndCarsCommand}" 
+                                Width="200" Margin="10" Style="{StaticResource ButtonStyle}"/>
+
+                        <StackPanel Orientation="Horizontal" Margin="5">
+                            <Label Content="Car" Width="100" VerticalAlignment="Center" />
+                            <ComboBox Width="200" 
+                                      ItemsSource="{Binding Cars}"
+                                      SelectedValuePath="Id"
+                                      DisplayMemberPath="Model"
+                                      SelectedValue="{Binding CarId}"/>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Margin="5">
+                            <Label Content="Client" Width="100" VerticalAlignment="Center" />
+                            <ComboBox Width="200" 
+                                      ItemsSource="{Binding Clients}"
+                                      SelectedValuePath="Id"
+                                      DisplayMemberPath="Lastname"
+                                      SelectedValue="{Binding ClientId}"/>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Margin="5">
+                            <Label Content="Start Date" Width="100" VerticalAlignment="Center" />
+                            <DatePicker Width="200" SelectedDate="{Binding StartDate}" />
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Margin="5">
+                            <Label Content="Duration" Width="100" VerticalAlignment="Center" />
+                            <TextBox Width="200" Text="{Binding Duration}" />
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Margin="5">
+                            <Label Content="Amount" Width="100" VerticalAlignment="Center" />
+                            <TextBox Width="200" Text="{Binding Amount}" />
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Margin="5">
+                            <Label Content="Status" Width="100" VerticalAlignment="Center" />
+                            <ComboBox Width="200" 
+                                    ItemsSource="{Binding Source={StaticResource RentalStatusEnum}}"
+                                    SelectedItem="{Binding Status}"/>
+                        </StackPanel>
+
+                        <Button Content="Create Rental" Command="{Binding CreateCommand}" 
+                                Width="200" Margin="10" Style="{StaticResource ButtonStyle}"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+        </TabControl>
     </Grid>
 </UserControl>

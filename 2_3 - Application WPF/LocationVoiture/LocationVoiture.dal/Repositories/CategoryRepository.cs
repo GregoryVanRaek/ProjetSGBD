@@ -158,7 +158,7 @@ public class CategoryRepository : ICategoryRepository
         {
             _connection.OpenConnection();
             
-            command = new NpgsqlCommand("SELECT deletecategory(@id)", _connection._SqlConnection);
+            command = new NpgsqlCommand("SELECT * from deletecategory(@id)", _connection._SqlConnection);
             
             command.Parameters.AddWithValue("@id", entity.Id);
             

@@ -72,14 +72,10 @@ C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.P
 C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\obj\Debug\net8.0-windows\View\ClientsView.g.cs
 C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\obj\Debug\net8.0-windows\View\ClientsView.baml
 C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\obj\Debug\net8.0-windows\App.baml
-C:\Users\vanra\Desktop\SynologyDrive\Bachelier informatique de gestion\3ème année\ProjetSGBD\projet\ProjetSGBD\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\obj\Debug\net8.0-windows\LocationVoiture.Presentation.csproj.AssemblyReference.cache
-C:\Users\vanra\Desktop\SynologyDrive\Bachelier informatique de gestion\3ème année\ProjetSGBD\projet\ProjetSGBD\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\obj\Debug\net8.0-windows\MainWindow.g.cs
-C:\Users\vanra\Desktop\SynologyDrive\Bachelier informatique de gestion\3ème année\ProjetSGBD\projet\ProjetSGBD\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\obj\Debug\net8.0-windows\View\CarView.g.cs
-C:\Users\vanra\Desktop\SynologyDrive\Bachelier informatique de gestion\3ème année\ProjetSGBD\projet\ProjetSGBD\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\obj\Debug\net8.0-windows\View\ClientsView.g.cs
-C:\Users\vanra\Desktop\SynologyDrive\Bachelier informatique de gestion\3ème année\ProjetSGBD\projet\ProjetSGBD\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\obj\Debug\net8.0-windows\View\RentalView.g.cs
-C:\Users\vanra\Desktop\SynologyDrive\Bachelier informatique de gestion\3ème année\ProjetSGBD\projet\ProjetSGBD\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\obj\Debug\net8.0-windows\App.g.cs
-C:\Users\vanra\Desktop\SynologyDrive\Bachelier informatique de gestion\3ème année\ProjetSGBD\projet\ProjetSGBD\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\obj\Debug\net8.0-windows\LocationVoiture.Presentation_MarkupCompile.cache
-C:\Users\vanra\Desktop\SynologyDrive\Bachelier informatique de gestion\3ème année\ProjetSGBD\projet\ProjetSGBD\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\obj\Debug\net8.0-windows\LocationVoiture.Presentation_MarkupCompile.lref
-C:\Users\vanra\Desktop\SynologyDrive\Bachelier informatique de gestion\3ème année\ProjetSGBD\projet\ProjetSGBD\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\obj\Debug\net8.0-windows\LocationVoiture.Presentation.dll
-C:\Users\vanra\Desktop\SynologyDrive\Bachelier informatique de gestion\3ème année\ProjetSGBD\projet\ProjetSGBD\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\obj\Debug\net8.0-windows\refint\LocationVoiture.Presentation.dll
-C:\Users\vanra\Desktop\SynologyDrive\Bachelier informatique de gestion\3ème année\ProjetSGBD\projet\ProjetSGBD\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\obj\Debug\net8.0-windows\LocationVoiture.Presentation.pdb
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\obj\Debug\net8.0-windows\View\ModelView.g.cs
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\obj\Debug\net8.0-windows\View\ModelView.baml
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\bin\Debug\net8.0-windows\LocationVoiture.Present.deps.json
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\bin\Debug\net8.0-windows\LocationVoiture.Present.runtimeconfig.json
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\bin\Debug\net8.0-windows\LocationVoiture.Present.exe
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\bin\Debug\net8.0-windows\LocationVoiture.Present.dll
+C:\Users\vanra\Documents\2_3 - Application WPF\LocationVoiture\LocationVoiture.Presentation\bin\Debug\net8.0-windows\LocationVoiture.Present.pdb

@@ -163,7 +163,7 @@ namespace LocationVoiture.dal.Repositories
 
                     int insert = command.ExecuteNonQuery();
 
-                    return insert == 1 ? GetOneById(entity.Id) : null;
+                    return GetOneById(entity.Id) ;
                 }
                 else
                     throw new Exception("Rental not found");

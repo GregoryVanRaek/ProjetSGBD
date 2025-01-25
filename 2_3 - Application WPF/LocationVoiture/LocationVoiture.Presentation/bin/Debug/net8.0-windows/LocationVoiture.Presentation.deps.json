@@ -9,6 +9,7 @@
       "LocationVoiture.Presentation/1.0.0": {
         "dependencies": {
           "LocationVoiture": "1.0.0",
+          "LocationVoiture.Present": "1.0.0",
           "LocationVoiture.dal": "1.0.0",
           "Microsoft.Extensions.DependencyInjection": "9.0.1",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.1"
@@ -494,6 +495,19 @@
             "fileVersion": "1.0.0.0"
           }
         }
+      },
+      "LocationVoiture.Present/1.0.0": {
+        "dependencies": {
+          "LocationVoiture": "1.0.0",
+          "LocationVoiture.bll": "1.0.0",
+          "Microsoft.Extensions.DependencyInjection": "9.0.1"
+        },
+        "runtime": {
+          "LocationVoiture.Present.dll": {
+            "assemblyVersion": "1.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
       }
     }
   },
@@ -745,6 +759,11 @@
       "sha512": ""
     },
     "LocationVoiture.dal/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "LocationVoiture.Present/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

@@ -15,9 +15,10 @@
                 <ContentControl Content="{Binding CarView}" />
             </TabItem>
             <TabItem Header="Rentals">
-                <ContentControl Content="{Binding RentalView}" />
+                <ContentControl Content="{Binding RentalView}" Height="543" />
             </TabItem>
         </TabControl>
+        <Button x:Name="button" Content="Button" Margin="164,62,912,672" Click="button_Click"/>
 
     </Grid>
 </Window>

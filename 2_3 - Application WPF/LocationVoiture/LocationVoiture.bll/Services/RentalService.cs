@@ -111,6 +111,5 @@ namespace LocationVoiture.bll.Services
                 }
             }
         }
-        
     }
 }

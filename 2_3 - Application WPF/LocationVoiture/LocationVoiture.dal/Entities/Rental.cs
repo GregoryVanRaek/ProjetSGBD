@@ -9,6 +9,9 @@ public class Rental
     public required int Duration { get; set; }
     public required decimal Amount { get; set; }
     public required RentalStatus Status { get; set; }
+
+    public string? ClientFullName { get; set; } = null;
+    public string? CarInfo { get; set; } = null;
 }
 
 public enum RentalStatus

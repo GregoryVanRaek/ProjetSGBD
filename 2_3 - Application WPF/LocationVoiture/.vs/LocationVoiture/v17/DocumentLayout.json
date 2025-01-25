@@ -1,12 +1,103 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\vanra\\Desktop\\SynologyDrive\\Bachelier informatique de gestion\\3\u00E8me ann\u00E9e\\ProjetSGBD\\projet\\ProjetSGBD\\2_3 - Application WPF\\LocationVoiture\\",
-  "Documents": [],
+  "WorkspaceRootPath": "C:\\Users\\vanra\\Documents\\2_3 - Application WPF\\LocationVoiture\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{EB1521CE-A49B-4C14-AA27-FFE948169FBD}|LocationVoiture.Present\\LocationVoiture.Present.csproj|c:\\users\\vanra\\documents\\2_3 - application wpf\\locationvoiture\\locationvoiture.present\\viewmodel\\rentalviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EB1521CE-A49B-4C14-AA27-FFE948169FBD}|LocationVoiture.Present\\LocationVoiture.Present.csproj|solutionrelative:locationvoiture.present\\viewmodel\\rentalviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EB1521CE-A49B-4C14-AA27-FFE948169FBD}|LocationVoiture.Present\\LocationVoiture.Present.csproj|c:\\users\\vanra\\documents\\2_3 - application wpf\\locationvoiture\\locationvoiture.present\\viewmodel\\carviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EB1521CE-A49B-4C14-AA27-FFE948169FBD}|LocationVoiture.Present\\LocationVoiture.Present.csproj|solutionrelative:locationvoiture.present\\viewmodel\\carviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EB1521CE-A49B-4C14-AA27-FFE948169FBD}|LocationVoiture.Present\\LocationVoiture.Present.csproj|c:\\users\\vanra\\documents\\2_3 - application wpf\\locationvoiture\\locationvoiture.present\\view\\cardetailview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{EB1521CE-A49B-4C14-AA27-FFE948169FBD}|LocationVoiture.Present\\LocationVoiture.Present.csproj|solutionrelative:locationvoiture.present\\view\\cardetailview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EB1521CE-A49B-4C14-AA27-FFE948169FBD}|LocationVoiture.Present\\LocationVoiture.Present.csproj|c:\\users\\vanra\\documents\\2_3 - application wpf\\locationvoiture\\locationvoiture.present\\viewmodel\\modelviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EB1521CE-A49B-4C14-AA27-FFE948169FBD}|LocationVoiture.Present\\LocationVoiture.Present.csproj|solutionrelative:locationvoiture.present\\viewmodel\\modelviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EB1521CE-A49B-4C14-AA27-FFE948169FBD}|LocationVoiture.Present\\LocationVoiture.Present.csproj|c:\\users\\vanra\\documents\\2_3 - application wpf\\locationvoiture\\locationvoiture.present\\view\\modelview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{EB1521CE-A49B-4C14-AA27-FFE948169FBD}|LocationVoiture.Present\\LocationVoiture.Present.csproj|solutionrelative:locationvoiture.present\\view\\modelview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
       "VerticalTabListWidth": 256,
-      "DocumentGroups": []
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "RentalViewModel.cs",
+              "DocumentMoniker": "C:\\Users\\vanra\\Documents\\2_3 - Application WPF\\LocationVoiture\\LocationVoiture.Present\\ViewModel\\RentalViewModel.cs",
+              "RelativeDocumentMoniker": "LocationVoiture.Present\\ViewModel\\RentalViewModel.cs",
+              "ToolTip": "C:\\Users\\vanra\\Documents\\2_3 - Application WPF\\LocationVoiture\\LocationVoiture.Present\\ViewModel\\RentalViewModel.cs",
+              "RelativeToolTip": "LocationVoiture.Present\\ViewModel\\RentalViewModel.cs",
+              "ViewState": "AgIAAOQAAAAAAAAAAAAuwPAAAAAlAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-25T15:17:39.798Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "ModelViewModel.cs",
+              "DocumentMoniker": "C:\\Users\\vanra\\Documents\\2_3 - Application WPF\\LocationVoiture\\LocationVoiture.Present\\ViewModel\\ModelViewModel.cs",
+              "RelativeDocumentMoniker": "LocationVoiture.Present\\ViewModel\\ModelViewModel.cs",
+              "ToolTip": "C:\\Users\\vanra\\Documents\\2_3 - Application WPF\\LocationVoiture\\LocationVoiture.Present\\ViewModel\\ModelViewModel.cs",
+              "RelativeToolTip": "LocationVoiture.Present\\ViewModel\\ModelViewModel.cs",
+              "ViewState": "AgIAALIAAAAAAAAAAAAswOQAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-25T14:24:40.861Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "ModelView.xaml",
+              "DocumentMoniker": "C:\\Users\\vanra\\Documents\\2_3 - Application WPF\\LocationVoiture\\LocationVoiture.Present\\View\\ModelView.xaml",
+              "RelativeDocumentMoniker": "LocationVoiture.Present\\View\\ModelView.xaml",
+              "ToolTip": "C:\\Users\\vanra\\Documents\\2_3 - Application WPF\\LocationVoiture\\LocationVoiture.Present\\View\\ModelView.xaml",
+              "RelativeToolTip": "LocationVoiture.Present\\View\\ModelView.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-01-25T14:03:06.032Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "CarDetailView.xaml",
+              "DocumentMoniker": "C:\\Users\\vanra\\Documents\\2_3 - Application WPF\\LocationVoiture\\LocationVoiture.Present\\View\\CarDetailView.xaml",
+              "RelativeDocumentMoniker": "LocationVoiture.Present\\View\\CarDetailView.xaml",
+              "ToolTip": "C:\\Users\\vanra\\Documents\\2_3 - Application WPF\\LocationVoiture\\LocationVoiture.Present\\View\\CarDetailView.xaml",
+              "RelativeToolTip": "LocationVoiture.Present\\View\\CarDetailView.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-01-25T13:28:46.189Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "CarViewModel.cs",
+              "DocumentMoniker": "C:\\Users\\vanra\\Documents\\2_3 - Application WPF\\LocationVoiture\\LocationVoiture.Present\\ViewModel\\CarViewModel.cs",
+              "RelativeDocumentMoniker": "LocationVoiture.Present\\ViewModel\\CarViewModel.cs",
+              "ToolTip": "C:\\Users\\vanra\\Documents\\2_3 - Application WPF\\LocationVoiture\\LocationVoiture.Present\\ViewModel\\CarViewModel.cs",
+              "RelativeToolTip": "LocationVoiture.Present\\ViewModel\\CarViewModel.cs",
+              "ViewState": "AgIAAH0AAAAAAAAAAAAAAKcAAAAeAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-25T13:28:37.434Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
     }
   ]
 }

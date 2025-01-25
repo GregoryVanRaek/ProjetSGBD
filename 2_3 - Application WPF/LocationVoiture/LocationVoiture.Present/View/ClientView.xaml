@@ -1,0 +1,76 @@
+﻿<Window x:Class="LocationVoiture.Present.View.ClientView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:LocationVoiture.Present.View" xmlns:viewmodel="clr-namespace:LocationVoiture.Present.ViewModel"
+        d:DataContext="{d:DesignInstance Type=viewmodel:ClientViewModel}"
+        mc:Ignorable="d"
+        Title="ClientView" Height="800" Width="1200">
+    <Grid>
+        <TextBlock Text="Client Management" 
+                   FontSize="28" 
+                   FontWeight="Bold" 
+                   Foreground="#333333" 
+                   HorizontalAlignment="Center" 
+                   VerticalAlignment="Top" 
+                   Margin="0,10,0,0"/>
+
+        <TabControl Margin="0,40,40,0">
+            <TabItem Header="Existing Clients">
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
+                        <Button Content="Update" Command="{Binding UpdateCommand}" Width="150" Margin="10" 
+                                Background="#0078D7" Foreground="White" FontSize="16" BorderThickness="0" Cursor="Hand" Padding="7"/>
+                        <Button Content="Delete" Command="{Binding DeleteCommand}" Width="150" Margin="10" 
+                                Background="#D70000" Foreground="White" FontSize="16" BorderThickness="0" Cursor="Hand" Padding="7"/>
+                    </StackPanel>
+
+                    <DataGrid ItemsSource="{Binding Clients}" AutoGenerateColumns="False" Margin="10"
+                              SelectedItem="{Binding SelectedClient}" BorderBrush="#DDD" BorderThickness="1">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="First Name" Binding="{Binding Firstname}" Width="*"/>
+                            <DataGridTextColumn Header="Last Name" Binding="{Binding Lastname}" Width="*"/>
+                            <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="*"/>
+                            <DataGridTextColumn Header="Street" Binding="{Binding Address.Street}" Width="*"/>
+                            <DataGridTextColumn Header="Postal Code" Binding="{Binding Address.PostalCode}" Width="*"/>
+                            <DataGridTextColumn Header="City" Binding="{Binding Address.City}" Width="*"/>
+                            <DataGridTextColumn Header="Country" Binding="{Binding Address.Country}" Width="*"/>
+                            <DataGridTextColumn Header="Driving License" Binding="{Binding DrivingLicense}" Width="*"/>
+                            <DataGridTextColumn Header="Birth Date" Binding="{Binding BirthDate, StringFormat='dd-MM-yyyy'}" Width="*" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </StackPanel>
+            </TabItem>
+
+            <TabItem Header="Add New Client">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="0,0,-40,0">
+                    <StackPanel Margin="20" Height="614">
+                        <UniformGrid Columns="2" Rows="9" HorizontalAlignment="Center" Width="Auto">
+                            <Label Content="First Name:" FontWeight="Bold" VerticalAlignment="Center" Margin="5"/>
+                            <TextBox Text="{Binding Firstname}" Width="250" Margin="5"/>
+                            <Label Content="Last Name:" FontWeight="Bold" VerticalAlignment="Center" Margin="5"/>
+                            <TextBox Text="{Binding Lastname}" Width="250" Margin="5"/>
+                            <Label Content="Email:" FontWeight="Bold" VerticalAlignment="Center" Margin="5"/>
+                            <TextBox Text="{Binding Email}" Width="250" Margin="5"/>
+                            <Label Content="City:" FontWeight="Bold" VerticalAlignment="Center" Margin="5"/>
+                            <TextBox Text="{Binding Street}" Width="250" Margin="5"/>
+                            <Label Content="City:" FontWeight="Bold" VerticalAlignment="Center" Margin="5"/>
+                            <TextBox Text="{Binding PostalCode}" Width="250" Margin="5"/>
+                            <Label Content="City:" FontWeight="Bold" VerticalAlignment="Center" Margin="5"/>
+                            <TextBox Text="{Binding City}" Width="250" Margin="5"/>
+                            <Label Content="Country:" FontWeight="Bold" VerticalAlignment="Center" Margin="5"/>
+                            <TextBox Text="{Binding Country}" Width="250" Margin="5"/>
+                            <Label Content="Country:" FontWeight="Bold" VerticalAlignment="Center" Margin="5"/>
+                            <TextBox Text="{Binding License}" Width="250" Margin="5"/>
+                            <Label Content="Birth Date" FontWeight="Bold" VerticalAlignment="Center" Margin="5"/>
+                            <DatePicker Name="BirthDateInput" Width="250" Margin="5" SelectedDate="{Binding BirthDate}" />
+                        </UniformGrid>
+                        <Button Content="Create Client" Command="{Binding CreateCommand}" Width="150" Margin="20" 
+                                Background="#0078D7" Foreground="White" FontSize="16" BorderThickness="0" Cursor="Hand" Padding="7"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Window>

@@ -1,15 +1,14 @@
 ﻿using LocationVoiture.dal.Repositories.Interface;
 using LocationVoiture.dal.Repositories;
 using LocationVoiture.dal;
-using LocationVoiture.Presentation.ViewModel;
 using Microsoft.Extensions.DependencyInjection;
-using System.Configuration;
-using System.Data;
 using System.Windows;
-using LocationVoiture.Presentation.View;
 using LocationVoiture.bll.Services;
+using LocationVoiture.Present.View;
+using LocationVoiture.Present.ViewModel;
+using LocationVoiture.Presentation;
 
-namespace LocationVoiture.Presentation
+namespace LocationVoiture.Present
 {
     /// <summary>
     /// Interaction logic for App.xaml
@@ -27,7 +26,7 @@ namespace LocationVoiture.Presentation
             services.AddSingleton<MainWindow>();
 
             // Vues et ViewModels
-            services.AddScoped<ClientsView>();
+            services.AddScoped<ClientView>();
             services.AddScoped<ClientViewModel>();
 
             services.AddScoped<CarView>();
@@ -65,7 +64,7 @@ namespace LocationVoiture.Presentation
         protected override void OnStartup(StartupEventArgs e)
         {
             var mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
-            mainWindow.Show();
+            mainWindow.ShowDialog();
             base.OnStartup(e);
         }
     }

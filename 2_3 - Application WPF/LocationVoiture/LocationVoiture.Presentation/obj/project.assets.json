@@ -748,6 +748,24 @@
         "runtime": {
           "bin/placeholder/LocationVoiture.dal.dll": {}
         }
+      },
+      "LocationVoiture.Present/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v8.0",
+        "dependencies": {
+          "LocationVoiture": "1.0.0",
+          "LocationVoiture.bll": "1.0.0",
+          "Microsoft.Extensions.DependencyInjection": "9.0.1"
+        },
+        "compile": {
+          "bin/placeholder/LocationVoiture.Present.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/LocationVoiture.Present.dll": {}
+        },
+        "frameworkReferences": [
+          "Microsoft.WindowsDesktop.App.WPF"
+        ]
       }
     }
   },
@@ -1818,11 +1836,17 @@
       "type": "project",
       "path": "../LocationVoiture.dal/LocationVoiture.dal.csproj",
       "msbuildProject": "../LocationVoiture.dal/LocationVoiture.dal.csproj"
+    },
+    "LocationVoiture.Present/1.0.0": {
+      "type": "project",
+      "path": "../LocationVoiture.Present/LocationVoiture.Present.csproj",
+      "msbuildProject": "../LocationVoiture.Present/LocationVoiture.Present.csproj"
     }
   },
   "projectFileDependencyGroups": {
     "net8.0-windows7.0": [
       "LocationVoiture >= 1.0.0",
+      "LocationVoiture.Present >= 1.0.0",
       "LocationVoiture.dal >= 1.0.0",
       "Microsoft.Extensions.DependencyInjection >= 9.0.1",
       "Microsoft.Extensions.DependencyInjection.Abstractions >= 9.0.1"
@@ -1835,11 +1859,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\vanra\\Desktop\\SynologyDrive\\Bachelier informatique de gestion\\3ème année\\ProjetSGBD\\projet\\ProjetSGBD\\2_3 - Application WPF\\LocationVoiture\\LocationVoiture.Presentation\\LocationVoiture.Presentation.csproj",
+      "projectUniqueName": "C:\\Users\\vanra\\Documents\\2_3 - Application WPF\\LocationVoiture\\LocationVoiture.Presentation\\LocationVoiture.Presentation.csproj",
       "projectName": "LocationVoiture.Presentation",
-      "projectPath": "C:\\Users\\vanra\\Desktop\\SynologyDrive\\Bachelier informatique de gestion\\3ème année\\ProjetSGBD\\projet\\ProjetSGBD\\2_3 - Application WPF\\LocationVoiture\\LocationVoiture.Presentation\\LocationVoiture.Presentation.csproj",
+      "projectPath": "C:\\Users\\vanra\\Documents\\2_3 - Application WPF\\LocationVoiture\\LocationVoiture.Presentation\\LocationVoiture.Presentation.csproj",
       "packagesPath": "C:\\Users\\vanra\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\vanra\\Desktop\\SynologyDrive\\Bachelier informatique de gestion\\3ème année\\ProjetSGBD\\projet\\ProjetSGBD\\2_3 - Application WPF\\LocationVoiture\\LocationVoiture.Presentation\\obj\\",
+      "outputPath": "C:\\Users\\vanra\\Documents\\2_3 - Application WPF\\LocationVoiture\\LocationVoiture.Presentation\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -1860,11 +1884,14 @@
         "net8.0-windows7.0": {
           "targetAlias": "net8.0-windows",
           "projectReferences": {
-            "C:\\Users\\vanra\\Desktop\\SynologyDrive\\Bachelier informatique de gestion\\3ème année\\ProjetSGBD\\projet\\ProjetSGBD\\2_3 - Application WPF\\LocationVoiture\\LocationVoiture.dal\\LocationVoiture.dal.csproj": {
-              "projectPath": "C:\\Users\\vanra\\Desktop\\SynologyDrive\\Bachelier informatique de gestion\\3ème année\\ProjetSGBD\\projet\\ProjetSGBD\\2_3 - Application WPF\\LocationVoiture\\LocationVoiture.dal\\LocationVoiture.dal.csproj"
+            "C:\\Users\\vanra\\Documents\\2_3 - Application WPF\\LocationVoiture\\LocationVoiture.dal\\LocationVoiture.dal.csproj": {
+              "projectPath": "C:\\Users\\vanra\\Documents\\2_3 - Application WPF\\LocationVoiture\\LocationVoiture.dal\\LocationVoiture.dal.csproj"
             },
-            "C:\\Users\\vanra\\Desktop\\SynologyDrive\\Bachelier informatique de gestion\\3ème année\\ProjetSGBD\\projet\\ProjetSGBD\\2_3 - Application WPF\\LocationVoiture\\LocationVoiture\\LocationVoiture.csproj": {
-              "projectPath": "C:\\Users\\vanra\\Desktop\\SynologyDrive\\Bachelier informatique de gestion\\3ème année\\ProjetSGBD\\projet\\ProjetSGBD\\2_3 - Application WPF\\LocationVoiture\\LocationVoiture\\LocationVoiture.csproj"
+            "C:\\Users\\vanra\\Documents\\2_3 - Application WPF\\LocationVoiture\\LocationVoiture.Present\\LocationVoiture.Present.csproj": {
+              "projectPath": "C:\\Users\\vanra\\Documents\\2_3 - Application WPF\\LocationVoiture\\LocationVoiture.Present\\LocationVoiture.Present.csproj"
+            },
+            "C:\\Users\\vanra\\Documents\\2_3 - Application WPF\\LocationVoiture\\LocationVoiture\\LocationVoiture.csproj": {
+              "projectPath": "C:\\Users\\vanra\\Documents\\2_3 - Application WPF\\LocationVoiture\\LocationVoiture\\LocationVoiture.csproj"
             }
           }
         }

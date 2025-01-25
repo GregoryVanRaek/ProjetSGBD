@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\LocationVoiture.dal\LocationVoiture.dal.csproj" />
+    <ProjectReference Include="..\LocationVoiture.Present\LocationVoiture.Present.csproj" />
     <ProjectReference Include="..\LocationVoiture\LocationVoiture.csproj" />
   </ItemGroup>
 

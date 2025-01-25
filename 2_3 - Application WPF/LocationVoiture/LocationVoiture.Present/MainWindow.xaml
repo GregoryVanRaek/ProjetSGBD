@@ -1,0 +1,41 @@
+﻿<Window x:Class="LocationVoiture.Present.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:LocationVoiture.Present"
+        mc:Ignorable="d"
+        Title="Car Rental Management" Height="450" Width="800" Background="#F0F0F0">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="277*"/>
+            <RowDefinition Height="157*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="27*"/>
+            <ColumnDefinition Width="373*"/>
+        </Grid.ColumnDefinitions>
+        <TextBlock Text="Car Rental Management" 
+                   FontSize="28" 
+                   FontWeight="Bold" 
+                   Foreground="#333333" 
+                   HorizontalAlignment="Left" 
+                   VerticalAlignment="Top" 
+                   Margin="187,40,0,0" Grid.Column="1"/>
+
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="1" Margin="241,127,0,0" Grid.RowSpan="2">
+
+            <Button x:Name="btnClients" Content="Clients" Width="200" Height="50"  
+                    Background="#0078D7" Foreground="White" FontSize="16" 
+                    BorderThickness="0" Cursor="Hand" Margin="5" Click="btnClients_Click"/>
+
+            <Button x:Name="btnRentals" Content="Rentals" Width="200" Height="50"
+                    Background="#0078D7" Foreground="White" FontSize="16" 
+                    BorderThickness="0" Cursor="Hand" Margin="5" Click="btnRentals_Click"/>
+
+            <Button x:Name="btnCars" Content="Cars" Width="200" Height="50" 
+                    Background="#0078D7" Foreground="White" FontSize="16" 
+                    BorderThickness="0" Cursor="Hand" Margin="5" Click="btnCars_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>
