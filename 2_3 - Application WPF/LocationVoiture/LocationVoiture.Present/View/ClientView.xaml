@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:LocationVoiture.Present.View" xmlns:viewmodel="clr-namespace:LocationVoiture.Present.ViewModel"
         d:DataContext="{d:DesignInstance Type=viewmodel:ClientViewModel}"
         mc:Ignorable="d"
-        Title="ClientView" Height="800" Width="1200">
+        Title="ClientView" Height="800" Width="1200" WindowStartupLocation="CenterScreen">
     <Grid>
         <TextBlock Text="Client Management" 
                    FontSize="28" 
@@ -53,21 +53,21 @@
                             <TextBox Text="{Binding Lastname}" Width="250" Margin="5"/>
                             <Label Content="Email:" FontWeight="Bold" VerticalAlignment="Center" Margin="5"/>
                             <TextBox Text="{Binding Email}" Width="250" Margin="5"/>
-                            <Label Content="City:" FontWeight="Bold" VerticalAlignment="Center" Margin="5"/>
+                            <Label Content="Street:" FontWeight="Bold" VerticalAlignment="Center" Margin="5"/>
                             <TextBox Text="{Binding Street}" Width="250" Margin="5"/>
-                            <Label Content="City:" FontWeight="Bold" VerticalAlignment="Center" Margin="5"/>
+                            <Label Content="PostalCode:" FontWeight="Bold" VerticalAlignment="Center" Margin="5"/>
                             <TextBox Text="{Binding PostalCode}" Width="250" Margin="5"/>
                             <Label Content="City:" FontWeight="Bold" VerticalAlignment="Center" Margin="5"/>
                             <TextBox Text="{Binding City}" Width="250" Margin="5"/>
                             <Label Content="Country:" FontWeight="Bold" VerticalAlignment="Center" Margin="5"/>
                             <TextBox Text="{Binding Country}" Width="250" Margin="5"/>
-                            <Label Content="Country:" FontWeight="Bold" VerticalAlignment="Center" Margin="5"/>
+                            <Label Content="License:" FontWeight="Bold" VerticalAlignment="Center" Margin="5"/>
                             <TextBox Text="{Binding License}" Width="250" Margin="5"/>
                             <Label Content="Birth Date" FontWeight="Bold" VerticalAlignment="Center" Margin="5"/>
                             <DatePicker Name="BirthDateInput" Width="250" Margin="5" SelectedDate="{Binding BirthDate}" />
                         </UniformGrid>
                         <Button Content="Create Client" Command="{Binding CreateCommand}" Width="150" Margin="20" 
-                                Background="#0078D7" Foreground="White" FontSize="16" BorderThickness="0" Cursor="Hand" Padding="7"/>
+                          Background="#0078D7" Foreground="White" FontSize="16" BorderThickness="0" Cursor="Hand" Padding="7"/>
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>

@@ -5,8 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LocationVoiture.Present"
         mc:Ignorable="d"
-        Title="Car Rental Management" Height="450" Width="800" Background="#F0F0F0">
-    <Grid>
+        Title="Car Rental Management" Height="454" Width="798" Background="#F0F0F0" WindowStartupLocation="CenterScreen">
+    <Grid HorizontalAlignment="Center">
         <Grid.RowDefinitions>
             <RowDefinition Height="277*"/>
             <RowDefinition Height="157*"/>
@@ -19,11 +19,11 @@
                    FontSize="28" 
                    FontWeight="Bold" 
                    Foreground="#333333" 
-                   HorizontalAlignment="Left" 
+                   HorizontalAlignment="center" 
                    VerticalAlignment="Top" 
-                   Margin="187,40,0,0" Grid.Column="1"/>
+                   Grid.Column="1"/>
 
-        <StackPanel Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="1" Margin="241,127,0,0" Grid.RowSpan="2">
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="center" Grid.Column="1" Grid.RowSpan="2">
 
             <Button x:Name="btnClients" Content="Clients" Width="200" Height="50"  
                     Background="#0078D7" Foreground="White" FontSize="16" 

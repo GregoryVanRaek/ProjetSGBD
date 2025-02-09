@@ -8,7 +8,7 @@
         xmlns:models="clr-namespace:LocationVoiture.dal.Entities;assembly=LocationVoiture.dal"
         d:DataContext="{d:DesignInstance Type=viewmodel:CarViewModel}"
         mc:Ignorable="d"
-        Title="CarView" Height="800" Width="1200">
+        Title="CarView" Height="800" Width="1200" WindowStartupLocation="CenterScreen">
     <Grid Background="#F5F5F5">
         <TextBlock Text="Car Management"
                    FontSize="28"
@@ -54,10 +54,6 @@
                                     <Setter Property="Padding" Value="7"/>
                                 </Style>
                             </StackPanel.Resources>
-                            <Button Content="Update" 
-                                    Background="#0078D7" 
-                                    Foreground="White"
-                                    Command="{Binding UpdateCarCommand}"/>
                             <Button Content="Delete" 
                                     Background="#D70000" 
                                     Foreground="White"

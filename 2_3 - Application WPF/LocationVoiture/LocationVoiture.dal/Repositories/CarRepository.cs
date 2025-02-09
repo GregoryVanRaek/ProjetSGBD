@@ -142,14 +142,14 @@ public class CarRepository : ICarRepository
             if (this.GetOneById(entity.Id) is not null)
             {
                 _connection.OpenConnection();
-                
-                command = new NpgsqlCommand("SELECT * from updateparking(@id)", _connection._SqlConnection);
-                
+                // mise à jour lorsque la voiture est louée (assignfreeparking pour la rentrée de location)
+                command = new NpgsqlCommand("SELECT updateparking(@id) ", _connection._SqlConnection);
+
                 command.Parameters.AddWithValue("@id", entity.Id);
+
+                command.ExecuteNonQuery();
                 
-                int rowsAffected = command.ExecuteNonQuery();
-                
-                return rowsAffected != 0 ? this.GetOneById(entity.Id) : null;
+                return this.GetOneById(entity.Id) ;
             }
             else
             {
@@ -276,7 +276,7 @@ public class CarRepository : ICarRepository
         {
             _connection.OpenConnection();
 
-            command = new NpgsqlCommand("SELECT * FROM getallparkingcodes(@onlyAvailable)", _connection._SqlConnection);
+            command = new NpgsqlCommand("SELECT * from getallparkingcodes(@onlyAvailable)", _connection._SqlConnection);
             command.Parameters.AddWithValue("@onlyAvailable", onlyAvailable);
 
             NpgsqlDataReader reader = command.ExecuteReader();
@@ -319,7 +319,10 @@ public class CarRepository : ICarRepository
             command.Parameters.AddWithValue("@carId", carId);
 
             var dbResult = command.ExecuteScalar();
-            return dbResult != null && (bool)dbResult;
+            if (dbResult != null && (bool)dbResult)
+                return true;
+            else
+                throw new Exception("No free parking place available.");
         }
         catch (Exception e)
         {

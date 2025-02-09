@@ -140,10 +140,12 @@ public class CarService : ICarService
     public void UpdateCarParking(int id)
     {
         Car car = this.GetById(id);
-           
-        car.ParkingCode = null;
-            
-        this.Update(car);
+
+       bool isParkingAssigned = this.GetFreeParkingPlace(car.Id);
+
+        if (isParkingAssigned)
+            this.Update(car);
+        else
+            throw new Exception("No free parking space available.");
     }
-    
 }

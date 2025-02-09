@@ -160,10 +160,20 @@ namespace LocationVoiture.Present.ViewModel
                 CategoryId = CategoryId
             };
 
+            if (Models.Any(m => m.Name == newModel.Name && m.Brand == newModel.Brand && m.SeatNumber == newModel.SeatNumber))
+            {
+                MessageBox.Show("This model already exists", "Validation Error");
+                return;
+            }
+
             try
             {
                 var createdModel = _modelService.Create(newModel);
                 LoadModels();
+                Name = "";
+                Brand = "";
+                SeatNumber = 0;
+                CategoryId = 0;
                 MessageBox.Show("Model successfully created!", "Create Model");
             }
             catch (Exception ex)
@@ -179,6 +189,13 @@ namespace LocationVoiture.Present.ViewModel
                 if (string.IsNullOrWhiteSpace(Name) || string.IsNullOrWhiteSpace(Brand) || SeatNumber < 2)
                 {
                     MessageBox.Show("All fields must be completed correctly.", "Validation Error");
+                    return;
+                }
+
+                if (Models.Any(m => m.Name == SelectedModel.Name && m.Brand == SelectedModel.Brand && m.SeatNumber == SelectedModel.SeatNumber))
+                {
+                    MessageBox.Show("This model already exists", "Validation Error");
+                    LoadModels();
                     return;
                 }
 
@@ -199,22 +216,31 @@ namespace LocationVoiture.Present.ViewModel
         {
             if (SelectedModel != null)
             {
-                try
+                var confirmationResult = MessageBox.Show(
+                                               "Are you sure you want to delete this model?",
+                                               "Confirm delete",
+                                               MessageBoxButton.YesNo,
+                                               MessageBoxImage.Question
+               );
+                if (confirmationResult == MessageBoxResult.Yes)
                 {
-                    bool isDeleted = _modelService.Delete(SelectedModel);
-                    if (isDeleted)
+                    try
                     {
-                        LoadModels();
-                        MessageBox.Show("Model deleted successfully.", "Delete Model");
+                        bool isDeleted = _modelService.Delete(SelectedModel);
+                        if (isDeleted)
+                        {
+                            LoadModels();
+                            MessageBox.Show("Model deleted successfully.", "Delete Model");
+                        }
+                        else
+                        {
+                            MessageBox.Show("Error deleting model.", "Delete Model");
+                        }
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        MessageBox.Show("Error deleting model.", "Delete Model");
+                        MessageBox.Show($"Error deleting model: {ex.Message}", "Delete Model Error");
                     }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Error deleting model: {ex.Message}", "Delete Model Error");
                 }
             }
         }

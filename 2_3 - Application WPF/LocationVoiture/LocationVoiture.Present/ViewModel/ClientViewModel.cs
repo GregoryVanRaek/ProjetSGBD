@@ -6,6 +6,7 @@ using System.Windows;
 using LocationVoiture.dal.Entities;
 using LocationVoiture.Present.Core;
 using LocationVoiture.bll.Services;
+using System.Text.RegularExpressions;
 
 
 namespace LocationVoiture.Present.ViewModel
@@ -25,6 +26,17 @@ namespace LocationVoiture.Present.ViewModel
         public string Country { get; set; }
         public string License { get; set; }
         public DateTime? BirthDate { get; set; }
+
+        private bool _isFormValid;
+        public bool IsFormValid
+        {
+            get => _isFormValid;
+            set
+            {
+                _isFormValid = value;
+                OnPropertyChanged();
+            }
+        }
 
         public ObservableCollection<Client> Clients
         {
@@ -94,10 +106,17 @@ namespace LocationVoiture.Present.ViewModel
                 BirthDate = BirthDate ?? DateTime.Now // Si la date de naissance est null, utilise la date actuelle.
             };
 
+            if (!IsValidEmail(newClient.Email))
+            {
+                MessageBox.Show("Incorrect email address", "Validation Error");
+                return;
+            }
+
             try
             {
                 var createdClient = _clientService.Create(newClient);
                 Clients.Add(createdClient);
+                ResetForm();
                 MessageBox.Show("Client successfully created!", "Create Client");
             }
             catch (Exception ex)
@@ -105,13 +124,45 @@ namespace LocationVoiture.Present.ViewModel
                 MessageBox.Show($"Error creating client: {ex.Message}", "Create Client Error");
             }
         }
+
+        private void ResetForm()
+        {
+            Firstname = string.Empty;
+            Lastname = string.Empty;
+            Email = string.Empty;
+            Street = string.Empty;
+            PostalCode = string.Empty;
+            City = string.Empty;
+            Country = string.Empty;
+            License = string.Empty;
+            BirthDate = null;
+            OnPropertyChanged(nameof(Firstname));
+            OnPropertyChanged(nameof(Lastname));
+            OnPropertyChanged(nameof(Email));
+            OnPropertyChanged(nameof(Street));
+            OnPropertyChanged(nameof(PostalCode));
+            OnPropertyChanged(nameof(City));
+            OnPropertyChanged(nameof(Country));
+            OnPropertyChanged(nameof(License));
+            OnPropertyChanged(nameof(BirthDate));
+        }
+
         private void UpdateClient(object parameter)
         {
             if (SelectedClient != null)
             {
-                if (string.IsNullOrWhiteSpace(SelectedClient.Firstname) || string.IsNullOrWhiteSpace(SelectedClient.Lastname))
+                if (string.IsNullOrWhiteSpace(SelectedClient.Firstname) || string.IsNullOrWhiteSpace(SelectedClient.Lastname) ||
+                                   string.IsNullOrWhiteSpace(SelectedClient.Email) || string.IsNullOrWhiteSpace(SelectedClient.Address?.Street) ||
+                                   string.IsNullOrWhiteSpace(SelectedClient.Address?.PostalCode) || string.IsNullOrWhiteSpace(SelectedClient.Address?.City) ||
+                                   string.IsNullOrWhiteSpace(SelectedClient.Address?.Country) || string.IsNullOrWhiteSpace(SelectedClient.DrivingLicense))
                 {
-                    MessageBox.Show("Firstname and Lastname are required.", "Validation Error");
+                    MessageBox.Show("All fields must be completed correctly.", "Validation Error");
+                    return;
+                }
+
+                if (!IsValidEmail(SelectedClient.Email))
+                {
+                    MessageBox.Show("Incorrect email address", "Validation Error");
                     return;
                 }
 
@@ -119,11 +170,6 @@ namespace LocationVoiture.Present.ViewModel
                 {
                     var updatedClient = _clientService.Update(SelectedClient);
 
-                    int index = Clients.IndexOf(SelectedClient);
-                    if (index >= 0)
-                    {
-                        Clients[index] = updatedClient;
-                    }
 
                     MessageBox.Show("Client updated successfully.", "Update Client");
                 }
@@ -138,20 +184,29 @@ namespace LocationVoiture.Present.ViewModel
         {
             if (SelectedClient != null)
             {
-                try
+                var confirmationResult = MessageBox.Show(
+                                                "Are you sure you want to delete this client?",
+                                                "Confirm delete",
+                                                MessageBoxButton.YesNo,
+                                                MessageBoxImage.Question
+                );
+                if (confirmationResult == MessageBoxResult.Yes)
                 {
-                    bool isDeleted = _clientService.Delete(SelectedClient);
-                    if (isDeleted)
+                    try
                     {
-                        Clients.Remove(SelectedClient);
-                        MessageBox.Show("Client deleted successfully.", "Delete Client");
+                        bool isDeleted = _clientService.Delete(SelectedClient);
+                        if (isDeleted)
+                        {
+                            Clients.Remove(SelectedClient);
+                            MessageBox.Show("Client deleted successfully.", "Delete Client");
+                        }
+                        else
+                            MessageBox.Show("Error deleting client.", "Delete Client");
                     }
-                    else
-                        MessageBox.Show("Error deleting client.", "Delete Client");
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Error deleting client: {ex.Message}", "Delete Client Error");
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Error deleting client: {ex.Message}", "Delete Client Error");
+                    }
                 }
             }
         }
@@ -162,6 +217,13 @@ namespace LocationVoiture.Present.ViewModel
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        private bool IsValidEmail(string email)
+        {
+            var reg = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
+            return Regex.IsMatch(email, reg);
+        }
+
     }
 
 }

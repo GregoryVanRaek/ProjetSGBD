@@ -80,7 +80,6 @@ namespace LocationVoiture.Present.ViewModel
         }
 
 
-
         public ICommand CreateCommand { get; }
         public ICommand UpdateCommand { get; }
         public ICommand DeleteCommand { get; }
@@ -102,6 +101,11 @@ namespace LocationVoiture.Present.ViewModel
 
         private void CreateCategory(object parameter)
         {
+            if (Categories.Any(c => c.Name == Name)) {
+                MessageBox.Show("This category already exists.", "Validation Error");
+                return;
+            }
+
             if (string.IsNullOrWhiteSpace(Name) || DailyRate <= 0)
             {
                 MessageBox.Show("All fields must be completed correctly.", "Validation Error");
@@ -118,6 +122,8 @@ namespace LocationVoiture.Present.ViewModel
             {
                 var createdCategory = _categoryService.Create(newCategory);
                 LoadCategories();
+                Name = "";
+                DailyRate = 0 ;
                 MessageBox.Show("Category successfully created!", "Create Category");
             }
             catch (Exception ex)
@@ -133,6 +139,14 @@ namespace LocationVoiture.Present.ViewModel
                 if (string.IsNullOrWhiteSpace(Name) || DailyRate <= 0)
                 {
                     MessageBox.Show("Name and Daily Rate are required.", "Validation Error");
+                    LoadCategories();
+                    return;
+                }
+
+                if (Categories.Any(c => c.Name == SelectedCategory.Name && c.Id != SelectedCategory.Id))
+                {
+                    MessageBox.Show("This category already exists.", "Validation Error");
+                    LoadCategories();
                     return;
                 }
 
@@ -151,22 +165,31 @@ namespace LocationVoiture.Present.ViewModel
 
         private void DeleteCategory(object parameter)
         {
-            if (SelectedCategory != null)
+            var confirmationResult = MessageBox.Show(
+                                               "Are you sure you want to delete this category?",
+                                               "Confirm delete",
+                                               MessageBoxButton.YesNo,
+                                               MessageBoxImage.Question
+            );
+            if (confirmationResult == MessageBoxResult.Yes)
             {
-                try
+                if (SelectedCategory != null)
                 {
-                    bool isDeleted = _categoryService.Delete(SelectedCategory);
-                    if (isDeleted)
+                    try
                     {
-                        LoadCategories();
-                        MessageBox.Show("Category deleted successfully.", "Delete Category");
+                        bool isDeleted = _categoryService.Delete(SelectedCategory);
+                        if (isDeleted)
+                        {
+                            LoadCategories();
+                            MessageBox.Show("Category deleted successfully.", "Delete Category");
+                        }
+                        else
+                            MessageBox.Show("Error deleting category.", "Delete Category");
                     }
-                    else
-                        MessageBox.Show("Error deleting category.", "Delete Category");
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Error deleting category: {ex.Message}", "Delete Category Error");
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Error deleting category: {ex.Message}", "Delete Category Error");
+                    }
                 }
             }
         }

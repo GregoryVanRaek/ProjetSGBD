@@ -54,6 +54,13 @@ public class ClientService : IClientService
     {
         try
         {
+            if (this._clientRepository.GetOneByEmail(entity.Email) is not null
+                && this._clientRepository.GetOneByEmail(entity.Email).Id != entity.Id )
+                throw new AlreadyExistException("user email");
+
+            if (DateTime.Today.Year - entity.BirthDate.Year < 21)
+                throw new Exception("The driver must be at least 21 years old.");
+
             return this._clientRepository.Update(entity);
         }
         catch (Exception e)

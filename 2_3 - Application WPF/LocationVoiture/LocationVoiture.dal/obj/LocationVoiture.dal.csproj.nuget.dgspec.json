@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\vanra\\Documents\\2_3 - Application WPF\\LocationVoiture\\LocationVoiture.dal\\LocationVoiture.dal.csproj": {}
+    "C:\\Users\\vanra\\Desktop\\SynologyDrive\\Bachelier informatique de gestion\\3ème année\\00 cours terminés\\ProjetSGBD\\projet\\ProjetSGBD\\2_3 - Application WPF\\LocationVoiture\\LocationVoiture.dal\\LocationVoiture.dal.csproj": {}
   },
   "projects": {
-    "C:\\Users\\vanra\\Documents\\2_3 - Application WPF\\LocationVoiture\\LocationVoiture.dal\\LocationVoiture.dal.csproj": {
+    "C:\\Users\\vanra\\Desktop\\SynologyDrive\\Bachelier informatique de gestion\\3ème année\\00 cours terminés\\ProjetSGBD\\projet\\ProjetSGBD\\2_3 - Application WPF\\LocationVoiture\\LocationVoiture.dal\\LocationVoiture.dal.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\vanra\\Documents\\2_3 - Application WPF\\LocationVoiture\\LocationVoiture.dal\\LocationVoiture.dal.csproj",
+        "projectUniqueName": "C:\\Users\\vanra\\Desktop\\SynologyDrive\\Bachelier informatique de gestion\\3ème année\\00 cours terminés\\ProjetSGBD\\projet\\ProjetSGBD\\2_3 - Application WPF\\LocationVoiture\\LocationVoiture.dal\\LocationVoiture.dal.csproj",
         "projectName": "LocationVoiture.dal",
-        "projectPath": "C:\\Users\\vanra\\Documents\\2_3 - Application WPF\\LocationVoiture\\LocationVoiture.dal\\LocationVoiture.dal.csproj",
+        "projectPath": "C:\\Users\\vanra\\Desktop\\SynologyDrive\\Bachelier informatique de gestion\\3ème année\\00 cours terminés\\ProjetSGBD\\projet\\ProjetSGBD\\2_3 - Application WPF\\LocationVoiture\\LocationVoiture.dal\\LocationVoiture.dal.csproj",
         "packagesPath": "C:\\Users\\vanra\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\vanra\\Documents\\2_3 - Application WPF\\LocationVoiture\\LocationVoiture.dal\\obj\\",
+        "outputPath": "C:\\Users\\vanra\\Desktop\\SynologyDrive\\Bachelier informatique de gestion\\3ème année\\00 cours terminés\\ProjetSGBD\\projet\\ProjetSGBD\\2_3 - Application WPF\\LocationVoiture\\LocationVoiture.dal\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -43,8 +43,7 @@
           "enableAudit": "true",
           "auditLevel": "low",
           "auditMode": "direct"
-        },
-        "SdkAnalysisLevel": "9.0.100"
+        }
       },
       "frameworks": {
         "net8.0": {

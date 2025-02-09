@@ -19,6 +19,7 @@ namespace LocationVoiture.Present.ViewModel
         private ObservableCollection<Parking> _parkings;
 
         private Car _selectedCar;
+        private int _selectedCarId { get; set; }
         private string _licensePlate;
         private string _color;
         private int _modelId;
@@ -155,8 +156,8 @@ namespace LocationVoiture.Present.ViewModel
         {
             if (string.IsNullOrWhiteSpace(LicensePlate) ||
                 string.IsNullOrWhiteSpace(Color) ||
-                ParkingId == 0 ||
-                ModelId == 0)
+                ParkingId <= 0 ||
+                ModelId <= 0)
             {
                 MessageBox.Show("All fields must be completed correctly.", "Validation Error");
                 return;
@@ -169,6 +170,11 @@ namespace LocationVoiture.Present.ViewModel
                 ParkingId = ParkingId,
                 ModelId = ModelId
             };
+
+            if (Cars.Any(c => c.LicensePlate == newCar.LicensePlate)) {
+                MessageBox.Show("This license plate already exists.", "Validation Error");
+                return;
+            }
 
             try
             {
@@ -192,21 +198,19 @@ namespace LocationVoiture.Present.ViewModel
                 return;
             }
 
-            if (string.IsNullOrWhiteSpace(LicensePlate) ||
-                string.IsNullOrWhiteSpace(Color) ||
-                ParkingId == 0 ||
-                ModelId == 0)
-            {
-                MessageBox.Show("All fields must be completed correctly.", "Validation Error");
-                return;
-            }
-
             try
             {
                 SelectedCar.LicensePlate = LicensePlate;
                 SelectedCar.Color = Color;
                 SelectedCar.ParkingId = ParkingId;
                 SelectedCar.ModelId = ModelId;
+
+                if (Cars.Any(c => c.LicensePlate == SelectedCar.LicensePlate && c.Id != SelectedCar.Id))
+                {
+                    MessageBox.Show("This license plate already exists.", "Validation Error");
+                    LoadCars();
+                    return;
+                }
 
                 _carService.Update(SelectedCar);
                 LoadCars();
@@ -226,23 +230,32 @@ namespace LocationVoiture.Present.ViewModel
                 return;
             }
 
-            try
+            var confirmationResult = MessageBox.Show(
+                                               "Are you sure you want to delete this car?",
+                                               "Confirm delete",
+                                               MessageBoxButton.YesNo,
+                                               MessageBoxImage.Question
+               );
+            if (confirmationResult == MessageBoxResult.Yes)
             {
-                bool isDeleted = _carService.Delete(SelectedCar);
-                if (isDeleted)
+                try
                 {
-                    LoadCars();
-                    LoadParkings();
-                    MessageBox.Show("Car deleted successfully.", "Delete Car");
+                    bool isDeleted = _carService.Delete(SelectedCar);
+                    if (isDeleted)
+                    {
+                        LoadCars();
+                        LoadParkings();
+                        MessageBox.Show("Car deleted successfully.", "Delete Car");
+                    }
+                    else
+                    {
+                        MessageBox.Show("Error deleting car.", "Delete Car Error");
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    MessageBox.Show("Error deleting car.", "Delete Car Error");
+                    MessageBox.Show($"Error deleting car: {ex.Message}", "Delete Car Error");
                 }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error deleting car: {ex.Message}", "Delete Car Error");
             }
         }
 

@@ -20,8 +20,6 @@ namespace LocationVoiture.Present.ViewModel
         private ObservableCollection<Car> _cars;
         private ObservableCollection<Client> _clients;
         private ObservableCollection<Rental> _currentRentals;
-
-
         public int ClientId { get; set; }
         public RentalStatus Status { get; set; } = RentalStatus.reserved;
 
@@ -189,11 +187,12 @@ namespace LocationVoiture.Present.ViewModel
             EncloseCommand = new RelayCommand(Enclose);
 
             ReadAllRentals(null);
-            UpdateRentalState();
         }
 
         private void ReadAllRentals(object parameter)
         {
+
+            UpdateRentalState();
             try
             {
                 var rentalsFromService = _rentalService.GetAll();
@@ -232,13 +231,26 @@ namespace LocationVoiture.Present.ViewModel
                 Status = StartDate > DateTime.Today ? RentalStatus.reserved : RentalStatus.rent
             };
 
+            if (newRental.StartDate < DateTime.Today) {
+                MessageBox.Show("The rental must be in the futur");
+                return;
+            }
+
             try
             {
-                if (newRental.Status == RentalStatus.rent)
-                    _carService.UpdateCarParking(newRental.CarId);
-
                 var createdRental = _rentalService.Create(newRental);
+
+                if (newRental.Status == RentalStatus.rent)
+                    _carService.Update(_carService.GetById(createdRental.CarId));
+
                 ReadAllRentals(null);
+
+                CarId = 0;
+                ClientId = 0;
+                StartDate = DateTime.Now;
+                Duration = 0;
+                Amount = 0;
+                Status = 0;
 
                 MessageBox.Show("Rental successfully created!", "Create Rental");
             }
@@ -260,14 +272,10 @@ namespace LocationVoiture.Present.ViewModel
 
                 try
                 {
+                    SelectedRental.Duration = Duration;
                     SelectedRental.Amount = _carService.CalculateRentalAmount(SelectedRental.CarId, SelectedRental.Duration);
-                    var updatedRental = _rentalService.Update(SelectedRental);
-                    int index = Rentals.IndexOf(SelectedRental);
-                    if (index >= 0)
-                    {
-                        Rentals[index] = updatedRental;
-                    }
-                    this.ReadAllRentals(parameter);
+                    _rentalService.Update(SelectedRental);
+                    this.ReadAllRentals(null);
                     MessageBox.Show("Rental updated successfully.", "Update Rental");
                 }
                 catch (Exception ex)
@@ -281,18 +289,27 @@ namespace LocationVoiture.Present.ViewModel
         {
             if (SelectedRental != null)
             {
-                try
+                var confirmationResult = MessageBox.Show(
+                            "Are you sure you want to delete this rental?",
+                            "Confirm delete",
+                            MessageBoxButton.YesNo,
+                            MessageBoxImage.Question
+                );
+                if (confirmationResult == MessageBoxResult.Yes)
                 {
-                    bool isDeleted = _rentalService.Delete(SelectedRental);
-                    if (isDeleted)
+                    try
                     {
-                        Rentals.Remove(SelectedRental);
-                        MessageBox.Show("Rental deleted successfully.", "Delete Rental");
+                        bool isDeleted = _rentalService.Delete(SelectedRental);
+                        if (isDeleted)
+                        {
+                            Rentals.Remove(SelectedRental);
+                            MessageBox.Show("Rental deleted successfully.", "Delete Rental");
+                        }
                     }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Error deleting rental: {ex.Message}", "Delete Rental Error");
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Error deleting rental: {ex.Message}", "Delete Rental Error");
+                    }
                 }
             }
         }
@@ -301,23 +318,33 @@ namespace LocationVoiture.Present.ViewModel
         {
             if (SelectedRental != null)
             {
-                try
+                var confirmationResult = MessageBox.Show(
+                                            "Are you sure you want to enclose this rental?", 
+                                            "Confirm Enclosure", 
+                                            MessageBoxButton.YesNo, 
+                                            MessageBoxImage.Question 
+                );
+                if (confirmationResult == MessageBoxResult.Yes)
                 {
-                    SelectedRental.Status = RentalStatus.completed;
-                    _rentalService.Update(SelectedRental);
-                    this.ReadAllRentals(null);
-                    MessageBox.Show("Rental successfully enclosed.", "Enclose Rental");
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Error enclosing rental: {ex.Message}", "Enclose Rental Error");
+                    try
+                    {
+                        SelectedRental.Status = RentalStatus.completed;
+                        _rentalService.Update(SelectedRental);
+                        _carService.GetFreeParkingPlace(SelectedRental.CarId);
+                        this.ReadAllRentals(null);
+                        MessageBox.Show("Rental successfully enclosed.", "Enclose Rental");
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Error enclosing rental: {ex.Message}", "Enclose Rental Error");
+                    }
                 }
             }
         }
 
         public bool CheckDuplicateRental(int carId, DateTime startDate, int duration)
         {
-            var rentals = _rentalService.GetAll().Where(r => r.CarId == carId);
+            IEnumerable<Rental> rentals = _rentalService.GetAll().Where(r => r.CarId == carId);
             DateTime endDate = startDate.AddDays(duration);
             return rentals.Any(r => (r.Status == RentalStatus.rent || r.Status == RentalStatus.reserved) &&
                                     (startDate < r.StartDate.AddDays(r.Duration) &&
@@ -329,11 +356,11 @@ namespace LocationVoiture.Present.ViewModel
             var rentals = _rentalService.GetAll();
             foreach (var rental in rentals)
             {
-                if (rental.Status == RentalStatus.reserved && rental.StartDate <= DateTime.Now)
+                if (rental.Status == RentalStatus.reserved && rental.StartDate <= DateTime.Today)
                 {
                     rental.Status = RentalStatus.rent;
                     _rentalService.Update(rental);
-                    _carService.UpdateCarParking(rental.CarId);
+                    _carService.Update(_carService.GetById(rental.CarId));
                 }
             }
         }

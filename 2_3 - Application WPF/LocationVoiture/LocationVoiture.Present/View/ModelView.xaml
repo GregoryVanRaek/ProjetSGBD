@@ -8,7 +8,7 @@
         xmlns:models="clr-namespace:LocationVoiture.dal.Entities;assembly=LocationVoiture.dal"
         d:DataContext="{d:DesignInstance Type=viewmodel:ModelViewModel}"
         mc:Ignorable="d"
-        Title="ModelView" Height="800" Width="1200">
+        Title="ModelView" Height="800" Width="1200" WindowStartupLocation="CenterScreen">
     <Grid Background="#F5F5F5">
         <TextBlock Text="Model Management" 
                    FontSize="28" 
@@ -22,8 +22,6 @@
                 <TabItem Header="All Models">
                     <StackPanel>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
-                            <Button Content="Update" Command="{Binding UpdateCommand}" Width="150" Margin="10" 
-                                Background="#0078D7" Foreground="White" FontSize="16" BorderThickness="0" Cursor="Hand" Padding="7"/>
                             <Button Content="Delete" Command="{Binding DeleteCommand}" Width="150" Margin="10" 
                                 Background="#D70000" Foreground="White" FontSize="16" BorderThickness="0" Cursor="Hand" Padding="7"/>
                         </StackPanel>
